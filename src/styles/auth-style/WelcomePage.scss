@@ -1,0 +1,77 @@
+// Variables
+$primary-bg: linear-gradient(to right, #004e92, #000428);
+$accent-color: #ffce00;
+$accent-hover: #e6b800;
+$text-color: #fff;
+$font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+// ✅ Global Reset (move this OUTSIDE of .welcome-page)
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+// ✅ Main page styles
+.welcome-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  padding: 0 20px;
+  background: $primary-bg;
+  color: $text-color;
+  text-align: center;
+  font-family: $font-stack;
+  position: relative;
+  overflow: hidden;
+
+  .navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .logo {
+      height: 50px;
+    }
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    margin: 40px 0 20px;
+    line-height: 1.2;
+  }
+
+  p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 600px;
+    margin-bottom: 40px;
+  }
+
+  button {
+    background-color: $accent-color;
+    color: #000;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: $accent-hover;
+    }
+  }
+}
