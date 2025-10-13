@@ -1,9 +1,0 @@
-@use './_variable' as *;
-
-body {
-  background: $background-gradient;
-  overflow: hidden;
-  color: $text-color;
-  margin: 0;
-  padding: 0;
-}
