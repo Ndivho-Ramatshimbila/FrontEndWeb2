@@ -1,0 +1,23 @@
+@import '../abstracts/variables';
+
+.dashboard-container {
+  padding: 20px 30px;
+   background-color: $bg-color; 
+  .dashboard-header {
+    h2 {
+      font-size: 16px;
+      color: #dd1717;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .overview-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+}
