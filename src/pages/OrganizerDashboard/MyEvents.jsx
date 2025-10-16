@@ -92,9 +92,7 @@ const MyEvents = () => {
               )}
             </div>
             <div className="event-action">
-              {event.status === "Past" ? (
-                <button className="rate-btn">Rate</button>
-              ) : (
+              {event.status !== "Past" && event.status !== "Approved" && (
                 <button className="modify-btn">Modify</button>
               )}
             </div>

@@ -6,14 +6,16 @@ import MyEvents from './pages/OrganizerDashboard/MyEvents';
 import Discover from "./components/organizer_discover/discover"; 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.scss'; 
+import './styles/abstracts/profile.scss'; 
 import Inbox from './pages/OrganizerDashboard/Inbox';
 import HomePage from './pages/Auth/HomePage.jsx';
 import Login from './pages/Auth/Login.jsx';
 import Register from './pages/Auth/Register.jsx';
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx'; 
+import ProfilePage from './pages/OrganizerDashboard/ProfilePage.jsx';
+import CreateEvent from './pages/OrganizerDashboard/CreateEvent.jsx';
 
 const Profile = () => <div>Profile Page</div>;
-const CreateEvent = () => <div>Create New Event Form</div>;
 
 /* ---------------- AUTH LAYOUT (no sidebar) ---------------- */
 function AuthLayout({ children }) {
@@ -103,7 +105,7 @@ function App() {
           path="/profile"
           element={
             <DashboardLayout>
-              <Profile />
+              <ProfilePage />
             </DashboardLayout>
           }
         />
