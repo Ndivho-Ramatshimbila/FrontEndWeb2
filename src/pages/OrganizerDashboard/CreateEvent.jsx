@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
 import "../../styles/pages/_createevent.scss";
@@ -279,18 +279,19 @@ export default function CreateEvent() {
       <div className="create-event-container">
         <div className="create-event-wrapper">
           <div className="create-event-header">
-            <button
-              className="back-button close-button"
-              type="button"
-              aria-label="Close and return to dashboard"
-              onClick={() => {
-                window.location.href = '/dashboard';
-              }}
-            >
-              <X size={20} />
-            </button>
-            <h1 className="create-event-title">Create Event</h1>
-          </div>
+           <button
+             className="back-button"
+               type="button"
+              aria-label="Go back to dashboard"
+               onClick={() => {
+                  window.location.href = '/dashboard';
+                   }}
+                      >
+                      <ArrowLeft size={20} />
+                      </button>
+                       <h1 className="create-event-title">Create Event</h1>
+                         </div>
+
 
           <div className="create-event-form-wrapper">
             <div className="create-event-form">
