@@ -12,7 +12,7 @@ function HomePage() {
                  <img src={logo} alt="Logo" />
            </nav>
       <h1>Welcome to Event<br/>Handler system!</h1>
-      <p>Your gateway to campus events, bookings and <br/>community connections at Tshwane University of<br/>Technology.</p>
+      <p>Your ultimate guide to camous Events.Discover.<br/>register nad engage with everything happening<br/>at Tut</p>
      <button onClick={() => navigate("/login")} >
       Get Started
     </button>
