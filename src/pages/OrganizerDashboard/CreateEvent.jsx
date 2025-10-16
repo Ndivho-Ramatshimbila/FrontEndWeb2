@@ -3,8 +3,11 @@ import { ArrowLeft } from 'lucide-react';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
 import "../../styles/pages/_createevent.scss";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CreateEvent() {
+  const navigate = useNavigate();
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
@@ -816,14 +819,15 @@ export default function CreateEvent() {
 
               {/* SUBMIT BUTTON */}
               <div className="form-footer">
-                <button 
-                  type="button"
-                  onClick={handleSubmit}
-                  className="btn btn-primary"
-                >
-                  Submit Request
-                </button>
-              </div>
+              <button 
+               type="button"
+             onClick={() => navigate('/confirm-event')} // <-- navigate to ConfirmEventDetails page
+             className="btn btn-primary"
+             >
+               Submit Request
+             </button>
+               </div>
+              
             </div>
 
             {/* TOAST NOTIFICATION */}

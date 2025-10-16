@@ -14,6 +14,8 @@ import Register from './pages/Auth/Register.jsx';
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx'; 
 import ProfilePage from './pages/OrganizerDashboard/ProfilePage.jsx';
 import CreateEvent from './pages/OrganizerDashboard/CreateEvent.jsx';
+import ConfirmEventDetails from './pages/OrganizerDashboard/ConfirmEventDetails.jsx';
+import Footer from './components/Footer';
 
 const Profile = () => <div>Profile Page</div>;
 
@@ -32,7 +34,9 @@ function DashboardLayout({ children }) {
     <div className="app">
       <Sidebar />
       <div className="main-content">{children}</div>
+      <Footer />
     </div>
+    
   );
 }
 
@@ -125,6 +129,15 @@ function App() {
             </DashboardLayout>
           }
         />
+        <Route
+         path="/confirm-event"
+         element={
+        <DashboardLayout>
+        <ConfirmEventDetails />
+       </DashboardLayout>
+      }
+      />
+
       </Routes>
     </BrowserRouter>
   );
