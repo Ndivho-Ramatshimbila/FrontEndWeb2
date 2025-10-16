@@ -3,7 +3,7 @@ import hall from '../assets/images/hall.jpg';
 import sport from '../assets/images/sport.jpg';
 import auditorium from '../assets/images/auditorium.jpg';
 import lecturer from '../assets/images/lecturer.jpg';
-import '../styles/abstracts/main.scss';
+import "../styles/pages/_createEvent.scss";
 
 export default function VenueCardGallery({ selectedVenue, setSelectedVenue, minCapacity = 0 }) {
   const venues = [

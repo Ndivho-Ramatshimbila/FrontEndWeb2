@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import '../../styles/abstracts/main.scss';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
+import "../../styles/pages/_createevent.scss";
 
 export default function CreateEvent() {
   const [selectedVenue, setSelectedVenue] = useState(null);
