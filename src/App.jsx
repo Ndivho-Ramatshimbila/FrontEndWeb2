@@ -21,6 +21,9 @@ import AttendeeLayout from './layouts/AttendeeLayout.jsx';
 import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
 
+// ✅ New import for Event Details page
+import EventDetails from './pages/OrganizerDashboard/EventDetails.jsx';
+
 /* ---------------- AUTH LAYOUT (no sidebar, no footer) ---------------- */
 function AuthLayout({ children }) {
   return (
@@ -62,15 +65,18 @@ function App() {
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
         <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
 
+        {/* ✅ NEW ROUTE: Event Details Page */}
+        <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
+
+        {/* ---------- ADMIN ROUTES ---------- */}
         <Route path="/admin" element={<AnalyticsDashboard />} />
 
-
+        {/* ---------- ATTENDEE ROUTES ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />} >
-            
-            <Route index element={<AllEvents />} />
-            <Route path="sports" element={<SportsEvents />} />
-
+          <Route index element={<AllEvents />} />
+          <Route path="sports" element={<SportsEvents />} />
         </Route>
+
       </Routes>
     </BrowserRouter>
   );
