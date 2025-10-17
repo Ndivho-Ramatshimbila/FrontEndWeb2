@@ -20,6 +20,8 @@ import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard.jsx';
 import AttendeeLayout from './layouts/AttendeeLayout.jsx';
 import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
+import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen.jsx';
+
 
 // ✅ New import for Event Details page
 import EventDetails from './pages/OrganizerDashboard/EventDetails.jsx';
@@ -70,6 +72,7 @@ function App() {
 
         {/* ---------- ADMIN ROUTES ---------- */}
         <Route path="/admin" element={<AnalyticsDashboard />} />
+        <Route path="/admin/export" element={<AnalyticsExportScreen />} />
 
         {/* ---------- ATTENDEE ROUTES ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />} >

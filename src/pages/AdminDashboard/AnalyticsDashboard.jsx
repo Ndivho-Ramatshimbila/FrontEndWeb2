@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { TrendingUp, Users, Calendar, CalendarCheck, Settings, Bell, Search } from 'lucide-react';
+import { TrendingUp, Users, Calendar, CalendarCheck, Settings, Search } from 'lucide-react';
 import '../../styles/pages/_analyticsdashboard.scss';
+import { useNavigate } from 'react-router-dom';
 
 // Line Graph Component
 const LineGraph = ({ data, color = '#000000' }) => {
@@ -73,6 +75,13 @@ const LineGraph = ({ data, color = '#000000' }) => {
 
 // Main Analytics Dashboard Component
 const AnalyticsDashboard = () => {
+  const navigate = useNavigate();
+
+  // ✅ Fixed: handleExportClick must be here, not inside LineGraph
+  const handleExportClick = () => {
+    navigate('/admin/export');
+  };
+
   const occupancyData = [
     { name: 'Lecture', occupied: 80, total: 100 },
     { name: 'Sports', occupied: 80, total: 100 },
@@ -128,7 +137,7 @@ const AnalyticsDashboard = () => {
 
   return (
     <div className="admin-dashboard-page">
-      {/* Fixed Header */}
+      {/* Header */}
       <header className="dashboard-header">
         <h1 className="header-title">Admin Dashboard</h1>
       </header>
@@ -141,15 +150,13 @@ const AnalyticsDashboard = () => {
         </div>
       </div>
 
-      {/* Scrollable Content */}
+      {/* Main Dashboard Content */}
       <div className="dashboard-content">
-        {/* Occupancy Overview Card */}
+        {/* Occupancy Overview */}
         <div className="occupancy-card">
           <div className="card-header">
             <h3 className="card-title">Occupancy Overview</h3>
-            <button className="view-details-btn">
-              View Details
-            </button>
+            <button className="view-details-btn">View Details</button>
           </div>
 
           <div className="occupancy-list">
@@ -169,7 +176,7 @@ const AnalyticsDashboard = () => {
           </p>
         </div>
 
-        {/* Revenue Summary Card */}
+        {/* Revenue Summary */}
         <div className="revenue-card">
           <div className="revenue-header">
             <h3 className="revenue-title">Revenue Summary</h3>
@@ -177,14 +184,12 @@ const AnalyticsDashboard = () => {
               <span className="monthly-text">Monthly</span>
             </div>
           </div>
-          
+
           <div className="revenue-amount-container">
             <h2 className="revenue-amount">R27,000</h2>
             <div className="revenue-change">
               <TrendingUp size={16} className="revenue-icon" />
-              <span className="revenue-change-text">
-                +10.20% vs. last month
-              </span>
+              <span className="revenue-change-text">+10.20% vs. last month</span>
             </div>
           </div>
 
@@ -193,7 +198,7 @@ const AnalyticsDashboard = () => {
           </div>
         </div>
 
-        {/* Statistics Grid */}
+        {/* Statistics */}
         <div className="stats-grid">
           {statsData.map((stat, index) => (
             <div key={index} className="stat-card">
@@ -207,13 +212,13 @@ const AnalyticsDashboard = () => {
           ))}
         </div>
 
-        {/* Action Links - Vertical */}
+        {/* Actions */}
         <div className="action-links">
           <button className="action-link">
             <span className="action-icon">|||</span>
             <span>Admin Approval Queue</span>
           </button>
-          <button className="action-link">
+          <button className="action-link" onClick={handleExportClick}>
             <span className="action-icon">↑</span>
             <span>Analytics Export Options</span>
           </button>
