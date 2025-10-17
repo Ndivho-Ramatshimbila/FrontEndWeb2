@@ -14,10 +14,14 @@ import Register from './pages/Auth/Register.jsx';
 import ForgotPassword from './pages/Auth/ForgotPassword.jsx'; 
 import ProfilePage from './pages/OrganizerDashboard/ProfilePage.jsx';
 import CreateEvent from './pages/OrganizerDashboard/CreateEvent.jsx';
+import ConfirmEventDetails from './pages/OrganizerDashboard/ConfirmEventDetails.jsx';
+import Footer from './components/Footer';
+import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard.jsx';
+import AttendeeLayout from './layouts/AttendeeLayout.jsx';
+import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
+import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
 
-const Profile = () => <div>Profile Page</div>;
-
-/* ---------------- AUTH LAYOUT (no sidebar) ---------------- */
+/* ---------------- AUTH LAYOUT (no sidebar, no footer) ---------------- */
 function AuthLayout({ children }) {
   return (
     <div className="auth-layout">
@@ -26,12 +30,13 @@ function AuthLayout({ children }) {
   );
 }
 
-/* ---------------- DASHBOARD LAYOUT (with sidebar) ---------------- */
+/* ---------------- DASHBOARD LAYOUT (with sidebar + footer) ---------------- */
 function DashboardLayout({ children }) {
   return (
     <div className="app">
       <Sidebar />
       <div className="main-content">{children}</div>
+      <Footer /> {/* ✅ Footer only on dashboard pages */}
     </div>
   );
 }
@@ -42,89 +47,30 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* ---------- AUTH ROUTES (independent) ---------- */}
-        <Route
-          path="/"
-          element={
-            <AuthLayout>
-              <HomePage />
-            </AuthLayout>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <AuthLayout>
-              <Login />
-            </AuthLayout>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <AuthLayout>
-              <Register />
-            </AuthLayout>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <AuthLayout>
-              <ForgotPassword />
-            </AuthLayout>
-          }
-        />
+        {/* ---------- AUTH ROUTES ---------- */}
+        <Route path="/" element={<AuthLayout><HomePage /></AuthLayout>} />
+        <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
+        <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
+        <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
 
-        {/* ---------- DASHBOARD ROUTES (with sidebar) ---------- */}
-        <Route
-          path="/dashboard"
-          element={
-            <DashboardLayout>
-              <Dashboard />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/discover"
-          element={
-            <DashboardLayout>
-              <Discover />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/my-events"
-          element={
-            <DashboardLayout>
-              <MyEvents />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <DashboardLayout>
-              <ProfilePage />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/create-event"
-          element={
-            <DashboardLayout>
-              <CreateEvent />
-            </DashboardLayout>
-          }
-        />
-        <Route
-          path="/inbox"
-          element={
-            <DashboardLayout>
-              <Inbox />
-            </DashboardLayout>
-          }
-        />
+        {/* ---------- DASHBOARD ROUTES ---------- */}
+        <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
+        <Route path="/discover" element={<DashboardLayout><Discover /></DashboardLayout>} />
+        <Route path="/my-events" element={<DashboardLayout><MyEvents /></DashboardLayout>} />
+        <Route path="/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />
+        <Route path="/create-event" element={<DashboardLayout><CreateEvent /></DashboardLayout>} />
+        <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
+        <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
+
+        <Route path="/admin" element={<DashboardLayout><AnalyticsDashboard /></DashboardLayout>} />
+
+
+        <Route path="/attendee" element={<AttendeeLayout />} >
+            
+            <Route index element={<AllEvents />} />
+            <Route path="sports" element={<SportsEvents />} />
+
+        </Route>
       </Routes>
     </BrowserRouter>
   );

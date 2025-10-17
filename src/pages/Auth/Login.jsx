@@ -20,17 +20,17 @@ export default function Login() {
     // Simulated backend response with user role
     const mockUserData = {
       email: email,
-      role: 'organizer', // Change this to 'admin' or 'organizer' to test other dashboards
+      role: 'admin', // Change this to 'admin' or 'organizer' to test other dashboards
     };
 
     setTimeout(() => {
       setLoading(false);
 if (mockUserData.role === 'admin') {
-  navigate('/Dashboard');
+  navigate('/admin');
 } else if (mockUserData.role === 'organizer') {
-  navigate('/Dashboard');
+  navigate('/dashboard');
 } else if (mockUserData.role === 'attendee') {
-  navigate('/Dashboard');
+  navigate('/attendee');
 } else {
   setError('Unknown user role');
 }
