@@ -1,0 +1,16 @@
+@import './styles/abstracts-auth/_globals';
+@import './styles/components/overviewCard';
+@import './styles/components/quickActions';
+@import './styles/pages/dashboard';
+@import './styles/components/sidebar';
+@import './styles/components/_chat';
+.app {
+  display: flex;
+  
+  .main-content {
+    margin-left: 250px; // Same as sidebar width
+    padding: 20px;
+    width: calc(100% - 250px);
+    min-height: 50vh;
+  }
+}

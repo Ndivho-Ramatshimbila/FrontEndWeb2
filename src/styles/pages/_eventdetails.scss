@@ -1,0 +1,78 @@
+@import '../abstracts-auth/_variable';
+
+.event-details-page {
+  padding: 20px;
+  background-color: #fff;
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+
+    h2 {
+      flex: 1;
+      text-align: center;
+    }
+
+    .back-btn {
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #555;
+    }
+  }
+
+  .banner img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .details-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+
+    .event-section, .service-section {
+      flex: 1;
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+
+      h3 {
+        color: $text-color;
+        margin-bottom: 10px;
+      }
+
+      p {
+        margin: 6px 0;
+        font-size: 0.95rem;
+        color: #333;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+
+    .modify-btn {
+      background-color: $primary-color;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: 0.3s ease;
+
+      &:hover {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+  }
+}

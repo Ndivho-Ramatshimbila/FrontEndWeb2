@@ -1,0 +1,37 @@
+.attendee-sidebar {
+  background-color: #f8f8f8;
+  padding: 1.5rem;
+  width: 200px;
+  height: 100vh;
+
+  .sidebar-title {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .sidebar-links {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin: 0.75rem 0;
+
+      a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 500;
+        transition: color 0.2s;
+
+        &.active-link {
+          color: #9614d0; // Match your primary color
+          font-weight: bold;
+        }
+
+        &:hover {
+          color: #9614d0;
+        }
+      }
+    }
+  }
+}
