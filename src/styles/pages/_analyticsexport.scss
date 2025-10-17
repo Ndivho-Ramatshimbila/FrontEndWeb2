@@ -1,30 +1,47 @@
 // Analytics Export Screen Styles
 
 .analytics-export-container {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
   background-color: #F7F7F7;
   min-height: 100vh;
-  overflow-y: auto;
+}
+
+// Fixed Header
+.export-header-fixed {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: white;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.export-header {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 1.5rem;
+  }
 }
 
 .analytics-export-content {
+  flex: 1;
+  overflow-y: auto;
   padding: 1.25rem;
 
   @media (min-width: 768px) {
     padding: 1.5rem;
     max-width: 1200px;
     margin: 0 auto;
-  }
-}
-
-.export-header {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.9375rem;
-  color: #333;
-
-  @media (min-width: 768px) {
-    font-size: 1.5rem;
+    width: 100%;
   }
 }
 
