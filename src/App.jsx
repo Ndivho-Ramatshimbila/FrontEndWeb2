@@ -62,7 +62,7 @@ function App() {
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
         <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
 
-        <Route path="/admin" element={<DashboardLayout><AnalyticsDashboard /></DashboardLayout>} />
+        <Route path="/admin" element={<AnalyticsDashboard />} />
 
 
         <Route path="/attendee" element={<AttendeeLayout />} >
