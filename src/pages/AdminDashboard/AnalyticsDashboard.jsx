@@ -156,7 +156,6 @@ const AnalyticsDashboard = () => {
         <div className="occupancy-card">
           <div className="card-header">
             <h3 className="card-title">Occupancy Overview</h3>
-            <button className="view-details-btn">View Details</button>
           </div>
 
           <div className="occupancy-list">

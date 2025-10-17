@@ -117,24 +117,6 @@
   }
 }
 
-.view-details-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  border: none;
-  color: #333;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0.5rem 0;
-  transition: color 0.2s;
-
-  &:hover {
-    color: #000;
-  }
-}
-
 .occupancy-list {
   margin-bottom: 1.5rem;
 }
