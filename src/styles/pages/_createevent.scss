@@ -41,7 +41,7 @@
         left: 1.5rem; // distance from left edge
         top: 50%;
         transform: translateY(-50%);
-        background: #a4c9f9;
+        background: #ffff;
         border: none;
         border-radius: 50%;
         width: 40px;
@@ -52,14 +52,6 @@
         cursor: pointer;
         transition: all 0.2s ease;
 
-        &:hover {
-          background: #cbd5e1;
-          transform: scale(1.05);
-        }
-
-        svg {
-          color: #1e293b;
-        }
       }
     }
 
