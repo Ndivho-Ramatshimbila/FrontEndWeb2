@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Award } from 'lucide-react';
-import "../../styles/pages/_organizereventrating.scss";
+import "../../styles/pages/_eventrating.scss";
 
-export default function OrganizerEventRating() {
+export default function EventRating() {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [feedback, setFeedback] = useState('');

@@ -22,6 +22,9 @@ import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
 import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen.jsx';
 import AdminLayout from './layouts/AdminLayout.jsx';
+import AttendeeProfilePage from './pages/AttendeeDashBoard/ProfilePage.jsx';
+import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating.jsx';
+import OrganizerEventRating from './pages/OrganizerDashboard/EventRating.jsx';
 
 // ✅ New import for Event Details page
 import EventDetails from './pages/OrganizerDashboard/EventDetails.jsx';
@@ -82,6 +85,8 @@ function App() {
         {/* ---------- ATTENDEE ROUTES ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />} >
           <Route index element={<AllEvents />} />
+          <Route path="events-profile" element={<AttendeeProfilePage />} />
+          <Route path="rate-events" element={<AttendeeEventRating />} />
           <Route path="sports" element={<SportsEvents />} />
         </Route>
 
