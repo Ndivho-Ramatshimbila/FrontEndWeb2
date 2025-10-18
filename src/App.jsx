@@ -21,6 +21,7 @@ import AttendeeLayout from './layouts/AttendeeLayout.jsx';
 import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
 import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen.jsx';
+import AdminLayout from './layouts/AdminLayout.jsx';
 
 
 // ✅ New import for Event Details page
@@ -71,8 +72,10 @@ function App() {
         <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
 
         {/* ---------- ADMIN ROUTES ---------- */}
-        <Route path="/admin" element={<AnalyticsDashboard />} />
-        <Route path="/admin/export" element={<AnalyticsExportScreen />} />
+        <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AnalyticsDashboard />} />
+       <Route path="export" element={<AnalyticsExportScreen />} />
+      </Route>
 
         {/* ---------- ATTENDEE ROUTES ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />} >
