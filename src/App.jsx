@@ -22,7 +22,7 @@ import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
 import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen.jsx';
 import AdminLayout from './layouts/AdminLayout.jsx';
-import AttendeeProfilePage from './pages/AttendeeDashBoard/ProfilePage.jsx';
+import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage.jsx';
 import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating.jsx';
 import OrganizerEventRating from './pages/OrganizerDashboard/EventRating.jsx';
 
@@ -70,6 +70,7 @@ function App() {
         <Route path="/create-event" element={<DashboardLayout><CreateEvent /></DashboardLayout>} />
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
         <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
+        <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
     
 
         {/* NEW ROUTE: Event Details Page */}
