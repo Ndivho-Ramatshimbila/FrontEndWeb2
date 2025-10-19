@@ -20,7 +20,7 @@ export default function Login() {
     // Simulated backend response with user role
     const mockUserData = {
       email: email,
-      role: 'organizer', // Change this to 'admin' or 'organizer' to test other dashboards
+      role: 'attendee', // Change this to 'admin' or 'organizer' to test other dashboards
     };
 
     setTimeout(() => {
