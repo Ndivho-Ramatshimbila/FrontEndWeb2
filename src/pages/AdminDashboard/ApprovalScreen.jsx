@@ -2,8 +2,15 @@ import React, { useState } from "react";
 import "../../styles/pages/_approvalqueue.scss"; // Updated SCSS file name
 import { FiSearch } from "react-icons/fi";
 import { MdEvent, MdSchedule } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export default function ApprovalQueue() {
+  const navigate = useNavigate();
+
+  const handleViewDetails = (id) => {
+    navigate('/admin/details/${id}');; // navigate to details page
+  };
+
   const [selectedTab, setSelectedTab] = useState("All"); // Now supports All/Pending/Approved/Rejected
 
   const [approvalItems] = useState([
@@ -154,7 +161,12 @@ export default function ApprovalQueue() {
               </div>
 
               <div className="card-footer">
-                <button className="details-button">View Details</button>
+                <button
+                  className="details-button"
+                  onClick={() => handleViewDetails(item.id)}
+                >
+                  View Details
+                </button>
                 <span className={`status-badge ${getStatusClass(item.status)}`}>
                   {item.status}
                 </span>

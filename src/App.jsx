@@ -22,6 +22,7 @@ import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen'
 import AdminProfilePage from './pages/AdminDashboard/AdminProfilePage';
 import AdminLayout from './layouts/AdminLayout';
 import ApprovedScreen from './pages/AdminDashboard/ApprovalScreen';
+import AdminEventDetails from './pages/AdminDashboard/AdminEventDetails';
 
 // Attendee Pages
 import AttendeeLayout from './layouts/AttendeeLayout';
@@ -100,6 +101,7 @@ function App() {
           <Route path="export" element={<AnalyticsExportScreen />} />
           <Route path="profile" element={<AdminProfilePage />} />
           <Route path="approvals" element={<ApprovedScreen />} />
+          <Route path="details/:id" element={<AdminEventDetails />} />
         </Route>
 
         {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}

@@ -1,7 +1,7 @@
 // EventDetails.jsx
 import React from 'react';
 import '../../styles/pages/EventDetails.scss';
-import eventPic from '/public/eventPic.png';
+import eventPic from '../../assets/images/eventPic.PNG';
 
 import {
   FaUsers,
