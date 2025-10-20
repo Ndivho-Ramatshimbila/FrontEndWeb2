@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import { TrendingUp, Users, Calendar, CalendarCheck, Settings, Search } from 'lucide-react';
@@ -77,9 +76,17 @@ const LineGraph = ({ data, color = '#000000' }) => {
 const AnalyticsDashboard = () => {
   const navigate = useNavigate();
 
-  // ✅ Fixed: handleExportClick must be here, not inside LineGraph
   const handleExportClick = () => {
     navigate('/admin/export');
+  };
+
+  const handleApproveClick = () => {
+    navigate('/admin/approvals');
+  };
+
+  // ✅ New: Handle View Details click for Occupancy
+  const handleOccupancyDetailsClick = () => {
+    navigate('/admin/occupancy-details'); // You can change this route
   };
 
   const occupancyData = [
@@ -156,6 +163,13 @@ const AnalyticsDashboard = () => {
         <div className="occupancy-card">
           <div className="card-header">
             <h3 className="card-title">Occupancy Overview</h3>
+            {/* ✅ Added "View Details" link */}
+            <button
+              className="view-details-link"
+              onClick={handleOccupancyDetailsClick}
+            >
+              View Details
+            </button>
           </div>
 
           <div className="occupancy-list">
@@ -213,7 +227,7 @@ const AnalyticsDashboard = () => {
 
         {/* Actions */}
         <div className="action-links">
-          <button className="action-link">
+          <button className="action-link" onClick={handleApproveClick}>
             <span className="action-icon">|||</span>
             <span>Admin Approval Queue</span>
           </button>

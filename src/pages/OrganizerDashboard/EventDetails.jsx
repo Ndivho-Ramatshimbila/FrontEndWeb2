@@ -74,7 +74,12 @@ const EventDetails = () => {
       </div>
 
       <div className="actions">
-        <button className="modify-btn">Modify Details</button>
+        <button
+  className="btn btn-warning"
+  onClick={() => navigate(`/event/${event.id}/edit`)}
+>
+  Modify Details
+</button>
       </div>
     </div>
   );
