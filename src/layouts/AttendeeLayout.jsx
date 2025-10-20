@@ -16,9 +16,10 @@ const AttendeeLayout = () => {
           <Outlet />
         </div>
 
-        {/* Footer stays at bottom */}
-        <Footer />
+       
       </div>
+       {/* Footer stays at bottom */}
+        <Footer />
     </div>
   );
 };

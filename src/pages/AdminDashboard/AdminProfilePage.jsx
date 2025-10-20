@@ -82,7 +82,7 @@ const AdminProfilePage = () => {
             onDeleteProfile={handleDeleteProfile}
           />
         )}
-      </main>r
+      </main>
     </div>
   );
 };

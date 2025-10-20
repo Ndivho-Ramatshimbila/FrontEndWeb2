@@ -1,72 +1,59 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// Layouts
 import Sidebar from './components/Sidebar';
-import Footer from './components/Footer';
-
-// Organizer Layouts/Pages
-import Dashboard from './pages/OrganizerDashboard/Dashboard';
+import Dashboard from './pages/OrganizerDashboard/Dashboard'; 
 import MyEvents from './pages/OrganizerDashboard/MyEvents';
-import Discover from "./components/organizer_discover/discover";
-import Inbox from './pages/OrganizerDashboard/Inbox';
-import ProfilePage from './pages/OrganizerDashboard/ProfilePage';
-import CreateEvent from './pages/OrganizerDashboard/CreateEvent';
-import ConfirmEventDetails from './pages/OrganizerDashboard/ConfirmEventDetails';
-import OrganizerEventRating from './pages/OrganizerDashboard/EventRating';
-import EventDetails from './pages/OrganizerDashboard/EventDetails';
-
-// Admin Pages
-import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard';
-import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen';
-import AdminProfilePage from './pages/AdminDashboard/AdminProfilePage';
-import AdminLayout from './layouts/AdminLayout';
-import ApprovedScreen from './pages/AdminDashboard/ApprovalScreen';
-import AdminEventDetails from './pages/AdminDashboard/AdminEventDetails';
-
-// Attendee Pages
-import AttendeeLayout from './layouts/AttendeeLayout';
-import AllEvents from './pages/AttendeeDashBoard/AllEvents';
-import SportsEvents from './pages/AttendeeDashBoard/SportsEvents';
-import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage';
-import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating';
-
-// Auth Pages
-import HomePage from './pages/Auth/HomePage';
-import Login from './pages/Auth/Login';
-import Register from './pages/Auth/Register';
-import ForgotPassword from './pages/Auth/ForgotPassword';
-
-// Styles
+import Discover from "./components/organizer_discover/discover"; 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import './App.scss';
-import './styles/abstracts/profile.scss';
+import './App.scss'; 
+import './styles/abstracts/profile.scss'; 
+import Inbox from './pages/OrganizerDashboard/Inbox';
+import HomePage from './pages/Auth/HomePage.jsx';
+import Login from './pages/Auth/Login.jsx';
+import Register from './pages/Auth/Register.jsx';
+import ForgotPassword from './pages/Auth/ForgotPassword.jsx'; 
+import ProfilePage from './pages/OrganizerDashboard/ProfilePage.jsx';
+import CreateEvent from './pages/OrganizerDashboard/CreateEvent.jsx';
+import ConfirmEventDetails from './pages/OrganizerDashboard/ConfirmEventDetails.jsx';
+import Footer from './components/Footer';
+import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard.jsx';
+import AttendeeLayout from './layouts/AttendeeLayout.jsx';
+import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
+import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
+import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen.jsx';
+import AdminLayout from './layouts/AdminLayout.jsx';
+import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage.jsx';
+import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating.jsx';
+import OrganizerEventRating from './pages/OrganizerDashboard/EventRating.jsx';
 
-/* ---------------- LAYOUT COMPONENTS ---------------- */
+// ✅ New import for Event Details page
+import EventDetails from './pages/OrganizerDashboard/EventDetails.jsx';
+import AdminProfilePage from './pages/AdminDashboard/AdminProfilePage.jsx';
+// import AttendeeDiscover from "./components/attendee_discover/attendee-discover.jsx"; 
+import AttendeeDiscover from "./components/attendee_discover/attendee-discover.jsx";
 
-// Layout for auth pages (no sidebar/footer)
+/* ---------------- AUTH LAYOUT (no sidebar, no footer) ---------------- */
 function AuthLayout({ children }) {
-  return <div className="auth-layout">{children}</div>;
+  return (
+    <div className="auth-layout">
+      {children}
+    </div>
+  );
 }
 
-// Layout for organizer dashboard pages
+/* ---------------- DASHBOARD LAYOUT (with sidebar + footer) ---------------- */
 function DashboardLayout({ children }) {
   return (
     <div className="app">
       <Sidebar />
       <div className="main-content">{children}</div>
-      <Footer />
+      <Footer /> {/* ✅ Footer only on dashboard pages */}
     </div>
   );
 }
 
-// Optional: Fallback 404 page
-function NotFound() {
-  return <h2 className="text-center mt-5">404 - Page Not Found</h2>;
-}
 
-/* ---------------- MAIN APP ROUTER ---------------- */
-
+/* ---------------- APP ROUTES ---------------- */
 function App() {
   return (
     <BrowserRouter>
@@ -78,42 +65,34 @@ function App() {
         <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
         <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
 
-        {/* ---------- ORGANIZER DASHBOARD ROUTES ---------- */}
+        {/* ---------- DASHBOARD ROUTES ---------- */}
         <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
         <Route path="/discover" element={<DashboardLayout><Discover /></DashboardLayout>} />
         <Route path="/my-events" element={<DashboardLayout><MyEvents /></DashboardLayout>} />
         <Route path="/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />
         <Route path="/create-event" element={<DashboardLayout><CreateEvent /></DashboardLayout>} />
-        <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
+        <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
         <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
+    
 
-        {/* ✅ View Event Details */}
+        {/* NEW ROUTE: Event Details Page */}
         <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
 
-        {/* ✅ Edit Event Page (REQUIRED for `navigate('/event/:id/edit')`) */}
-        <Route path="/event/:id/edit" element={<DashboardLayout><CreateEvent mode="edit" /></DashboardLayout>} />
-
-
-        {/* ---------- ADMIN ROUTES (Nested) ---------- */}
+        {/* ---------- ADMIN ROUTES ---------- */}
         <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AnalyticsDashboard />} />
-          <Route path="export" element={<AnalyticsExportScreen />} />
-          <Route path="profile" element={<AdminProfilePage />} />
-          <Route path="approvals" element={<ApprovedScreen />} />
-          <Route path="details/:id" element={<AdminEventDetails />} />
-        </Route>
+        <Route path="/adminprofile" element={<AdminProfilePage/>}/>
+        <Route index element={<AnalyticsDashboard />} />
+       <Route path="export" element={<AnalyticsExportScreen />} />
+      </Route>
 
-        {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
-        <Route path="/attendee" element={<AttendeeLayout />}>
-          <Route index element={<AllEvents />} />
-          <Route path="events-profile" element={<AttendeeProfilePage />} />
-          <Route path="rate-events" element={<AttendeeEventRating />} />
-          <Route path="sports" element={<SportsEvents />} />
-        </Route>
-
-        {/* ---------- 404 FALLBACK ---------- */}
-        <Route path="*" element={<NotFound />} />
+        {/* ---------- ATTENDEE ROUTES ---------- */}
+       <Route path="/attendee" element={<AttendeeLayout />} >
+  <Route index element={<AttendeeDiscover />} />
+  <Route path="events-profile" element={<AttendeeProfilePage />} />
+  <Route path="rate-events" element={<AttendeeEventRating />} />
+  <Route path="sports" element={<SportsEvents />} />
+</Route>
 
       </Routes>
     </BrowserRouter>

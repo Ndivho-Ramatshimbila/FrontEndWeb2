@@ -1,12 +1,8 @@
-@import '../abstracts-auth/_variable';
-
-// =======================
-// Confirm Event Page Styles (using color palette variables)
-// =======================
+// Confirm Event Details Page Styles
 
 .confirm-event-page {
   min-height: 100vh;
-  background-color: $color-9;
+  background-color: #f9fafb;
   padding: 1.5rem;
 
   .confirm-event-container {
@@ -23,18 +19,18 @@
       gap: 0.5rem;
       background: none;
       border: none;
-      color: $color-3;
+      color: #4b5563;
       cursor: pointer;
       padding: 0.5rem;
       margin-bottom: 1rem;
       transition: color 0.2s;
 
       &:hover {
-        color: $color-2;
+        color: #111827;
       }
 
       &:focus {
-        outline: 2px solid $color-4;
+        outline: 2px solid #7c3aed;
         outline-offset: 2px;
         border-radius: 0.25rem;
       }
@@ -44,7 +40,7 @@
       font-size: 1.5rem;
       font-weight: 600;
       text-align: center;
-      color: $color-1;
+      color: #111827;
       margin: 0;
     }
   }
@@ -58,7 +54,7 @@
     .event-header-image {
       width: 100%;
       height: 12rem;
-      background: linear-gradient(to right, $color-4, $color-6);
+      background: linear-gradient(to right, #fbcfe8, #fed7aa);
       position: relative;
       overflow: hidden;
 
@@ -88,14 +84,14 @@
     .section-title {
       font-size: 1.125rem;
       font-weight: 600;
-      color: $color-2;
+      color: #111827;
       margin-bottom: 1rem;
     }
 
     .section-subtitle {
       font-size: 1.25rem;
       font-weight: 600;
-      color: $color-3;
+      color: #7c3aed;
       margin-bottom: 0.75rem;
     }
   }
@@ -105,7 +101,7 @@
     align-items: flex-start;
     gap: 0.75rem;
     margin-bottom: 0.75rem;
-    color: $color-2;
+    color: #4b5563;
 
     &:last-child {
       margin-bottom: 0;
@@ -116,7 +112,7 @@
       width: 1.125rem;
       height: 1.125rem;
       margin-top: 0.125rem;
-      color: $color-3;
+      color: #6b7280;
     }
 
     .detail-text {
@@ -136,10 +132,10 @@
     justify-content: center;
     margin-top: 2rem;
     padding-top: 2rem;
-    border-top: 1px solid $color-8;
+    border-top: 1px solid #e5e7eb;
 
     .btn-submit {
-      background-color: $color-3;
+      background-color: #7c3aed;
       color: white;
       font-weight: 500;
       padding: 0.75rem 4rem;
@@ -150,16 +146,16 @@
       transition: background-color 0.2s;
 
       &:hover {
-        background-color: $color-2;
+        background-color: #6d28d9;
       }
 
       &:focus {
-        outline: 2px solid $color-4;
+        outline: 2px solid #7c3aed;
         outline-offset: 2px;
       }
 
       &:active {
-        background-color: $color-1;
+        background-color: #5b21b6;
       }
 
       @media (max-width: 640px) {
@@ -206,15 +202,15 @@
   }
 }
 
-// Utility text colors
-.text-primary {
-  color: $color-3;
+// Additional utility classes for the confirm page
+.text-purple {
+  color: #7c3aed;
 }
 
-.text-dark {
-  color: $color-1;
+.text-gray-600 {
+  color: #4b5563;
 }
 
-.text-muted {
-  color: $color-5;
+.text-gray-900 {
+  color: #111827;
 }

@@ -1,7 +1,8 @@
 .admin-layout-container {
   display: flex;
   min-height: 100vh;
-  background: #f0f4f8;
+  background:transparent;
+  flex-direction: column;
 }
 
 .admin-main-wrapper {
@@ -16,5 +17,5 @@
   flex: 1;
   padding: 0;
   overflow-y: auto;
-  background: #f0f4f8;
+  background: transparent;
 }

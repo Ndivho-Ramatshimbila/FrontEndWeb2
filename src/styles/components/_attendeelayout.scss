@@ -4,6 +4,7 @@
 .attendee-layout-container {
   display: flex;
   min-height: 100vh;
+  flex-direction: column;
   background: $bg-color; // match admin layout
 }
 

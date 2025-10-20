@@ -18,7 +18,7 @@ const AttendeeSidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-menu">
-        <NavLink to="/attendee/home" className="sidebar-item">
+        <NavLink to="/attendee" className="sidebar-item">
           <i className="fas fa-home"></i>
           <span>Home</span>
         </NavLink>
