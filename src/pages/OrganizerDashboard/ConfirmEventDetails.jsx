@@ -1,9 +1,11 @@
 import React from 'react';
 import { ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils, Sparkles, Monitor, Wifi, Mic, Video, Laptop } from 'lucide-react';
 import "../../styles/pages/_confirmevent.scss";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmEventDetails() {
   // This would come from your form submission or route params
+  const navigate = useNavigate();
   const eventData = {
     eventTitle: 'New Student Orientation',
     eventType: 'Social Event',
@@ -28,6 +30,16 @@ export default function ConfirmEventDetails() {
       tables: 12
     },
     headerImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80'
+  };
+
+  const handleSubmit = () => {
+    // Show success message
+    alert("Booking request submitted successfully!");
+
+    // Redirect after short delay (optional)
+    setTimeout(() => {
+      navigate("/my-events");
+    }, 1000);
   };
 
   return (
@@ -160,15 +172,12 @@ export default function ConfirmEventDetails() {
             {/* Submit Button */}
             <div className="submit-button-container">
               <button 
-                className="btn-submit"
+               className="btn-submit"
                 type="button"
-                onClick={() => {
-                  // Handle final submission
-                  console.log('Event confirmed and submitted');
-                }}
-              >
-                Submit
-              </button>
+                 onClick={handleSubmit}
+                 >
+                  Submit
+                 </button>
             </div>
           </div>
         </div>

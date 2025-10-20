@@ -17,7 +17,7 @@ const AdminProfileCard = ({
     >
       {/* Profile Image */}
       <img
-       src="/profile.webp" alt="profile"
+       src={profileImg} alt="profile"
         style={{
           width: "180px",
           height: "180px",
