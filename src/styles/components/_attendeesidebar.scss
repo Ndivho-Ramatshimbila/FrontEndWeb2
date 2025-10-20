@@ -1,8 +1,8 @@
 @import '../abstracts-auth/_variable';
 
-.sidebar {
+.attendee-sidebar-fixed {
   width: 250px;
-  background: traqnsparent;
+  background: transparent; // same as admin
   box-shadow: $shadow;
   height: 100vh;
   position: fixed;
@@ -20,7 +20,7 @@
       align-items: center;
       gap: 15px;
       padding: 15px 25px;
-      color: $text-color;
+      color: $text-color; 
       text-decoration: none;
       transition: background-color 0.3s ease;
       cursor: pointer;

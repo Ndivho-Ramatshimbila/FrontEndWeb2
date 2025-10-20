@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import '../styles/components/_sidebar.scss';
+import '../styles/components/_attendeesidebar.scss';
 
-const Sidebar = () => {
+const AttendeeSidebar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const notifications = [
-    "Event 'Annual Tech Summit' approved!",
-    "Reminder: 'Marketing Strategy Workshop' in 3 days",
-    "You have a new message in your inbox",
+    "Your QR Code is ready for 'Music Fest 2025'.",
+    "Event 'Tech Conference 2025' starts tomorrow!",
+    "You rated 'Digital Expo' successfully.",
   ];
 
   const toggleNotifications = () => {
@@ -18,38 +18,27 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="sidebar-menu">
-
-        <NavLink to="/dashboard" className="sidebar-item">
+        <NavLink to="/attendee" className="sidebar-item">
           <i className="fas fa-home"></i>
           <span>Home</span>
         </NavLink>
 
-        <NavLink to="/my-events" className="sidebar-item">
+        <NavLink to="/attendee/events-profile" className="sidebar-item">
           <i className="fas fa-calendar-alt"></i>
-          <span>My Events</span>
-        </NavLink>
-
-        <NavLink to="/inbox" className="sidebar-item">
-          <i className="fas fa-inbox"></i>
-          <span>Inbox</span>
-        </NavLink>
-
-        <NavLink to="/profile" className="sidebar-item">
-          <i className="fas fa-user"></i>
           <span>Profile</span>
         </NavLink>
 
-        <NavLink to="/discover" className="sidebar-item">
-          <i className="fas fa-compass"></i>
-          <span>Discover</span>
+        <NavLink to="/attendee/qr-code" className="sidebar-item">
+          <i className="fas fa-qrcode"></i>
+          <span>QR Code</span>
         </NavLink>
 
-        <NavLink to="/rate-your-event" className="sidebar-item">
-        <i className="fas fa-star"></i>
-        <span>Rate Your Events</span>
+        <NavLink to="/attendee/rate-events" className="sidebar-item">
+          <i className="fas fa-star"></i>
+          <span>Rate Events</span>
         </NavLink>
 
-        {/* Notification Icon */}
+        {/* Notifications at Bottom */}
         <div className="sidebar-item notification-icon" onClick={toggleNotifications}>
           <i className="fas fa-bell"></i>
           <span>Notifications</span>
@@ -67,10 +56,9 @@ const Sidebar = () => {
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
 };
 
-export default Sidebar;
+export default AttendeeSidebar;

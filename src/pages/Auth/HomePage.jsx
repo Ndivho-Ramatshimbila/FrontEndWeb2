@@ -11,8 +11,8 @@ function HomePage() {
       <nav className="navbar">
                  <img src={logo} alt="Logo" />
            </nav>
-      <h1>Welcome to Event<br/>Handler system!</h1>
-      <p>Your gateway to campus events, bookings and <br/>community connections at Tshwane University of<br/>Technology.</p>
+      <h1>Welcome to the Event<br/>Handler system!</h1>
+      <p>Your ultimate guide to campus Events.Discover.<br/>register and engage with everything happening<br/>at Tut</p>
      <button onClick={() => navigate("/login")} >
       Get Started
     </button>

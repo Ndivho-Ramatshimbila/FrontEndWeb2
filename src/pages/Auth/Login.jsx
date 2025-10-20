@@ -5,36 +5,44 @@ import '../../styles/abstracts-auth/Login.scss'; // Import your SCSS
 export default function Login() {
   const navigate = useNavigate();
 
-  // Separate states for email and password
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // ✅ Define mock users with roles and passwords
+  const mockUsers = [
+    { email: 'admin@example.com', password: 'admin123', role: 'admin' },
+    { email: 'organizer@example.com', password: 'organizer123', role: 'organizer' },
+    { email: 'attendee@example.com', password: 'attendee123', role: 'attendee' },
+  ];
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // Simulated backend response with user role
-    const mockUserData = {
-      email: email,
-      role: 'organizer', // Change this to 'admin' or 'organizer' to test other dashboards
-    };
-
+    // Simulate a fake "backend delay"
     setTimeout(() => {
-      setLoading(false);
-if (mockUserData.role === 'admin') {
-  navigate('/Dashboard');
-} else if (mockUserData.role === 'organizer') {
-  navigate('/Dashboard');
-} else if (mockUserData.role === 'attendee') {
-  navigate('/Dashboard');
-} else {
-  setError('Unknown user role');
-}
+      const foundUser = mockUsers.find(
+        (user) => user.email === email && user.password === password
+      );
 
+      setLoading(false);
+
+      if (foundUser) {
+        // ✅ Redirect based on user role
+        if (foundUser.role === 'admin') {
+          navigate('/admin');
+        } else if (foundUser.role === 'organizer') {
+          navigate('/dashboard');
+        } else if (foundUser.role === 'attendee') {
+          navigate('/attendee');
+        }
+      } else {
+        // Invalid credentials
+        setError('Invalid email or password');
+      }
     }, 1000);
   };
 
@@ -56,7 +64,6 @@ if (mockUserData.role === 'admin') {
           required
         />
 
-       
         <label htmlFor="password">Password</label>
         <input
           type="password"

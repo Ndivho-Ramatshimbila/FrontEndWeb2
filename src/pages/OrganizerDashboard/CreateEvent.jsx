@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
-import '../../styles/abstracts/main.scss';
+import { ArrowLeft } from 'lucide-react';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
+import "../../styles/pages/_createevent.scss";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function CreateEvent() {
+  const navigate = useNavigate();
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
@@ -279,18 +282,19 @@ export default function CreateEvent() {
       <div className="create-event-container">
         <div className="create-event-wrapper">
           <div className="create-event-header">
-            <button
-              className="back-button close-button"
-              type="button"
-              aria-label="Close and return to dashboard"
-              onClick={() => {
-                window.location.href = '/dashboard';
-              }}
-            >
-              <X size={20} />
-            </button>
-            <h1 className="create-event-title">Create Event</h1>
-          </div>
+           <button
+             className="back-button"
+               type="button"
+              aria-label="Go back to dashboard"
+               onClick={() => {
+                  window.location.href = '/dashboard';
+                   }}
+                      >
+                      <ArrowLeft size={20} />
+                      </button>
+                       <h1 className="create-event-title">Create Event</h1>
+                         </div>
+
 
           <div className="create-event-form-wrapper">
             <div className="create-event-form">
@@ -815,14 +819,15 @@ export default function CreateEvent() {
 
               {/* SUBMIT BUTTON */}
               <div className="form-footer">
-                <button 
-                  type="button"
-                  onClick={handleSubmit}
-                  className="btn btn-primary"
-                >
-                  Submit Request
-                </button>
-              </div>
+              <button 
+               type="button"
+             onClick={() => navigate('/confirm-event')} // <-- navigate to ConfirmEventDetails page
+             className="btn btn-primary"
+             >
+               Submit Request
+             </button>
+               </div>
+              
             </div>
 
             {/* TOAST NOTIFICATION */}
