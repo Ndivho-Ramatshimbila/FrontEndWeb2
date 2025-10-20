@@ -42,7 +42,7 @@ const Inbox = () => {
       <ChatHeader
         adminName="TUT Administrator"
         department="Events Department"
-        onBack={() => navigate("/")} // ✅ Navigate home
+        onBack={() => navigate("/dashboard")} // ✅ Navigate home
       />
       <MessageList messages={messages} />
       <MessageInput onSend={handleSend} />

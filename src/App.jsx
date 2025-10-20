@@ -20,6 +20,17 @@ import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard.jsx';
 import AttendeeLayout from './layouts/AttendeeLayout.jsx';
 import AllEvents from './pages/AttendeeDashBoard/AllEvents.jsx';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents.jsx';
+import AnalyticsExportScreen from './pages/AdminDashboard/AnalyticsExportScreen.jsx';
+import AdminLayout from './layouts/AdminLayout.jsx';
+import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage.jsx';
+import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating.jsx';
+import OrganizerEventRating from './pages/OrganizerDashboard/EventRating.jsx';
+
+// ✅ New import for Event Details page
+import EventDetails from './pages/OrganizerDashboard/EventDetails.jsx';
+import AdminProfilePage from './pages/AdminDashboard/AdminProfilePage.jsx';
+// import AttendeeDiscover from "./components/attendee_discover/attendee-discover.jsx"; 
+import AttendeeDiscover from "./components/attendee_discover/attendee-discover.jsx";
 
 /* ---------------- AUTH LAYOUT (no sidebar, no footer) ---------------- */
 function AuthLayout({ children }) {
@@ -41,6 +52,7 @@ function DashboardLayout({ children }) {
   );
 }
 
+
 /* ---------------- APP ROUTES ---------------- */
 function App() {
   return (
@@ -61,16 +73,27 @@ function App() {
         <Route path="/create-event" element={<DashboardLayout><CreateEvent /></DashboardLayout>} />
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
         <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
+        <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
+    
 
-        <Route path="/admin" element={<DashboardLayout><AnalyticsDashboard /></DashboardLayout>} />
+        {/* NEW ROUTE: Event Details Page */}
+        <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
 
+        {/* ---------- ADMIN ROUTES ---------- */}
+        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/adminprofile" element={<AdminProfilePage/>}/>
+        <Route index element={<AnalyticsDashboard />} />
+       <Route path="export" element={<AnalyticsExportScreen />} />
+      </Route>
 
-        <Route path="/attendee" element={<AttendeeLayout />} >
-            
-            <Route index element={<AllEvents />} />
-            <Route path="sports" element={<SportsEvents />} />
+        {/* ---------- ATTENDEE ROUTES ---------- */}
+       <Route path="/attendee" element={<AttendeeLayout />} >
+  <Route index element={<AttendeeDiscover />} />
+  <Route path="events-profile" element={<AttendeeProfilePage />} />
+  <Route path="rate-events" element={<AttendeeEventRating />} />
+  <Route path="sports" element={<SportsEvents />} />
+</Route>
 
-        </Route>
       </Routes>
     </BrowserRouter>
   );

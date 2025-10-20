@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import '../styles/components/_sidebar.scss';
+import '../styles/components/_adminsidebar.scss';
 
-const Sidebar = () => {
+const AdminSidebar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
 
   const notifications = [
-    "Event 'Annual Tech Summit' approved!",
-    "Reminder: 'Marketing Strategy Workshop' in 3 days",
-    "You have a new message in your inbox",
+    "New user registration pending approval",
+    "Event 'Tech Conference 2025' requires review",
+    "System backup completed successfully",
+    "Revenue report for October is ready",
   ];
 
   const toggleNotifications = () => {
@@ -16,37 +17,22 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar">
+    <div className="admin-sidebar-fixed">
       <div className="sidebar-menu">
 
-        <NavLink to="/dashboard" className="sidebar-item">
+        <NavLink to="/admin" end className="sidebar-item">
           <i className="fas fa-home"></i>
           <span>Home</span>
         </NavLink>
 
-        <NavLink to="/my-events" className="sidebar-item">
-          <i className="fas fa-calendar-alt"></i>
-          <span>My Events</span>
-        </NavLink>
-
-        <NavLink to="/inbox" className="sidebar-item">
-          <i className="fas fa-inbox"></i>
-          <span>Inbox</span>
-        </NavLink>
-
-        <NavLink to="/profile" className="sidebar-item">
+        <NavLink to="/admin/profile" className="sidebar-item">
           <i className="fas fa-user"></i>
           <span>Profile</span>
         </NavLink>
 
-        <NavLink to="/discover" className="sidebar-item">
-          <i className="fas fa-compass"></i>
-          <span>Discover</span>
-        </NavLink>
-
-        <NavLink to="/rate-your-event" className="sidebar-item">
-        <i className="fas fa-star"></i>
-        <span>Rate Your Events</span>
+        <NavLink to="/admin/chat" className="sidebar-item">
+          <i className="fas fa-comments"></i>
+          <span>Chat</span>
         </NavLink>
 
         {/* Notification Icon */}
@@ -73,4 +59,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;

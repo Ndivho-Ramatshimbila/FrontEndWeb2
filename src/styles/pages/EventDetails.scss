@@ -1,0 +1,106 @@
+.event-details {
+  width: 100vw;         // Full screen width
+  height: 100vh;        // Full screen height
+  padding: 40px;        // More padding to space out content
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  box-sizing: border-box;
+  overflow-y: auto;     // Allows scrolling if content overflows
+  background-color: #fdfdfd;
+
+  .header-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color:blue;
+  }
+
+  .event-image {
+    width: 100%;
+    height: 300px;         // Fixed height for consistency
+    object-fit: cover;     // Crop image nicely
+    border-radius: 8px;
+    margin-bottom: 25px;
+  }
+
+  .info-section {
+    margin-bottom: 30px;
+
+    h3 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color:blue;
+    }
+
+    .subtitle {
+      font-size: 17px;
+      color: blue;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        font-size: 16px;
+
+        svg {
+          margin-right: 10px;
+          color: blue;
+        }
+      }
+    }
+
+    p {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+
+      svg {
+        margin-right: 8px;
+        color:blue;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+
+    button {
+      padding: 14px 26px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 48%;
+      transition: 0.3s ease-in-out;
+    }
+
+    .approve {
+      background: linear-gradient(to right, blue, #b98eff);
+      color: white;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    .reject {
+      background-color: #e74c3c;
+      color: white;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+}
