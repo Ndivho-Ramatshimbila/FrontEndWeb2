@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/_myevents.scss';
 
 const myEventsData = [
@@ -48,6 +49,7 @@ const myEventsData = [
 
 const MyEvents = () => {
   const [filter, setFilter] = useState("Past");
+  const navigate = useNavigate();
 
   const filteredEvents = myEventsData.filter(event => {
     if (filter === "All") return true;
@@ -92,10 +94,14 @@ const MyEvents = () => {
               )}
             </div>
             <div className="event-action">
-              {event.status === "Past" ? (
-                <button className="rate-btn">Rate</button>
-              ) : (
-                <button className="modify-btn">Modify</button>
+              {/* ✅ Only show Modify button if event is Waiting for Approval */}
+              {event.status === "Waiting for Approval" && (
+                <button
+                  className="modify-btn"
+                  onClick={() => navigate(`/event/${event.id}`)}
+                >
+                  Modify
+                </button>
               )}
             </div>
           </div>

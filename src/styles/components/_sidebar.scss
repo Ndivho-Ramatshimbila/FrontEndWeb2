@@ -1,14 +1,14 @@
-@import '../abstracts/variables';
+@import '../abstracts-auth/_variable';
 
 .sidebar {
   width: 250px;
-  background: $card-bg;
+  background: traqnsparent;
   box-shadow: $shadow;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
-  padding-top: 70px; // Account for navbar height
+  padding-top: 70px;
 
   .sidebar-menu {
     display: flex;
@@ -23,10 +23,7 @@
       color: $text-color;
       text-decoration: none;
       transition: background-color 0.3s ease;
-      
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.05);
-      }
+      cursor: pointer;
 
       i {
         width: 20px;
@@ -36,6 +33,63 @@
 
       span {
         font-weight: 500;
+      }
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      &.active {
+        background-color: rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .notification-icon {
+      position: relative;
+
+      .notification-popup {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 250px;
+        background: transparent;
+        padding: 10px;
+        margin-top: 5px;
+        z-index: 999;
+
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+
+          li {
+            background-color: $primary-color;
+            color: white;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:hover {
+              background-color: $primary-hover;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .empty {
+          background-color: $primary-color;
+          color: white;
+          border-radius: 8px;
+          padding: 10px;
+          font-size: 14px;
+          text-align: center;
+        }
       }
     }
   }
