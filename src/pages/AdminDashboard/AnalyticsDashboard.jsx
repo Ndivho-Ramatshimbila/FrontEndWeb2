@@ -81,7 +81,10 @@ const AnalyticsDashboard = () => {
   const handleExportClick = () => {
     navigate('/admin/export');
   };
-
+  
+  const handleApproveClick = () => {
+    navigate('/admin/approvals');
+  };
   const occupancyData = [
     { name: 'Lecture', occupied: 80, total: 100 },
     { name: 'Sports', occupied: 80, total: 100 },
@@ -208,7 +211,7 @@ const AnalyticsDashboard = () => {
 
         {/* Actions */}
         <div className="action-links">
-          <button className="action-link">
+          <button className="action-link" onClick={handleApproveClick}>
             <span className="action-icon">|||</span>
             <span>Admin Approval Queue</span>
           </button>
