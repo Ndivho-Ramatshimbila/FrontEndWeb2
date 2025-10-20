@@ -1,8 +1,8 @@
-@import '../abstracts/variables';
+@import '../abstracts-auth/_variable';
 
 .sidebar {
   width: 250px;
-  background: $card-bg;
+  background: traqnsparent;
   box-shadow: $shadow;
   height: 100vh;
   position: fixed;

@@ -1,4 +1,4 @@
-@import './styles/abstracts/globals';
+@import './styles/abstracts-auth/_globals';
 @import './styles/components/overviewCard';
 @import './styles/components/quickActions';
 @import './styles/pages/dashboard';
@@ -11,6 +11,6 @@
     margin-left: 250px; // Same as sidebar width
     padding: 20px;
     width: calc(100% - 250px);
-    min-height: 100vh;
+    min-height: 50vh;
   }
 }

@@ -1,0 +1,224 @@
+.approval-queue-screen {
+  padding: 20px;
+  background-color: #fff;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  padding: 0 12px;
+  height: 40px;
+  margin-bottom: 20px;
+  width: 100%;
+  /* ✅ Removed max-width: 500px to allow full width */
+}
+
+.search-icon {
+  color: #999;
+  font-size: 18px;
+  flex-shrink: 0; /* ✅ Prevent icon from shrinking */
+}
+
+.search-input {
+  flex: 1;
+  margin-left: 8px;
+  border: none;
+  background: transparent;
+  font-size: 16px;
+  outline: none;
+  color: #000;
+  min-width: 0; /* ✅ Critical: allows input to shrink below content size in flex */
+}
+
+/* Rest of your styles remain unchanged */
+
+.tabs-row {
+  display: flex;
+  justify-content: space-around;
+  background-color: #f2f1f7;
+  border-radius: 20px;
+  padding: 6px;
+  margin-bottom: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.active {
+    background-color: #cfc3ff;
+    color: #0077b6;
+  }
+}
+
+.section-title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.count-text {
+  color: #999;
+  font-size: 12px;
+}
+
+.scroll-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #ddd;
+  margin-right: 10px;
+}
+
+.card-title-group {
+  flex: 1;
+}
+
+.event-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.event-id {
+  color: #777;
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+.card-body {
+  margin: 8px 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.icon {
+  color: #666;
+  font-size: 18px;
+}
+
+.event-type,
+.event-date {
+  margin-left: 8px;
+  color: #555;
+  font-size: 14px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.details-button {
+  background-color: #F3F1FF;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #0077B6;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #eae8ff;
+  }
+}
+
+.status-badge {
+  font-weight: 600;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+
+  &.status-approved {
+    color: #2e8b57;
+    background-color: #e8f5e9;
+  }
+
+  &.status-pending {
+    color: #b191ff;
+    background-color: #f3eaff;
+  }
+
+  &.status-rejected {
+    color: #c0392b;
+    background-color: #ffebee;
+  }
+}
+
+.empty-text {
+  text-align: center;
+  color: #888;
+  font-size: 15px;
+  margin: 40px 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .tabs-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tab-btn {
+    flex: 0 0 45%;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .event-title {
+    font-size: 14px;
+  }
+}
