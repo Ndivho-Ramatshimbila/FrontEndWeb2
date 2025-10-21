@@ -28,6 +28,11 @@ const AttendeeSidebar = () => {
           <span>Profile</span>
         </NavLink>
 
+        <NavLink to="/attendee/my-events" className="sidebar-item">
+          <i className="fas fa-ticket-alt"></i>
+          <span>My Events</span>
+        </NavLink>
+
         <NavLink to="/attendee/qr-code" className="sidebar-item">
           <i className="fas fa-qrcode"></i>
           <span>QR Code</span>

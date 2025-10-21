@@ -53,7 +53,7 @@ export default function RatingsPage() {
     alert('Thank you! Your rating has been submitted successfully.');
 
     // ✅ Navigate to AllEvents (the index route)
-    navigate("/all-events");
+    navigate("/attendee/my-events");
   };
 
   const getRatingText = () => {

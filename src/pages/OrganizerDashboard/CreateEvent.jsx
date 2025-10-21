@@ -20,7 +20,7 @@ export default function CreateEvent() {
     cell: '',
     typeOfFunction: '',
     typeOfGuests: [],
-    natureOfFunction: '',
+    //natureOfFunction: '',
     purposeOfFunction: '',
     numberOfGuestsExpected: '',
     dateOfCommencement: '',
@@ -441,8 +441,8 @@ export default function CreateEvent() {
                   </div>
                 </div>
 
-                <div className="form-grid grid-2">
-                  <div className="form-group">
+               <div className="form-grid grid-2">
+                   {/*<div className="form-group">
                     <label className="form-label">Nature of Function</label>
                     <input
                       type="text"
@@ -453,6 +453,7 @@ export default function CreateEvent() {
                       className="form-input"
                     />
                   </div>
+                  */}
 
                   <div className="form-group">
                     <label className="form-label">Purpose of Function</label>
@@ -531,7 +532,7 @@ export default function CreateEvent() {
                 </div>
               </section>
 
-              {/* PROOF OF PAYMENT */}
+              {/* PROOF OF PAYMENT 
               <section className="form-section payment-section">
                 <h2 className="section-title">Proof of Payment</h2>
                 <div className="payment-upload-area">
@@ -575,6 +576,7 @@ export default function CreateEvent() {
                   {errors.proofOfPayment && <p className="error-message">{errors.proofOfPayment}</p>}
                 </div>
               </section>
+              */}
 
               {/* PROGRAM SCHEDULE */}
               <section className="form-section">
