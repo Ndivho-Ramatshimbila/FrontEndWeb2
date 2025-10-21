@@ -31,6 +31,7 @@ import Events from './pages/AttendeeDashBoard/Events';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents';
 import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage';
 import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating';
+import CheckInScreen from './pages/AttendeeDashBoard/CheckInScreen';
 
 // Auth Pages
 import HomePage from './pages/Auth/HomePage';
@@ -113,6 +114,7 @@ function App() {
           <Route path="rate-events" element={<AttendeeEventRating />} />
           <Route path="sports" element={<SportsEvents />} />
           <Route path="/attendee/my-events" element={<Events />} />
+          <Route path="/attendee/qr-code" element={<CheckInScreen />} />
         </Route>
 
         {/* ---------- 404 FALLBACK ---------- */}

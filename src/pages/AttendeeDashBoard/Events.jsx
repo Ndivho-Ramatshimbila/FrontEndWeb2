@@ -110,6 +110,7 @@ const Events = () => {
                     onClick={(e) => {
                       e.stopPropagation();
                       alert(`Viewing details for: ${item.title}`);
+                      navigate("/attendee/qr-code");
                     }}
                   >
                     Ticket
