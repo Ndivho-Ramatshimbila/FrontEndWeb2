@@ -110,6 +110,7 @@ function App() {
           <Route path="events-profile" element={<AttendeeProfilePage />} />
           <Route path="rate-events" element={<AttendeeEventRating />} />
           <Route path="sports" element={<SportsEvents />} />
+          <Route path="/attendee/my-events" element={<Events />} />
         </Route>
 
         {/* ---------- 404 FALLBACK ---------- */}
