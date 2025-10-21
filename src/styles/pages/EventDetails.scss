@@ -1,9 +1,11 @@
+@import '../abstracts-auth/_variable';
+
 .event-details {
-  width: 100vw;         // Full screen width
-  height: 100vh;        // Full screen height
+  width: 100%;         // Full screen width
+  height: 100%;        // Full screen height
   padding: 40px;        // More padding to space out content
   font-family: 'Segoe UI', sans-serif;
-  color: #333;
+  color: #070707;
   box-sizing: border-box;
   overflow-y: auto;     // Allows scrolling if content overflows
   background-color: #fdfdfd;
@@ -13,7 +15,7 @@
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 20px;
-    color:blue;
+    color: $text-color;
   }
 
   .event-image {
@@ -31,12 +33,12 @@
       font-size: 20px;
       font-weight: bold;
       margin-bottom: 10px;
-      color:blue;
+      color:$text-color;
     }
 
     .subtitle {
       font-size: 17px;
-      color: blue;
+      color: $text-color;
       font-weight: bold;
       margin-bottom: 10px;
     }
@@ -53,7 +55,7 @@
 
         svg {
           margin-right: 10px;
-          color: blue;
+          color: $text-color;
         }
       }
     }
@@ -65,7 +67,7 @@
 
       svg {
         margin-right: 8px;
-        color:blue;
+        color:$text-color;
       }
     }
   }
@@ -86,7 +88,7 @@
     }
 
     .approve {
-      background: linear-gradient(to right, blue, #b98eff);
+      background: $primary-color;
       color: white;
 
       &:hover {
@@ -95,7 +97,7 @@
     }
 
     .reject {
-      background-color: #e74c3c;
+      background-color: #b82c1d;
       color: white;
 
       &:hover {
