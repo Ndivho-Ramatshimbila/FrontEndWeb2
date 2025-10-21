@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/abstracts-auth/Login.scss';  // Reuse your existing styles
+import '../../styles/abstracts-auth/Login.scss';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -8,8 +8,9 @@ export default function Register() {
   const [form, setForm] = useState({
     name: '',
     email: '',
-    password: '',     
-    confirmPassword: '',   // new field
+    password: '',
+    confirmPassword: '',
+    phone: '',
     role: 'attendee',
   });
   const [error, setError] = useState('');
@@ -19,11 +20,10 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Password confirmation validation
     if (form.password !== form.confirmPassword) {
       setError('Passwords do not match.');
       return;
@@ -31,11 +31,26 @@ export default function Register() {
 
     setLoading(true);
 
-    setTimeout(() => {
+    // Simulated registration request
+    try {
+      // 👇 Simulate sending to backend API
+      const response = await fakeRegisterAPI(form);
+
       setLoading(false);
-      alert(`Registered successfully as ${form.role}! Please login.`);
+
+      if (form.role === 'organizer') {
+        alert(
+          'Your organizer account request has been submitted for approval. You will be notified once approved.'
+        );
+      } else {
+        alert('Registered successfully! Please login.');
+      }
+
       navigate('/login');
-    }, 1000);
+    } catch (err) {
+      setLoading(false);
+      setError('Registration failed. Please try again.');
+    }
   };
 
   return (
@@ -65,16 +80,15 @@ export default function Register() {
           placeholder="Enter your email"
         />
 
-         <label htmlFor="phone">phone number</label>
+        <label htmlFor="phone">Phone Number</label>
         <input
-          type="phone"
           name="phone"
-          placeholder="Enter your phone number"
+          type="tel"
           value={form.phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={handleChange}
           required
+          placeholder="Enter your phone number"
         />
-
 
         <label htmlFor="password">Password</label>
         <input
@@ -97,11 +111,7 @@ export default function Register() {
         />
 
         <label htmlFor="role">I want to register as:</label>
-        <select
-          name="role"
-          value={form.role}
-          onChange={handleChange}
-        >
+        <select name="role" value={form.role} onChange={handleChange}>
           <option value="attendee">Attendee</option>
           <option value="organizer">Organizer</option>
         </select>
@@ -119,4 +129,20 @@ export default function Register() {
       </form>
     </div>
   );
+}
+
+// 👉 Placeholder for API call (replace with real one)
+async function fakeRegisterAPI(formData) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // You would send the `formData` to your backend here
+      console.log('Registering user:', formData);
+
+      // Simulate success
+      resolve({ status: 'ok' });
+
+      // If simulating an error:
+      // reject(new Error('Registration error'));
+    }, 1000);
+  });
 }
