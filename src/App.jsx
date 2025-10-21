@@ -26,7 +26,7 @@ import AdminEventDetails from './pages/AdminDashboard/AdminEventDetails';
 
 // Attendee Pages
 import AttendeeLayout from './layouts/AttendeeLayout';
-import AllEvents from './pages/AttendeeDashBoard/AllEvents';
+import Events from './pages/AttendeeDashBoard/Events';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents';
 import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage';
 import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating';
