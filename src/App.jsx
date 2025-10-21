@@ -106,7 +106,7 @@ function App() {
 
         {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />}>
-          <Route index element={<AllEvents />} />
+          <Route index element={<Discover />} />
           <Route path="events-profile" element={<AttendeeProfilePage />} />
           <Route path="rate-events" element={<AttendeeEventRating />} />
           <Route path="sports" element={<SportsEvents />} />
