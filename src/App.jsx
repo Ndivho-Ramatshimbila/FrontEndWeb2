@@ -23,6 +23,7 @@ import AdminProfilePage from './pages/AdminDashboard/AdminProfilePage';
 import AdminLayout from './layouts/AdminLayout';
 import ApprovedScreen from './pages/AdminDashboard/ApprovalScreen';
 import AdminEventDetails from './pages/AdminDashboard/AdminEventDetails';
+import AdminChat from './pages/AdminDashboard/AdminChat';
 
 // Attendee Pages
 import AttendeeLayout from './layouts/AttendeeLayout';
@@ -102,6 +103,7 @@ function App() {
           <Route path="profile" element={<AdminProfilePage />} />
           <Route path="approvals" element={<ApprovedScreen />} />
           <Route path="details/:id" element={<AdminEventDetails />} />
+          <Route path="/admin/chat" element={<AdminChat />} />
         </Route>
 
         {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
