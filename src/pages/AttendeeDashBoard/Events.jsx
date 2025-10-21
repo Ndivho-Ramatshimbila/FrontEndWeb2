@@ -54,7 +54,7 @@ const Events = () => {
             <div className="notification-list">
               {notifications.map((item) => (
                 <div key={item.id} className="notification-item">
-                  <FaInfoCircle size={18} color="#9614d0" className="notification-icon" />
+                  <FaInfoCircle size={18} color="#2623d3ff" className="notification-icon" />
                   <div className="notification-content">
                     <h5>{item.title}</h5>
                     <p>{item.message}</p>
@@ -96,7 +96,7 @@ const Events = () => {
           filteredEvents.map((item) => (
             <div key={item.id} className="event-row" onClick={() => navigate(`/eventdetails/${item.id}`)}>
               <div className="event-left">
-                <FaCalendarAlt size={26} color="#7c279e" />
+                <FaCalendarAlt size={26} color="#3627d7ff" />
               </div>
               <div className="event-info">
                 <h4>{item.title}</h4>
@@ -120,7 +120,7 @@ const Events = () => {
                     className="action-btn gray"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate("/rate-event");
+                      navigate("/attendee/rate-events");
                     }}
                   >
                     Rate Event
