@@ -48,7 +48,7 @@ const myEventsData = [
 ];
 
 const MyEvents = () => {
-  const [filter, setFilter] = useState("Past");
+  const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
 
   const filteredEvents = myEventsData.filter(event => {
@@ -103,6 +103,17 @@ const MyEvents = () => {
                   Modify
                 </button>
               )}
+
+              {/* Show Rate button if event is in the past */}
+              {new Date(event.date) <= new Date() && (
+              <button
+              className="rate-btn"
+             onClick={() => navigate('/rate-your-event')}
+             >
+             Rate
+             </button>
+            )}
+
             </div>
           </div>
         ))}
