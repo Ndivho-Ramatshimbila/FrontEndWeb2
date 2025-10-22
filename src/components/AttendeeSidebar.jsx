@@ -23,6 +23,11 @@ const AttendeeSidebar = () => {
           <span>Home</span>
         </NavLink>
 
+          <NavLink to="/attendee/event-registration" className="sidebar-item">
+          <i className="fas fa-edit"></i>
+          <span>Event Registration</span>
+        </NavLink>
+
         <NavLink to="/attendee/events-profile" className="sidebar-item">
           <i className="fas fa-calendar-alt"></i>
           <span>Profile</span>
