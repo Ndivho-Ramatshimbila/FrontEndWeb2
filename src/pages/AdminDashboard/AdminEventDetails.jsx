@@ -2,6 +2,7 @@
 import React from 'react';
 import '../../styles/pages/EventDetails.scss';
 import eventPic from '../../assets/images/eventPic.PNG';
+import { useNavigate } from 'react-router-dom';
 
 import {
   FaUsers,
@@ -21,14 +22,24 @@ import {
 } from 'react-icons/fa';
 
 const EventDetails = () => {
+  const navigate = useNavigate();
+
+  const handleAction = (action) => {
+    if (action === "approve") {
+      console.log("Successfully approved");
+    } else {
+      console.log("Successfully rejected");
+    }
+
+    // Navigate to approvals page
+    navigate("/admin/approvals");
+  };
+
   return (
     <div className="event-details">
       <h2 className="header-title">Details</h2>
 
-      <img
-        className="event-image"
-         src={eventPic} alt="Event" />
-     
+      <img className="event-image" src={eventPic} alt="Event" />
 
       <section className="info-section">
         <h3>Event Details</h3>
@@ -68,8 +79,12 @@ const EventDetails = () => {
       </section>
 
       <div className="buttons">
-        <button className="approve">Approve</button>
-        <button className="reject">Reject</button>
+        <button className="approve" onClick={() => handleAction("approve")}>
+          Approve
+        </button>
+        <button className="reject" onClick={() => handleAction("reject")}>
+          Reject
+        </button>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
 import React from 'react';
 import { ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils, Sparkles, Monitor, Wifi, Mic, Video, Laptop } from 'lucide-react';
 import "../../styles/pages/_confirmevent.scss";
+import { useNavigate } from 'react-router-dom';
 
 export default function ConfirmEventDetails() {
+  const navigate = useNavigate();
   // This would come from your form submission or route params
   const eventData = {
     eventTitle: 'New Student Orientation',
@@ -165,6 +167,7 @@ export default function ConfirmEventDetails() {
                 onClick={() => {
                   // Handle final submission
                   console.log('Event confirmed and submitted');
+                  navigate("/my-events");
                 }}
               >
                 Submit
