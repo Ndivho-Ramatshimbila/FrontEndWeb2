@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../../styles/pages/_approvalqueue.scss";
 import { FaCalendarAlt, FaTag } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+import { useNavigate } from 'react-router-dom';
+
 
 const eventsData = [
   {
@@ -81,10 +83,12 @@ const eventsData = [
 const tabs = ["All", "Pending", "Approved", "Rejected"];
 
 export default function ApprovalScreen() {
-  const [selectedTab, setSelectedTab] = useState("Pending");
+  const [selectedTab, setSelectedTab] = useState("All");
   const [filteredEvents, setFilteredEvents] = useState(eventsData);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     let filtered = selectedTab === "All"
@@ -212,8 +216,11 @@ export default function ApprovalScreen() {
                       <p className={`status ${getStatusColor(event.status)}`}>{event.status}</p>
                     </div>
                   </div>
-                  <button className="view-btn" onClick={() => setSelectedEvent(event)}>
-                    View Details
+                  <button
+                  className="view-btn"
+                  onClick={() => navigate(`/admin/details/${event.id}`)}
+                  >
+                  View Details
                   </button>
                 </div>
               ))
