@@ -17,7 +17,6 @@ const AttendeeProfileCard = ({
         maxWidth: "400px",
         margin: "2rem auto",
         padding: "1.5rem",
-        border: "1px solid #ddd",
         borderRadius: "10px",
         textAlign: "center",
         background: "#fff",

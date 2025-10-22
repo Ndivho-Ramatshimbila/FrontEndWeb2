@@ -50,7 +50,7 @@ export default function EventRegistration() {
           subscribeUpdates ? " You’ll receive event updates." : ""
         }`
       );
-      navigate(-1);
+      navigate('/attendee/my-events');
     } catch {
       alert("Error registering. Please try again.");
     } finally {

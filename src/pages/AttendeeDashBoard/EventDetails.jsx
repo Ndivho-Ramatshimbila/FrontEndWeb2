@@ -30,7 +30,7 @@ const EventDetails = () => {
   };
 
   const handleRegister = () => {
-    alert("Registration initiated!"); // You can replace this with your actual registration logic
+    navigate('/attendee/event-registration');
   };
 
   return (
