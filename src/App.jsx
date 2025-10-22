@@ -27,10 +27,14 @@ import AdminChat from './pages/AdminDashboard/AdminChat';
 
 // Attendee Pages
 import AttendeeLayout from './layouts/AttendeeLayout';
-import AllEvents from './pages/AttendeeDashBoard/AllEvents';
+import Events from './pages/AttendeeDashBoard/Events';
 import SportsEvents from './pages/AttendeeDashBoard/SportsEvents';
 import AttendeeProfilePage from './pages/AttendeeDashBoard/AttendeeProfilePage';
 import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating';
+import CheckInScreen from './pages/AttendeeDashBoard/CheckInScreen';
+import AttendeeDiscover from './components/attendee_discover/attendee-discover';
+import AttendeeEventDetails from './pages/AttendeeDashboard/EventDetails';
+import EventRegistration from "./pages/AttendeeDashBoard/EventRegistration";
 
 // Auth Pages
 import HomePage from './pages/Auth/HomePage';
@@ -108,11 +112,16 @@ function App() {
 
         {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />}>
-          <Route index element={<Discover />} />
-          <Route path="events-profile" element={<AttendeeProfilePage />} />
-          <Route path="rate-events" element={<AttendeeEventRating />} />
-          <Route path="sports" element={<SportsEvents />} />
+        <Route index element={<AttendeeDiscover />} />
+        <Route path="events-profile" element={<AttendeeProfilePage />} />
+        <Route path="rate-events" element={<AttendeeEventRating />} />
+        <Route path="sports" element={<SportsEvents />} />
+        <Route path="my-events" element={<Events />} />
+        <Route path="qr-code" element={<CheckInScreen />} />
+        <Route path="/attendee/event-registration" element={<EventRegistration />} />
+        <Route path="view-event/:id" element={<AttendeeEventDetails />} />
         </Route>
+
 
         {/* ---------- 404 FALLBACK ---------- */}
         <Route path="*" element={<NotFound />} />

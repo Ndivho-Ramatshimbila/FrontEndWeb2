@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "./_attendee-discover.scss";
-
+import { useNavigate } from 'react-router-dom';
 
 
 // Sample events data
@@ -58,6 +58,7 @@ const Discover = () => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Events');
   const [filteredEvents, setFilteredEvents] = useState(eventsData.events);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let filtered = eventsData.events;
@@ -84,6 +85,10 @@ const Discover = () => {
     { id: 'tech', name: 'Technology', icon: 'fa-laptop' },
     { id: 'community', name: 'Community', icon: 'fa-users' }
   ];
+
+  const handleCardClick = (id) => {
+    navigate('/attendee/view-event/${event.id}');
+  };
 
   return (
     <div className="discover-container">
@@ -117,7 +122,12 @@ const Discover = () => {
       {/* Events List */}
       <div className="events-list">
         {filteredEvents.map(event => (
-          <div key={event.id} className="event-card">
+          <div
+            key={event.id}
+            className="event-card"
+            onClick={() => handleCardClick(event.id)} // ✅ Clickable
+            style={{ cursor: "pointer" }}
+          >
             <img src={event.image} alt={event.title} className="event-image" />
             <div className="event-content">
               <h3 className="event-title">{event.title}</h3>
@@ -134,7 +144,10 @@ const Discover = () => {
                   <span key={i} className="tag">{tag}</span>
                 ))}
               </div>
-              <button className="share-button">
+              <button
+                className="share-button"
+                onClick={(e) => e.stopPropagation()} // ✅ prevent navigating on share
+              >
                 <i className="fas fa-share-alt"></i>
                 <span>Share</span>
               </button>
