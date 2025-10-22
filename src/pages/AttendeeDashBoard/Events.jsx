@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCalendarAlt, FaBell, FaTimesCircle, FaInfoCircle } from "react-icons/fa";
-import "../../styles/Events.scss";
+import "../../styles/pages/Events.scss";
 
 const filters = [
   { label: "All", key: "all" },

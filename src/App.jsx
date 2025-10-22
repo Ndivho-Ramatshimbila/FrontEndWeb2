@@ -34,6 +34,7 @@ import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating';
 import CheckInScreen from './pages/AttendeeDashBoard/CheckInScreen';
 import AttendeeDiscover from './components/attendee_discover/attendee-discover';
 import AttendeeEventDetails from './pages/AttendeeDashboard/EventDetails';
+import EventRegistration from "./pages/AttendeeDashBoard/EventRegistration";
 
 // Auth Pages
 import HomePage from './pages/Auth/HomePage';
@@ -117,6 +118,7 @@ function App() {
         <Route path="sports" element={<SportsEvents />} />
         <Route path="my-events" element={<Events />} />
         <Route path="qr-code" element={<CheckInScreen />} />
+        <Route path="/attendee/event-registration" element={<EventRegistration />} />
         <Route path="view-event/:id" element={<AttendeeEventDetails />} />
         </Route>
 
