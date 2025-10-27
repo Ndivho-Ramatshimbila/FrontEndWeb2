@@ -1,3 +1,5 @@
+@import '../abstracts-auth/_variable';
+
 .approval-container {
   padding: 2rem;
   background-color: #fafafa;
@@ -162,7 +164,7 @@
               color: #deea3e;
             }
             &.approved {
-              color: #b191ff;
+              color: $primary-color;
             }
             &.rejected {
               color: #c0392b;
