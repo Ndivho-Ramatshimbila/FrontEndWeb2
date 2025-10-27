@@ -855,7 +855,7 @@ export default function ModifyForm() {
              onClick={() => navigate('/confirm-event')} // <-- navigate to ConfirmEventDetails page
              className="btn btn-primary"
              >
-               Submit Request
+               Modify Request
              </button>
                </div>
               
