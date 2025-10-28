@@ -104,16 +104,6 @@ const MyEvents = () => {
                 </button>
               )}
 
-              {/* Show Rate button if event is in the past */}
-              {new Date(event.date) <= new Date() && (
-              <button
-              className="rate-btn"
-             onClick={() => navigate('/rate-your-event')}
-             >
-             Rate
-             </button>
-            )}
-
             </div>
           </div>
         ))}

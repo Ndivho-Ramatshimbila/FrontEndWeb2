@@ -44,6 +44,11 @@ const Sidebar = () => {
           <span>Discover</span>
         </NavLink>
 
+        <NavLink to="/rate-your-event" className="sidebar-item">
+        <i className="fas fa-star"></i> {/* or any icon you prefer */}
+        <span>Rate Experience</span>
+        </NavLink>
+
         {/* Notification Icon */}
         <div className="sidebar-item notification-icon" onClick={toggleNotifications}>
           <i className="fas fa-bell"></i>
