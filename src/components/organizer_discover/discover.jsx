@@ -76,7 +76,7 @@ const Discover = () => {
   }, [search, selectedCategory]);
 
   const handleCardClick = (id) => {
-    navigate(`/event/${id}`);
+    navigate(`/organizer-view-event/${id}`);
   };
 
   const handleShareClick = (e, eventId) => {

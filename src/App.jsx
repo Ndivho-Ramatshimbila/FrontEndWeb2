@@ -17,7 +17,8 @@ import OrganizerEventRating from './pages/OrganizerDashboard/EventRating';
 import EventDetails from './pages/OrganizerDashboard/EventDetails';
 import ModifyForm from './pages/OrganizerDashboard/ModifyForm';
 import EventDetailsModify from './pages/OrganizerDashboard/EventDetailsModify'; 
-import ConfirmModifiedDetails from './pages/OrganizerDashboard/ConfirmModifiedDetails';// ✅ Added import
+import ConfirmModifiedDetails from './pages/OrganizerDashboard/ConfirmModifiedDetails';
+import RegisterForEvent from './pages/OrganizerDashboard/RegisterForEvent';
 
 // Admin Pages
 import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard';
@@ -91,6 +92,7 @@ function App() {
         <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
         <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
+        <Route path="/organizer-view-event/:id" element={<DashboardLayout><RegisterForEvent /></DashboardLayout>} />
 
         {/* ✅ View Event Details */}
         <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
