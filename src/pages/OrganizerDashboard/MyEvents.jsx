@@ -98,7 +98,7 @@ const MyEvents = () => {
               {event.status === "Waiting for Approval" && (
                 <button
                   className="modify-btn"
-                  onClick={() => navigate(`/event/${event.id}`)}
+                  onClick={() => navigate(`/event-details-modify/${event.id}`)}
                 >
                   Modify
                 </button>
