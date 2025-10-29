@@ -2,18 +2,17 @@ import React, { useRef, useState, useEffect } from "react";
 import AdminProfileCard from "../../components/AdminProfileCard";
 
 const AdminProfilePage = () => {
-  const [profileImg, setProfileImg] = useState(() => localStorage.getItem("adminImg") || "/admin.webp");
+  const [profileImg, setProfileImg] = useState(() => localStorage.getItem("adminImg") || "/profile.webp");
   const [userName, setUserName] = useState(() => localStorage.getItem("adminName") || "Admin Johnson");
   const [userEmail, setUserEmail] = useState(() => localStorage.getItem("adminEmail") || "admin.johnson@system.com");
   const [userRole, setUserRole] = useState(() => localStorage.getItem("adminRole") || "System Administrator");
   const [loggedOut, setLoggedOut] = useState(false);
-  const [deleted, setDeleted] = useState(false);
 
   const fileInputRef = useRef(null);
 
-  // ✅ Save updates, but only when data changes — not at initial load
+  // ✅ Save updates to localStorage when data changes
   useEffect(() => {
-    if (profileImg && profileImg !== "/admin.webp") {
+    if (profileImg && profileImg !== "/profile.webp") {
       localStorage.setItem("adminImg", profileImg);
     }
     localStorage.setItem("adminName", userName);
@@ -42,31 +41,12 @@ const AdminProfilePage = () => {
     if (field === "role") setUserRole(value);
   };
 
-  const handleDeleteProfile = () => {
-    if (window.confirm("Are you sure you want to delete the admin profile?")) {
-      localStorage.removeItem("adminImg");
-      localStorage.removeItem("adminName");
-      localStorage.removeItem("adminEmail");
-      localStorage.removeItem("adminRole");
-      setProfileImg("/admin.webp");
-      setUserName("");
-      setUserEmail("");
-      setUserRole("");
-      setDeleted(true);
-    }
-  };
-
   const handleLogout = () => setLoggedOut(true);
 
   return (
     <div className="profile-page">
       <main className="profile-content" style={{ paddingTop: "5rem" }}>
-        {deleted ? (
-          <div style={{ textAlign: "center", padding: "2rem" }}>
-            <h2 style={{ color: "#b22222" }}>Admin Profile Deleted</h2>
-            <p>This admin account has been removed from the system.</p>
-          </div>
-        ) : loggedOut ? (
+        {loggedOut ? (
           <div style={{ textAlign: "center", padding: "2rem" }}>
             <h2 style={{ color: "#b22222" }}>Admin Logged Out</h2>
             <p>Goodbye! You have been safely logged out.</p>
@@ -85,7 +65,6 @@ const AdminProfilePage = () => {
             onImageChange={handleImageChange}
             onProfileUpdate={handleProfileUpdate}
             onLogout={handleLogout}
-            onDeleteProfile={handleDeleteProfile}
           />
         )}
       </main>
