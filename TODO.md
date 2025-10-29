@@ -1,0 +1,4 @@
+- [x] Modify CreateEvent.jsx handleSubmit to save submissionData to localStorage under 'submittedEvents'
+- [x] Update ApprovalScreen.jsx to load submittedEvents from localStorage and display as Pending
+- [x] Update MyEvents.jsx to load submittedEvents from localStorage and display as Waiting for Approval
+- [x] Test the flow: Submit event, check admin approval queue, check organizer my events

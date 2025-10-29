@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/_myevents.scss';
 
-const myEventsData = [
+const staticMyEventsData = [
   {
     id: 1,
     title: "Annual Tech Summit",
@@ -49,7 +49,24 @@ const myEventsData = [
 
 const MyEvents = () => {
   const [filter, setFilter] = useState("All");
+  const [refresh, setRefresh] = useState(0);
   const navigate = useNavigate();
+
+  // Load events from localStorage and combine with static data
+  const loadMyEvents = () => {
+    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    // Transform submitted events to match the format expected by MyEvents
+    const transformedSubmittedEvents = submittedEvents.map(event => ({
+      id: event.id,
+      title: event.title,
+      date: event.dateOfCommencement, // Use commencement date for filtering
+      status: event.organizerStatus, // Use organizerStatus for display
+      category: event.category,
+    }));
+    return [...staticMyEventsData, ...transformedSubmittedEvents];
+  };
+
+  const myEventsData = loadMyEvents();
 
   const filteredEvents = myEventsData.filter(event => {
     if (filter === "All") return true;
@@ -58,6 +75,11 @@ const MyEvents = () => {
     if (filter === "Cancelled") return event.status === "Cancelled";
     return false;
   });
+
+  // Force re-render when refresh changes
+  React.useEffect(() => {
+    // This effect will trigger when refresh changes
+  }, [refresh]);
 
   return (
     <div className="my-events-page">
