@@ -63,36 +63,11 @@ const Discover = () => {
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Fetch data (with fallback)
+  // ✅ Load local data immediately (no API call)
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Replace this URL with your real API later
-        const response = await fetch("https://your-api-url.com/events");
-
-        if (!response.ok) {
-          throw new Error(`Failed to fetch events: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Assuming your backend returns { events: [...] }
-        setEvents(data.events || []);
-        setFilteredEvents(data.events || []);
-      } catch (err) {
-        console.warn("Using fallback data due to fetch error:", err.message);
-        // 👇 Fallback to local eventsData
-        setEvents(eventsData.events);
-        setFilteredEvents(eventsData.events);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
+    setEvents(eventsData.events);
+    setFilteredEvents(eventsData.events);
+    setLoading(false); // Remove loading state since data loads instantly
   }, []);
 
   // ✅ Filter & search logic

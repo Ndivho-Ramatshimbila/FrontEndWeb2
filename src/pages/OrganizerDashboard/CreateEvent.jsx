@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
@@ -49,23 +49,23 @@ export default function CreateEvent() {
   const [toastMessage, setToastMessage] = useState('');
   const toastTimerRef = React.useRef(null);
 
-  const handleVenueSelect = (venue) => {
+  const handleVenueSelect = useCallback((venue) => {
     setSelectedVenue(venue);
     // Auto-fill the venue name field when a venue is selected
     setFormData(prev => ({
       ...prev,
       venue: venue.name
     }));
-  };
+  }, []);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
-        [name]: checked 
-          ? [...(prev[name] || []), value] 
+        [name]: checked
+          ? [...(prev[name] || []), value]
           : (prev[name] || []).filter(item => item !== value)
       }));
     } else if (type === 'radio') {
@@ -95,11 +95,11 @@ export default function CreateEvent() {
         [name]: ''
       }));
     }
-  };
+  }, [errors]);
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = useCallback((e) => {
     const files = Array.from(e.target.files || []);
-    
+
     if (files.length) {
       setFormData(prev => ({
         ...prev,
@@ -113,11 +113,11 @@ export default function CreateEvent() {
 
       setBrandingPreviews(prev => ([...prev, ...newPreviews]));
     }
-  };
+  }, []);
 
-  const handlePaymentUpload = (e) => {
+  const handlePaymentUpload = useCallback((e) => {
     const file = e.target.files?.[0];
-    
+
     if (file) {
       const isPdf = file.type === 'application/pdf';
       setFormData(prev => ({
@@ -132,7 +132,7 @@ export default function CreateEvent() {
         name: file.name
       });
     }
-  };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -153,7 +153,7 @@ export default function CreateEvent() {
     };
   }, [brandingPreviews, paymentPreview]);
 
-  const removeImage = (index) => {
+  const removeImage = useCallback((index) => {
     setFormData(prev => {
       const next = [...(prev.brandingImage || [])];
       next.splice(index, 1);
@@ -172,9 +172,9 @@ export default function CreateEvent() {
       }
       return next;
     });
-  };
+  }, []);
 
-  const removePayment = () => {
+  const removePayment = useCallback(() => {
     if (paymentPreview && paymentPreview.url) {
       try {
         URL.revokeObjectURL(paymentPreview.url);
@@ -187,14 +187,14 @@ export default function CreateEvent() {
       ...prev,
       proofOfPayment: null
     }));
-  };
+  }, [paymentPreview]);
 
-  const handleNumberChange = (name, delta) => {
+  const handleNumberChange = useCallback((name, delta) => {
     setFormData(prev => ({
       ...prev,
       [name]: Math.max(0, prev[name] + delta)
     }));
-  };
+  }, []);
 
   const validateForm = () => {
     const newErrors = {};
