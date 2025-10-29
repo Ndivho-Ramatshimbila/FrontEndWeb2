@@ -2,3 +2,8 @@
 - [x] Update ApprovalScreen.jsx to load submittedEvents from localStorage and display as Pending
 - [x] Update MyEvents.jsx to load submittedEvents from localStorage and display as Waiting for Approval
 - [x] Test the flow: Submit event, check admin approval queue, check organizer my events
+- [x] Update ModifyForm.jsx to populate form with existing event data from location.state.eventData
+- [x] Update ModifyForm.jsx to navigate to ConfirmModifiedDetails with modified data
+- [x] Update ConfirmModifiedDetails.jsx to display modified data from location.state.modifiedData
+- [x] Update ConfirmModifiedDetails.jsx submit button to update localStorage with modified data
+- [x] Add sorting functionality to MyEvents.jsx (sort by name and date ASC/DESC)

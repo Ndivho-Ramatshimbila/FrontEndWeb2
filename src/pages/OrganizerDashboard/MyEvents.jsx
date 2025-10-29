@@ -49,6 +49,8 @@ const staticMyEventsData = [
 
 const MyEvents = () => {
   const [filter, setFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [refresh, setRefresh] = useState(0);
   const navigate = useNavigate();
 
@@ -74,6 +76,24 @@ const MyEvents = () => {
     if (filter === "Past") return new Date(event.date) <= new Date();
     if (filter === "Cancelled") return event.status === "Cancelled";
     return false;
+  }).sort((a, b) => {
+    let aValue, bValue;
+
+    if (sortBy === "name") {
+      aValue = a.title.toLowerCase();
+      bValue = b.title.toLowerCase();
+    } else if (sortBy === "date") {
+      aValue = new Date(a.date);
+      bValue = new Date(b.date);
+    } else {
+      return 0;
+    }
+
+    if (sortOrder === "asc") {
+      return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+    } else {
+      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+    }
   });
 
   // Force re-render when refresh changes
@@ -98,8 +118,18 @@ const MyEvents = () => {
             ))}
           </div>
           <div className="sort-dropdown">
-            <select>
-              <option>Sort By</option>
+            <select
+              value={`${sortBy}-${sortOrder}`}
+              onChange={(e) => {
+                const [newSortBy, newSortOrder] = e.target.value.split('-');
+                setSortBy(newSortBy);
+                setSortOrder(newSortOrder);
+              }}
+            >
+              <option value="date-asc">Date (Ascending)</option>
+              <option value="date-desc">Date (Descending)</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
             </select>
           </div>
         </div>
