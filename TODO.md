@@ -1,7 +1,12 @@
-- [ ] Install pdf-lib dependency for PDF generation
-- [ ] Add necessary imports to AnalyticsExportScreen.jsx (pdf-lib, etc.)
-- [ ] Include mock reportData array from provided code
-- [ ] Implement generateCSV function for web download
-- [ ] Implement generatePDF function for web download
-- [ ] Update handleGenerateReport to call generatePDF or generateCSV and trigger download
-- [ ] Test the functionality (ensure downloads work)
+# TODO: Implement Date Picker with Disabled TUT Important Dates
+
+## Overview
+Modify the CreateEvent.jsx form to use react-datepicker that disables important TUT dates (public holidays, recess periods, examination periods) to prevent event date clashes.
+
+## Steps
+- [x] Define disabled dates and ranges based on TUT 2025 Academic Calendar
+- [x] Import DatePicker component and CSS from react-datepicker
+- [x] Create isDateDisabled function to check if a date should be disabled
+- [x] Replace dateOfCommencement input with DatePicker component
+- [x] Replace endingDate input with DatePicker component (with minDate validation)
+- [x] Test the date picker functionality to ensure dates are properly disabled

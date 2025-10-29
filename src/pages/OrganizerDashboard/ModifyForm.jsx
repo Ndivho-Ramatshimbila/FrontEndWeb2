@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
 import "../../styles/pages/_createevent.scss";
@@ -10,6 +12,7 @@ export default function ModifyForm() {
   const location = useLocation();
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [approvedEvents, setApprovedEvents] = useState([]);
   const [formData, setFormData] = useState({
     eventTitle: '',
     venueType: '',
@@ -19,8 +22,8 @@ export default function ModifyForm() {
     typeOfGuests: [],
     purposeOfFunction: '',
     numberOfGuestsExpected: '',
-    dateOfCommencement: '',
-    endingDate: '',
+    dateOfCommencement: null,
+    endingDate: null,
     timeOfCommencement: '',
     timeToLockup: '',
     useOfLiquor: '',
@@ -42,6 +45,57 @@ export default function ModifyForm() {
     brandingImage: [],
     proofOfPayment: null,
   });
+
+  const currentYear = new Date().getFullYear();
+
+  // TUT Current Year Academic Calendar - Disabled dates
+  const disabledDates = [
+    // Public Holidays
+    new Date(currentYear, 0, 1), // New Year's Day
+    new Date(currentYear, 0, 20), // Human Rights Day
+    new Date(currentYear, 3, 18), // Good Friday
+    new Date(currentYear, 3, 21), // Family Day
+    new Date(currentYear, 3, 27), // Freedom Day
+    new Date(currentYear, 4, 1), // Workers' Day
+    new Date(currentYear, 5, 16), // Youth Day
+    new Date(currentYear, 7, 9), // National Women's Day
+    new Date(currentYear, 8, 24), // Heritage Day
+    new Date(currentYear, 9, 10), // Day of Reconciliation
+    new Date(currentYear, 11, 25), // Christmas Day
+    new Date(currentYear, 11, 26), // Day of Goodwill
+  ];
+
+  // Recess periods and examination periods
+  const recessRanges = [
+    { start: new Date(currentYear, 3, 14), end: new Date(currentYear, 3, 25) }, // Easter recess
+    { start: new Date(currentYear, 5, 23), end: new Date(currentYear, 6, 4) }, // Winter recess
+    { start: new Date(currentYear, 8, 29), end: new Date(currentYear, 9, 11) }, // Autumn recess
+    { start: new Date(currentYear, 11, 16), end: new Date(currentYear, 11, 31) }, // Christmas recess
+  ];
+
+  const examRanges = [
+    { start: new Date(currentYear, 4, 26), end: new Date(currentYear, 5, 13) }, // Semester 1 exams
+    { start: new Date(currentYear, 9, 28), end: new Date(currentYear, 10, 14) }, // Semester 2 exams
+  ];
+
+  const isDateDisabled = (date) => {
+    // Check if date is in disabled dates
+    const isDisabledDate = disabledDates.some(disabledDate =>
+      date.toDateString() === disabledDate.toDateString()
+    );
+
+    // Check if date is in recess ranges
+    const isInRecess = recessRanges.some(range =>
+      date >= range.start && date <= range.end
+    );
+
+    // Check if date is in exam ranges
+    const isInExam = examRanges.some(range =>
+      date >= range.start && date <= range.end
+    );
+
+    return isDisabledDate || isInRecess || isInExam;
+  };
 
   const handleVenueSelect = (venue) => {
     setSelectedVenue(venue);
@@ -594,24 +648,32 @@ export default function ModifyForm() {
                 <div className="form-grid grid-3">
                   <div className="form-group">
                     <label className="form-label">Date of Commencement *</label>
-                    <input
-                      type="date"
-                      name="dateOfCommencement"
-                      value={formData.dateOfCommencement}
-                      onChange={handleInputChange}
+                    <DatePicker
+                      selected={formData.dateOfCommencement ? new Date(formData.dateOfCommencement) : null}
+                      onChange={(date) => setFormData(prev => ({
+                        ...prev,
+                        dateOfCommencement: date ? date.toISOString().split('T')[0] : ''
+                      }))}
+                      filterDate={(date) => !isDateDisabled(date)}
+                      dateFormat="yyyy-MM-dd"
                       className={`form-input ${errors.dateOfCommencement ? 'error' : ''}`}
+                      placeholderText="Select commencement date"
                     />
                     {errors.dateOfCommencement && <p className="error-message">{errors.dateOfCommencement}</p>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Ending Date *</label>
-                    <input
-                      type="date"
-                      name="endingDate"
-                      value={formData.endingDate}
-                      onChange={handleInputChange}
+                    <DatePicker
+                      selected={formData.endingDate ? new Date(formData.endingDate) : null}
+                      onChange={(date) => setFormData(prev => ({
+                        ...prev,
+                        endingDate: date ? date.toISOString().split('T')[0] : ''
+                      }))}
+                      filterDate={(date) => !isDateDisabled(date)}
+                      dateFormat="yyyy-MM-dd"
                       className={`form-input ${errors.endingDate ? 'error' : ''}`}
+                      placeholderText="Select ending date"
                     />
                     {errors.endingDate && <p className="error-message">{errors.endingDate}</p>}
                   </div>
