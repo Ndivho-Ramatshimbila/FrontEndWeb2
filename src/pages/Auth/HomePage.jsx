@@ -11,7 +11,7 @@ function HomePage() {
       <nav className="navbar">
                  <img src={logo} alt="Logo" />
            </nav>
-      <h1>Welcome to the Event<br/>Handler system!</h1>
+      <h1>Welcome to the Smart<br/>Event system!</h1>
       <p>Your ultimate guide to campus Events.Discover.<br/>register and engage with everything happening<br/>at Tut</p>
      <button onClick={() => navigate("/login")} >
       Get Started

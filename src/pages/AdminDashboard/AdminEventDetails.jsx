@@ -74,12 +74,12 @@ export default function AdminEventDetails() {
     const submittedIndex = submittedEvents.findIndex(e => e.id === id);
     if (submittedIndex !== -1) {
       submittedEvents[submittedIndex].status = newStatus;
+      submittedEvents[submittedIndex].organizerStatus = newStatus; // Update organizerStatus as well
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     } else {
       // If not in submitted, assume it's static, but since static is read-only, we might need to handle differently
       // For now, alert or handle as needed. But since static is in code, perhaps add to submitted if not there.
-      // To keep it simple, if it's static, we can add a modified version to submittedEvents.
-      const modifiedEvent = { ...event, status: newStatus };
+      const modifiedEvent = { ...event, status: newStatus, organizerStatus: newStatus };
       submittedEvents.push(modifiedEvent);
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     }
