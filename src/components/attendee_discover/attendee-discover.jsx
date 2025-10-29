@@ -53,6 +53,24 @@ const eventsData = {
   ]
 };
 
+// ✅ Function to get approved events from localStorage
+const getApprovedEvents = () => {
+  const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+  console.log('Submitted events:', submittedEvents); // Debug log
+  const approvedEvents = submittedEvents.filter(event => event.status === 'Approved');
+  console.log('Approved events:', approvedEvents); // Debug log
+
+  return approvedEvents.map(event => ({
+    id: event.id,
+    title: event.title,
+    date: event.date,
+    location: event.venue || "TUT Polokwane Campus",
+    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80", // Use fallback image for now
+    tags: [event.typeOfFunction || "Event"],
+    category: event.category || "Academic"
+  }));
+};
+
 const AttendeeDiscover = () => {
   const [events, setEvents] = useState([]);            // all events (from API or fallback)
   const [filteredEvents, setFilteredEvents] = useState([]); // filtered display list
@@ -63,7 +81,7 @@ const AttendeeDiscover = () => {
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Fetch data (with fallback)
+  // ✅ Fetch data (with fallback and approved events)
  useEffect(() => {
   const fetchEvents = async () => {
     const controller = new AbortController();
@@ -78,12 +96,16 @@ const AttendeeDiscover = () => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
-      setEvents(data.events || []);
-      setFilteredEvents(data.events || []);
+      const approvedEvents = getApprovedEvents();
+      const allEvents = [...(data.events || []), ...approvedEvents];
+      setEvents(allEvents);
+      setFilteredEvents(allEvents);
     } catch (err) {
       console.warn("Using fallback data:", err.message);
-      setEvents(eventsData.events);
-      setFilteredEvents(eventsData.events);
+      const approvedEvents = getApprovedEvents();
+      const allEvents = [...eventsData.events, ...approvedEvents];
+      setEvents(allEvents);
+      setFilteredEvents(allEvents);
     } finally {
       clearTimeout(timeout);
       setLoading(false);
