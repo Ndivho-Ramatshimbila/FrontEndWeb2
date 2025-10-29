@@ -5,76 +5,29 @@ import eventPic from '../../assets/images/eventPic.PNG';
 import '../../styles/pages/EventDetails.scss';
 
 const staticEventsData = [
-  {
-    id: "REQ003",
-    title: "Annual TUT Athletics Day",
-    type: "Sports Event",
-    date: "2024-09-10 at 09:00 AM",
-    status: "Approved",
-  },
-  {
-    id: "REQ004",
-    title: "Tech Conference 2024",
-    type: "Conference",
-    date: "2024-10-15 at 10:00 AM",
-    status: "Pending",
-  },
-  {
-    id: "REQ005",
-    title: "Music Festival",
-    type: "Entertainment",
-    date: "2024-11-20 at 02:00 PM",
-    status: "Rejected",
-  },
-  {
-    id: "REQ006",
-    title: "Workshop on AI",
-    type: "Educational",
-    date: "2024-12-05 at 10:00 AM",
-    status: "Approved",
-  },
-  {
-    id: "REQ007",
-    title: "Charity Run",
-    type: "Sports Event",
-    date: "2025-01-15 at 08:00 AM",
-    status: "Pending",
-  },
-  {
-    id: "REQ008",
-    title: "Art Exhibition",
-    type: "Cultural",
-    date: "2025-02-10 at 11:00 AM",
-    status: "Approved",
-  },
-  {
-    id: "REQ009",
-    title: "Business Seminar",
-    type: "Professional",
-    date: "2025-03-05 at 09:00 AM",
-    status: "Rejected",
-  },
-  {
-    id: "REQ010",
-    title: "Science Fair",
-    type: "Educational",
-    date: "2025-04-20 at 10:00 AM",
-    status: "Approved",
-  },
-  {
-    id: "REQ011",
-    title: "Film Screening",
-    type: "Entertainment",
-    date: "2025-05-15 at 07:00 PM",
-    status: "Pending",
-  },
-  {
-    id: "REQ012",
-    title: "Book Launch",
-    type: "Literary",
-    date: "2025-06-10 at 03:00 PM",
-    status: "Rejected",
-  },
+    {
+      id: "REQ004",
+      title: "Tech Conference 2024",
+      type: "Conference",
+      date: "2024-10-15 at 10:00 AM",
+      status: "Pending",
+    },
+    {
+      id: "REQ007",
+      title: "Charity Run",
+      type: "Sports Event",
+      date: "2025-01-15 at 08:00 AM",
+      status: "Pending",
+    },
+    {
+      id: "REQ011",
+      title: "Film Screening",
+      type: "Entertainment",
+      date: "2025-05-15 at 07:00 PM",
+      status: "Pending",
+    },
+
+  // You can add more events if needed
 ];
 
 export default function AdminEventDetails() {
@@ -85,7 +38,19 @@ export default function AdminEventDetails() {
   useEffect(() => {
     const loadEvents = () => {
       const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
-      return [...staticEventsData, ...submittedEvents];
+      const allEvents = [...staticEventsData];
+
+      // Override static events with submitted events if they have the same id
+      submittedEvents.forEach(submittedEvent => {
+        const index = allEvents.findIndex(staticEvent => staticEvent.id === submittedEvent.id);
+        if (index !== -1) {
+          allEvents[index] = submittedEvent;
+        } else {
+          allEvents.push(submittedEvent);
+        }
+      });
+
+      return allEvents;
     };
 
     const events = loadEvents();
@@ -118,6 +83,12 @@ export default function AdminEventDetails() {
       submittedEvents.push(modifiedEvent);
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     }
+
+    // Update the local state to reflect the change immediately
+    setEvent(prevEvent => ({ ...prevEvent, status: newStatus }));
+
+    // Dispatch custom event to notify ApprovalScreen to refresh
+    window.dispatchEvent(new Event('localStorageUpdate'));
 
     // Navigate back to approvals
     navigate('/admin/approvals');
