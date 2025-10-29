@@ -63,12 +63,36 @@ const Discover = () => {
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Load local data immediately (no API call)
-  useEffect(() => {
-    setEvents(eventsData.events);
-    setFilteredEvents(eventsData.events);
-    setLoading(false); // Remove loading state since data loads instantly
-  }, []);
+  // ✅ Fetch data (with fallback)
+ useEffect(() => {
+  const fetchEvents = async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 1000); // 3s timeout
+
+    try {
+      setLoading(true);
+      const response = await fetch("https://your-api-url.com/events", {
+        signal: controller.signal,
+      });
+
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+      const data = await response.json();
+      setEvents(data.events || []);
+      setFilteredEvents(data.events || []);
+    } catch (err) {
+      console.warn("Using fallback data:", err.message);
+      setEvents(eventsData.events);
+      setFilteredEvents(eventsData.events);
+    } finally {
+      clearTimeout(timeout);
+      setLoading(false);
+    }
+  };
+
+  fetchEvents();
+}, []);
+
 
   // ✅ Filter & search logic
   useEffect(() => {
