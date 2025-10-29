@@ -1,20 +1,12 @@
-import React, { useState } from "react";
-import "../../styles/pages/_approvalqueue.scss"; // Updated SCSS file name
+import React, { useState, useEffect } from "react";
+import "../../styles/pages/_approvalqueue.scss";
+import { FaCalendarAlt, FaTag } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
-import { MdEvent, MdSchedule } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
-export default function ApprovalQueue() {
-  const navigate = useNavigate();
 
-  const handleViewDetails = (id) => {
-    navigate('/admin/details/${id}');; // navigate to details page
-  };
-
-  const [selectedTab, setSelectedTab] = useState("All"); // Now supports All/Pending/Approved/Rejected
-
-  const [approvalItems] = useState([
-    {
+const staticEventsData = [
+  {
       id: "REQ003",
       title: "Annual TUT Athletics Day",
       type: "Sports Event",
@@ -84,97 +76,121 @@ export default function ApprovalQueue() {
       date: "2025-06-10 at 03:00 PM",
       status: "Rejected",
     },
-  ]);
 
-  const filteredItems = selectedTab === "All" 
-    ? approvalItems 
-    : approvalItems.filter(item => item.status === selectedTab);
+  // You can add more events if needed
+];
 
-  const getStatusClass = (status) => {
+const tabs = ["All", "Pending", "Approved", "Rejected"];
+
+export default function ApprovalScreen() {
+  const [selectedTab, setSelectedTab] = useState("All");
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [refresh, setRefresh] = useState(0);
+  const navigate = useNavigate();
+
+  // Load events from localStorage and combine with static data
+  const loadEvents = () => {
+    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    return [...staticEventsData, ...submittedEvents];
+  };
+
+  useEffect(() => {
+    const eventsData = loadEvents();
+    let filtered = selectedTab === "All"
+      ? eventsData
+      : eventsData.filter((event) => event.status === selectedTab);
+
+    if (searchTerm.trim() !== "") {
+      filtered = filtered.filter((event) =>
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.category.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredEvents(filtered);
+  }, [selectedTab, searchTerm, refresh]);
+
+  const getStatusColor = (status) => {
     switch (status) {
-      case "Approved":
-        return "status-approved";
       case "Pending":
-        return "status-pending";
+        return "pending";
+      case "Approved":
+        return "approved";
       case "Rejected":
-        return "status-rejected";
+        return "rejected";
       default:
         return "";
     }
   };
 
   return (
-    <div className="approval-queue-screen">
-      {/* Search Bar */}
-      <div className="search-container">
-        <FiSearch className="search-icon" />
-        <input
-          type="text"
-          className="search-input"
-          placeholder="Search approvals..."
-        />
-      </div>
+    <div className="approval-container">
+      <>
+        <h1 className="page-title">Event Requests</h1>
 
-      {/* Tabs */}
-      <div className="tabs-row">
-        {["All", "Pending", "Approved", "Rejected"].map((tab) => (
-          <button
-            key={tab}
-            className={`tab-btn ${selectedTab === tab ? "active" : ""}`}
-            onClick={() => setSelectedTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+        {/* Search Bar */}
+        <div className="search-container">
+          <FiSearch className="search-icon" />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search events..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
 
-      {/* Section Title with Count */}
-      <div className="section-title-container">
-        <h2 className="section-title">Approval Queue</h2>
-        <span className="count-text">{filteredItems.length} items</span>
-      </div>
+        {/* Tabs */}
+        <div className="tabs-row">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`tab-btn ${selectedTab === tab ? "active" : ""}`}
+              onClick={() => setSelectedTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-      {/* Scrollable Content */}
-      <div className="scroll-view">
-        {filteredItems.length === 0 ? (
-          <p className="empty-text">No items match this filter.</p>
-        ) : (
-          filteredItems.map((item) => (
-            <div key={item.id} className="card">
-              <div className="card-header">
-                <div className="avatar"></div>
-                <div className="card-title-group">
-                  <h3 className="event-title">{item.title}</h3>
-                  <p className="event-id">Request ID: {item.id}</p>
+        <h3 className="tab-heading">{selectedTab}</h3>
+        <p className="count">{filteredEvents.length} items</p>
+
+        <div className="cards">
+          {filteredEvents.length === 0 ? (
+            <p className="empty">No events in this category</p>
+          ) : (
+            filteredEvents.map((event) => (
+              <div key={event.id} className="event-card">
+                <div className="event-left">
+                  <div className="icon-circle">
+                    <FaCalendarAlt className="calendar-icon" />
+                  </div>
+                  <div className="event-info">
+                    <h4 className="title">{event.title}</h4>
+                    <p className="request-id">Request ID: {event.id}</p>
+                    <p className="meta">
+                      <FaTag /> {event.category}
+                    </p>
+                    <p className="meta">
+                      <FaCalendarAlt /> {event.date}
+                    </p>
+                    <p className={`status ${getStatusColor(event.status)}`}>{event.status}</p>
+                  </div>
                 </div>
-              </div>
-
-              <div className="card-body">
-                <div className="row">
-                  <MdEvent className="icon" />
-                  <span className="event-type">{item.type}</span>
-                </div>
-                <div className="row">
-                  <MdSchedule className="icon" />
-                  <span className="event-date">{item.date}</span>
-                </div>
-              </div>
-
-              <div className="card-footer">
                 <button
-                  className="details-button"
-                  onClick={() => handleViewDetails(item.id)}
+                  className="view-btn"
+                  onClick={() => navigate(`/admin/details/${event.id}`)}
                 >
                   View Details
                 </button>
-                <span className={`status-badge ${getStatusClass(item.status)}`}>
-                  {item.status}
-                </span>
               </div>
-            </div>
-          ))
-        )}
-      </div>
+            ))
+          )}
+        </div>
+      </>
     </div>
   );
 }

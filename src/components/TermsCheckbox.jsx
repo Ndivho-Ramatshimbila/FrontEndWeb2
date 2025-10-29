@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styles/components/_termsCheckbox.scss';
 
 export default function TermsCheckbox({ onDecision, initialDecision = null }) {
   const [showTerms, setShowTerms] = useState(false);
@@ -41,38 +42,39 @@ By accepting these terms, you acknowledge that you have read, understood, and ag
 
       {showTerms && (
         <div className="terms-modal">
+          <div>
+            <h3>Terms and Conditions</h3>
 
-          <h3>Terms and Conditions</h3>
+            <div className="terms-content">
+              {termsText.split('\n').map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+            </div>
 
-          <div className="terms-content">
-            {termsText.split('\n').map((line, index) => (
-              <p key={index}>{line}</p>
-            ))}
-          </div>
-
-          <div className="terms-actions">
-            <button
-              className="btn-accept"
-              type="button"
-              onClick={() => {
-                setDecision(true);
-                setShowTerms(false);
-                onDecision(true);
-              }}
-            >
-              Accept
-            </button>
-            <button
-              className="btn-decline"
-              type="button"
-              onClick={() => {
-                setDecision(false);
-                setShowTerms(false);
-                onDecision(false);
-              }}
-            >
-              Decline
-            </button>
+            <div className="terms-actions">
+              <button
+                className="btn-accept"
+                type="button"
+                onClick={() => {
+                  setDecision(true);
+                  setShowTerms(false);
+                  onDecision(true);
+                }}
+              >
+                Accept
+              </button>
+              <button
+                className="btn-decline"
+                type="button"
+                onClick={() => {
+                  setDecision(false);
+                  setShowTerms(false);
+                  onDecision(false);
+                }}
+              >
+                Decline
+              </button>
+            </div>
           </div>
         </div>
       )}

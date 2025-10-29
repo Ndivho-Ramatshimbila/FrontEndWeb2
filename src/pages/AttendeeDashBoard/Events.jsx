@@ -94,7 +94,7 @@ const Events = () => {
           <div className="empty-box">No events found in this category.</div>
         ) : (
           filteredEvents.map((item) => (
-            <div key={item.id} className="event-row" onClick={() => navigate(`/eventdetails/${item.id}`)}>
+            <div key={item.id} className="event-row" onClick={() => navigate(`/attendee/view-event/${item.id}`, { state: { eventData: item } })}>
               <div className="event-left">
                 <FaCalendarAlt size={26} color="#3627d7ff" />
               </div>

@@ -1,0 +1,4 @@
+- [ ] Modify CreateEvent.jsx to add notification to localStorage on event submission
+- [ ] Modify ApprovalScreen.jsx to add notification to localStorage on event approval
+- [ ] Update Events.jsx to load notifications from localStorage, listen for storage changes for real-time updates, and ensure responsive UI
+- [ ] Test the notification flow: Submit event, check notifications update; Approve event, check notifications update

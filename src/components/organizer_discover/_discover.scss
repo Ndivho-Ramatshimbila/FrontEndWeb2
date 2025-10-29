@@ -252,3 +252,40 @@
     padding: 38px 24px 10px;
   }
 }
+
+.share-popup {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  gap: 12px;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  z-index: 10;
+}
+
+.share-popup a {
+  color: #444;
+  font-size: 1.3rem;
+  transition: color 0.2s ease;
+}
+
+.share-popup a:hover {
+  color: #007bff;
+}
+
+.share-button {
+  background: transparent;
+  border: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  position: relative;
+}

@@ -1,5 +1,5 @@
-import React from "react";
-import { LogOut } from "lucide-react";
+import React, { useState } from "react";
+import { LogOut, Edit3, Save } from "lucide-react";
 
 const AdminProfileCard = ({
   name,
@@ -10,14 +10,44 @@ const AdminProfileCard = ({
   onImageChange,
   onLogout,
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Load from localStorage or default
+  const [phone, setPhone] = useState(() => localStorage.getItem("adminPhone") || "+27123456789");
+  const [tempPhone, setTempPhone] = useState(phone);
+
+  // --- Strict +27 + 9 digits handling ---
+  const handlePhoneChange = (e) => {
+    let value = e.target.value;
+
+    // Ensure it always starts with +27
+    if (!value.startsWith("+27")) value = "+27";
+
+    // Allow only 9 digits after +27
+    const digits = value.slice(3).replace(/\D/g, "");
+    const limitedDigits = digits.slice(0, 9);
+    setTempPhone("+27" + limitedDigits);
+  };
+
+  const handleEditClick = () => {
+    if (isEditing) {
+      if (tempPhone.length === 12) {
+        setPhone(tempPhone);
+        localStorage.setItem("adminPhone", tempPhone);
+      } else {
+        alert("Phone number must start with +27 and contain exactly 9 digits after +27.");
+        return; // stay in editing mode
+      }
+    }
+    setIsEditing(!isEditing);
+  };
+
   return (
-    <div
-      className="profile-card"
-     
-    >
+    <div className="profile-card" style={{ textAlign: "center" }}>
       {/* Profile Image */}
       <img
-       src="/profile.webp" alt="profile"
+        src={profileImg && profileImg.trim() !== "" ? profileImg : "/admin.webp"}
+        alt="profile"
         style={{
           width: "180px",
           height: "180px",
@@ -43,7 +73,41 @@ const AdminProfileCard = ({
         <p style={{ margin: 0, color: "#555", fontSize: "0.95rem" }}>{email}</p>
       </div>
 
-      {/* Logout Button */}
+      {/* Phone Section */}
+      <div style={{ marginTop: "1rem" }}>
+        <label
+          style={{
+            fontWeight: "bold",
+            color: "#001d3d",
+            marginRight: "0.5rem",
+          }}
+        >
+          Phone:
+        </label>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+          <input
+            type="text"
+            value={isEditing ? tempPhone : phone}
+            onChange={handlePhoneChange}
+            disabled={!isEditing}
+            style={{
+              width: "140px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              padding: "0.3rem",
+              fontSize: "0.9rem",
+              textAlign: "center",
+              backgroundColor: isEditing ? "#fff" : "#f8f9fa",
+              color: "#333",
+            }}
+          />
+          <button onClick={handleEditClick} style={editBtnStyle}>
+            {isEditing ? <Save size={14} /> : <Edit3 size={14} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Logout */}
       <div style={{ marginTop: "1.8rem" }}>
         <button onClick={onLogout} style={logoutBtnStyle}>
           <LogOut size={16} />
@@ -65,6 +129,11 @@ const logoutBtnStyle = {
   alignItems: "center",
   fontSize: "0.9rem",
   fontWeight: 500,
+};
+
+const editBtnStyle = {
+  ...logoutBtnStyle,
+  padding: "0.3rem 0.6rem",
 };
 
 export default AdminProfileCard;

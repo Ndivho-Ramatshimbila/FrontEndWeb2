@@ -3,10 +3,11 @@ import { ArrowLeft } from 'lucide-react';
 import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
 import "../../styles/pages/_createevent.scss";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function CreateEvent() {
+export default function ModifyForm() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedVenue, setSelectedVenue] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
@@ -42,13 +43,6 @@ export default function CreateEvent() {
     proofOfPayment: null,
   });
 
-  const [errors, setErrors] = useState({});
-  const [brandingPreviews, setBrandingPreviews] = useState([]);
-  const [paymentPreview, setPaymentPreview] = useState(null);
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const toastTimerRef = React.useRef(null);
-
   const handleVenueSelect = (venue) => {
     setSelectedVenue(venue);
     // Auto-fill the venue name field when a venue is selected
@@ -57,6 +51,54 @@ export default function CreateEvent() {
       venue: venue.name
     }));
   };
+
+  useEffect(() => {
+    if (location.state && location.state.eventData) {
+      const data = location.state.eventData;
+
+      setFormData(prev => ({
+        ...prev,
+        eventTitle: data.title || '',
+        venueType: data.venueType || '',
+        venue: data.venue || '',
+        campus: data.campus || '',
+        typeOfFunction: data.typeOfFunction || '',
+        typeOfGuests: data.typeOfGuests || [],
+        purposeOfFunction: data.purposeOfFunction || '',
+        numberOfGuestsExpected: data.numberOfGuestsExpected || '',
+        dateOfCommencement: data.dateOfCommencement || '',
+        endingDate: data.endingDate || '',
+        timeOfCommencement: data.timeOfCommencement || '',
+        timeToLockup: data.timeToLockup || '',
+        useOfLiquor: data.useOfLiquor || '',
+        kitchenFacilities: data.kitchenFacilities || '',
+        cleaningServices: data.cleaningServices || '',
+        steelTable: data.steelTable || 10,
+        examTables: data.examTables || 10,
+        plasticChairs: data.plasticChairs || 10,
+        parkingPlaces: data.parkingPlaces || 10,
+        laptop: data.laptop || '',
+        sound: data.sound || '',
+        screen: data.screen || '',
+        videoConferencing: data.videoConferencing || '',
+        dataProjector: data.dataProjector || '',
+        internetConnection: data.internetConnection || '',
+        microphone: data.microphone || '',
+        wifi: data.wifi || '',
+        remarks: data.remarks || '',
+        brandingImage: data.brandingImage || [],
+        proofOfPayment: data.proofOfPayment || null,
+      }));
+    }
+  }, [location.state]);
+
+
+  const [errors, setErrors] = useState({});
+  const [brandingPreviews, setBrandingPreviews] = useState([]);
+  const [paymentPreview, setPaymentPreview] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const toastTimerRef = React.useRef(null);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -77,15 +119,6 @@ export default function CreateEvent() {
       setFormData(prev => ({
         ...prev,
         [name]: value
-      }));
-    }
-
-    // Clear venue selection when campus or venue type changes
-    if (name === 'campus' || name === 'venueType') {
-      setSelectedVenue(null);
-      setFormData(prev => ({
-        ...prev,
-        venue: ''
       }));
     }
 
@@ -203,16 +236,22 @@ export default function CreateEvent() {
       newErrors.eventTitle = 'Event title is required';
     }
 
-    if (!formData.campus) {
-      newErrors.campus = 'Please select a campus';
-    }
-
     if (!formData.venueType) {
       newErrors.venueType = 'Please select a venue type';
     }
 
     if (!formData.venue.trim()) {
       newErrors.venue = 'Venue name is required';
+    }
+
+    if (!formData.emailAddress.trim()) {
+      newErrors.emailAddress = 'Email address is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailAddress)) {
+      newErrors.emailAddress = 'Please enter a valid email address';
+    }
+
+    if (!formData.cell.trim()) {
+      newErrors.cell = 'Cell number is required';
     }
 
     if (!formData.typeOfFunction) {
@@ -241,10 +280,6 @@ export default function CreateEvent() {
     
     if (!hasAudiovisual) {
       newErrors.audiovisual = 'Please select at least one audiovisual service';
-    }
-
-    if (!selectedVenue) {
-      newErrors.venueSelection = 'Please select a venue from the gallery';
     }
 
     if (!termsAccepted) {
@@ -278,40 +313,14 @@ export default function CreateEvent() {
     }
 
     const submissionData = {
-      id: `REQ${Date.now()}`, // Generate unique ID
-      title: formData.eventTitle,
-      type: formData.typeOfFunction,
-      date: `${formData.dateOfCommencement} at ${formData.timeOfCommencement || 'TBD'}`,
-      status: 'Pending', // For admin approval
-      organizerStatus: 'Waiting for Approval', // For organizer
-      category: formData.typeOfFunction,
       ...formData,
       selectedVenue: selectedVenue,
       termsAccepted: termsAccepted,
       submittedAt: new Date().toISOString()
     };
 
-    // Save to localStorage
-    const existingEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
-    existingEvents.push(submissionData);
-    localStorage.setItem('submittedEvents', JSON.stringify(existingEvents));
-
-    // Add notification for event submission
-    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-    notifications.unshift({
-      id: `notif-${Date.now()}`,
-      title: "Event Submission",
-      message: `Your event "${formData.eventTitle}" has been submitted for approval.`,
-      time: "Just now"
-    });
-    localStorage.setItem('notifications', JSON.stringify(notifications));
-
     console.log('Form submitted successfully:', submissionData);
     showToastMessage('Event booking request submitted successfully!');
-    setTimeout(() => {
-    navigate('/my-events');
-  }, 2000); // waits 2 seconds before redirecting
-
   };
 
   return (
@@ -329,8 +338,9 @@ export default function CreateEvent() {
             >
               <ArrowLeft size={20} />
             </button>
-            <h1 className="create-event-title">Create Event</h1>
+            <h1 className="create-event-title">Modify Event</h1>
           </div>
+
 
           <div className="create-event-form-wrapper">
             <div className="create-event-form">
@@ -350,21 +360,6 @@ export default function CreateEvent() {
                       className={`form-input ${errors.eventTitle ? 'error' : ''}`}
                     />
                     {errors.eventTitle && <p className="error-message">{errors.eventTitle}</p>}
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Campus *</label>
-                    <select
-                      name="campus"
-                      value={formData.campus}
-                      onChange={handleInputChange}
-                      className={`form-input ${errors.campus ? 'error' : ''}`}
-                    >
-                      <option value="">Select Campus</option>
-                      <option value="Polokwane">Polokwane</option>
-                      <option value="Emalahleni">Emalahleni</option>
-                    </select>
-                    {errors.campus && <p className="error-message">{errors.campus}</p>}
                   </div>
 
                   <div className="form-group">
@@ -392,10 +387,23 @@ export default function CreateEvent() {
                       onChange={handleInputChange}
                       placeholder="Venue Name"
                       className={`form-input ${errors.venue ? 'error' : ''}`}
-                      readOnly={selectedVenue} // Make it read-only when venue is selected from gallery
                     />
                     {errors.venue && <p className="error-message">{errors.venue}</p>}
                   </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Campus</label>
+                    <input
+                      type="text"
+                      name="campus"
+                      value={formData.campus}
+                      onChange={handleInputChange}
+                      placeholder="Campus name"
+                      className="form-input"
+                    />
+                  </div>
+
+
                 </div>
               </section>
 
@@ -443,7 +451,20 @@ export default function CreateEvent() {
                   </div>
                 </div>
 
-                <div className="form-grid grid-2">
+               <div className="form-grid grid-2">
+                   {/*<div className="form-group">
+                    <label className="form-label">Nature of Function</label>
+                    <input
+                      type="text"
+                      name="natureOfFunction"
+                      value={formData.natureOfFunction}
+                      onChange={handleInputChange}
+                      placeholder="Nature of function"
+                      className="form-input"
+                    />
+                  </div>
+                  */}
+
                   <div className="form-group">
                     <label className="form-label">Purpose of Function</label>
                     <input
@@ -459,7 +480,7 @@ export default function CreateEvent() {
                   <div className="form-group full-width">
                     <label className="form-label">Number of Guests Expected *</label>
                     <input
-                      type="text"
+                      type="number"
                       name="numberOfGuestsExpected"
                       value={formData.numberOfGuestsExpected}
                       onChange={handleInputChange}
@@ -471,15 +492,11 @@ export default function CreateEvent() {
                   </div>
                 </div>
 
-                {/* VENUE CARD GALLERY WITH FILTERING */}
-                <VenueCardGallery 
-                  selectedVenue={selectedVenue} 
+                <VenueCardGallery
+                  selectedVenue={selectedVenue}
                   setSelectedVenue={handleVenueSelect}
                   minCapacity={parseInt(formData.numberOfGuestsExpected) || 0}
-                  campusFilter={formData.campus}
-                  venueTypeFilter={formData.venueType}
                 />
-                {errors.venueSelection && <p className="error-message">{errors.venueSelection}</p>}
 
               </section>
 
@@ -524,6 +541,52 @@ export default function CreateEvent() {
                   {errors.brandingImage && <p className="error-message">{errors.brandingImage}</p>}
                 </div>
               </section>
+
+              {/* PROOF OF PAYMENT 
+              <section className="form-section payment-section">
+                <h2 className="section-title">Proof of Payment</h2>
+                <div className="payment-upload-area">
+                  <p className="upload-text">Upload proof of payment</p>
+                  <p className="upload-format">Supported format: PNG, JPG, PDF</p>
+                  
+                  <div className="payment-buttons">
+                    <label className="btn btn-upload">
+                      Upload proof
+                      <input
+                        type="file"
+                        name="proofOfPayment"
+                        onChange={handlePaymentUpload}
+                        accept="image/png,image/jpeg,application/pdf"
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  </div>
+
+                  {paymentPreview && (
+                    <div className="uploaded-grid">
+                      <div className="preview-item">
+                        {paymentPreview.type === 'pdf' ? (
+                          <div className="pdf-preview">
+                            <span>📄 {paymentPreview.name}</span>
+                          </div>
+                        ) : (
+                          <img src={paymentPreview.url} alt="payment-proof" />
+                        )}
+                        <button
+                          type="button"
+                          className="remove-preview"
+                          onClick={removePayment}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {errors.proofOfPayment && <p className="error-message">{errors.proofOfPayment}</p>}
+                </div>
+              </section>
+              */}
 
               {/* PROGRAM SCHEDULE */}
               <section className="form-section">
@@ -768,14 +831,14 @@ export default function CreateEvent() {
 
               {/* SUBMIT BUTTON */}
               <div className="form-footer">
-                <button 
-                  type="button"
-                  onClick={handleSubmit}
-                  className="btn btn-primary"
-                >
-                  Submit Request
-                </button>
-              </div>
+              <button
+               type="button"
+             onClick={() => navigate('/confirm-modified-details', { state: { modifiedData: formData } })} // <-- navigate to ConfirmEventDetails page with modified data
+             className="btn btn-primary"
+             >
+               Modify Request
+             </button>
+               </div>
               
             </div>
 

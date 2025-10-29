@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./_discover.scss";
 import { useNavigate } from 'react-router-dom';
 
-
-// Sample events data
+// ✅ Local fallback data (used if API fails or not yet connected)
 const eventsData = {
   events: [
     {
@@ -55,17 +54,55 @@ const eventsData = {
 };
 
 const Discover = () => {
+  const [events, setEvents] = useState([]);            // all events (from API or fallback)
+  const [filteredEvents, setFilteredEvents] = useState([]); // filtered display list
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Events');
-  const [filteredEvents, setFilteredEvents] = useState(eventsData.events);
+  const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ Fetch data (with fallback)
   useEffect(() => {
-    let filtered = eventsData.events;
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Replace this URL with your real API later
+        const response = await fetch("https://your-api-url.com/events");
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch events: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Assuming your backend returns { events: [...] }
+        setEvents(data.events || []);
+        setFilteredEvents(data.events || []);
+      } catch (err) {
+        console.warn("Using fallback data due to fetch error:", err.message);
+        // 👇 Fallback to local eventsData
+        setEvents(eventsData.events);
+        setFilteredEvents(eventsData.events);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // ✅ Filter & search logic
+  useEffect(() => {
+    let filtered = [...events];
 
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
     }
+
     if (search.trim()) {
       filtered = filtered.filter(event =>
         event.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -73,8 +110,30 @@ const Discover = () => {
         event.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
       );
     }
+
     setFilteredEvents(filtered);
-  }, [search, selectedCategory]);
+  }, [search, selectedCategory, events]);
+
+  // ✅ Handlers
+  const handleCardClick = (id) => {
+    navigate(`/organizer-view-event/${id}`);
+  };
+
+  const handleShareClick = (e, eventId) => {
+    e.stopPropagation(); 
+    setShowSharePopup(showSharePopup === eventId ? null : eventId);
+  };
+
+  const shareLinks = (event) => {
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(`Check out this event: ${event.title}`);
+    return {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${text}`,
+      whatsapp: `https://api.whatsapp.com/send?text=${text} ${url}`
+    };
+  };
 
   const categories = [
     { id: 'all', name: 'All Events', icon: 'fa-th' },
@@ -86,8 +145,27 @@ const Discover = () => {
     { id: 'community', name: 'Community', icon: 'fa-users' }
   ];
 
-  
+  // ✅ Loading state
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <i className="fas fa-spinner fa-spin"></i>
+        <p>Loading events...</p>
+      </div>
+    );
+  }
 
+  // ✅ Error state
+  if (error) {
+    return (
+      <div className="error-container">
+        <i className="fas fa-exclamation-circle"></i>
+        <p>Failed to load events: {error}</p>
+      </div>
+    );
+  }
+
+  // ✅ Main UI
   return (
     <div className="discover-container">
       <div className="discover-header">
@@ -119,41 +197,64 @@ const Discover = () => {
 
       {/* Events List */}
       <div className="events-list">
-        {filteredEvents.map(event => (
-          <div
-            key={event.id}
-            className="event-card"
-            onClick={() => handleCardClick(event.id)}
-            style={{ cursor: "pointer" }} // 👈 show clickable hand cursor
-          >
-            <img src={event.image} alt={event.title} className="event-image" />
-            <div className="event-content">
-              <h3 className="event-title">{event.title}</h3>
-              <div className="event-meta">
-                <i className="fas fa-calendar"></i>
-                <span>{event.date}</span>
+        {filteredEvents.map(event => {
+          const links = shareLinks(event);
+          return (
+            <div
+              key={event.id}
+              className="event-card"
+              onClick={() => handleCardClick(event.id)}
+              style={{ cursor: "pointer" }}
+            >
+              <img src={event.image} alt={event.title} className="event-image" />
+              <div className="event-content">
+                <h3 className="event-title">{event.title}</h3>
+                <div className="event-meta">
+                  <i className="fas fa-calendar"></i>
+                  <span>{event.date}</span>
+                </div>
+                <div className="event-meta">
+                  <i className="fas fa-map-marker-alt"></i>
+                  <span>{event.location}</span>
+                </div>
+                <div className="tags-container">
+                  {event.tags.map((tag, i) => (
+                    <span key={i} className="tag">{tag}</span>
+                  ))}
+                </div>
+
+                <button
+                  className="share-button"
+                  onClick={(e) => handleShareClick(e, event.id)}
+                >
+                  <i className="fas fa-share-alt"></i>
+                  <span>Share</span>
+                </button>
+
+                {/* Share popup */}
+                {showSharePopup === event.id && (
+                  <div className="share-popup" onClick={(e) => e.stopPropagation()}>
+                    <a href={links.facebook} target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-facebook"></i>
+                    </a>
+                    <a href={links.twitter} target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-twitter"></i>
+                    </a>
+                    <a href={links.linkedin} target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-linkedin"></i>
+                    </a>
+                    <a href={links.whatsapp} target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-whatsapp"></i>
+                    </a>
+                  </div>
+                )}
               </div>
-              <div className="event-meta">
-                <i className="fas fa-map-marker-alt"></i>
-                <span>{event.location}</span>
-              </div>
-              <div className="tags-container">
-                {event.tags.map((tag, i) => (
-                  <span key={i} className="tag">{tag}</span>
-                ))}
-              </div>
-              <button
-                className="share-button"
-                onClick={(e) => e.stopPropagation()} // ✅ prevent navigation when clicking share
-              >
-                <i className="fas fa-share-alt"></i>
-                <span>Share</span>
-              </button>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
+      {/* Empty State */}
       {filteredEvents.length === 0 && (
         <div className="empty-container">
           <i className="fas fa-search"></i>
