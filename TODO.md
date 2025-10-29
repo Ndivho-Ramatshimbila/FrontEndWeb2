@@ -1,9 +1,7 @@
-# TODO: Fix Event Approval Status Reflection for Organizers
-
-## Tasks
-- [x] Update AdminEventDetails.jsx to set both 'status' and 'organizerStatus' when approving or rejecting events
-  - For approve: set status to "Approved", organizerStatus to "Approved"
-  - For reject: set status to "Rejected", organizerStatus to "Rejected"
-- [x] Update AttendeeDiscover component to show approved events from localStorage
-  - Added getApprovedEvents function to fetch approved events
-  - Modified fetchEvents useEffect to include approved events in the events list
+- [ ] Install pdf-lib dependency for PDF generation
+- [ ] Add necessary imports to AnalyticsExportScreen.jsx (pdf-lib, etc.)
+- [ ] Include mock reportData array from provided code
+- [ ] Implement generateCSV function for web download
+- [ ] Implement generatePDF function for web download
+- [ ] Update handleGenerateReport to call generatePDF or generateCSV and trigger download
+- [ ] Test the functionality (ensure downloads work)

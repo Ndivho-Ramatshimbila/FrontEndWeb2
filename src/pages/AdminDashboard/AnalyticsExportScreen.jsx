@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import '../../styles/pages/_analyticsexport.scss';
 
 const AnalyticsExportScreen = () => {
@@ -24,19 +25,212 @@ const AnalyticsExportScreen = () => {
         { label: "AI Research Conference", value: "ai-conference" },
     ];
 
-    const handleGenerateReport = () => {
+    // Mock data for reports
+    const reportData = [
+        { eventName: "Tech Innovation Hackathon", attendees: 150, bookings: 120, revenue: 15000, date: "2025-10-15" },
+        { eventName: "Community Outreach", attendees: 80, bookings: 70, revenue: 5000, date: "2025-10-20" },
+        { eventName: "TUT Developers Meetup", attendees: 60, bookings: 55, revenue: 3000, date: "2025-10-25" },
+        { eventName: "AI Research Conference", attendees: 200, bookings: 180, revenue: 25000, date: "2025-11-01" },
+    ];
+
+    const generateCSV = () => {
+        try {
+            let csvContent = "EVENT ANALYTICS REPORT\n";
+            csvContent += `Report Period: Last ${selectedDays} Days\n`;
+            csvContent += `Report Type: ${reportType === "overall" ? "All Events" : selectedEvent}\n\n`;
+
+            csvContent += "SUMMARY STATISTICS\n";
+            const totalAttendees = reportData.reduce((sum, r) => sum + r.attendees, 0);
+            const totalBookings = reportData.reduce((sum, r) => sum + r.bookings, 0);
+            const totalRevenue = reportData.reduce((sum, r) => sum + r.revenue, 0);
+            csvContent += `Total Attendees,${totalAttendees}\n`;
+            csvContent += `Total Bookings,${totalBookings}\n`;
+            csvContent += `Total Revenue,R${totalRevenue}\n`;
+            csvContent += `Total Events,${reportData.length}\n\n`;
+
+            csvContent += "EVENT DETAILS\n";
+            csvContent += "Event Name,Attendees,Bookings,Revenue,Date\n";
+
+            const rows = reportData
+                .map(
+                    (r) => `${r.eventName},${r.attendees},${r.bookings},R${r.revenue},${r.date}`
+                )
+                .join("\n");
+
+            csvContent += rows;
+
+            // Web download
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `report_${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating CSV:", error);
+            alert("Failed to generate CSV");
+        }
+    };
+
+    const generatePDF = async () => {
+        try {
+            const pdfDoc = await PDFDocument.create();
+            let page = pdfDoc.addPage([600, 800]);
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+            let yPosition = 750;
+
+            page.drawText("Event Analytics Report", {
+                x: 50,
+                y: yPosition,
+                size: 24,
+                font: boldFont,
+                color: rgb(0, 0, 0),
+            });
+
+            yPosition -= 30;
+            page.drawText(`Report Period: Last ${selectedDays} Days`, {
+                x: 50,
+                y: yPosition,
+                size: 12,
+                font: font,
+                color: rgb(0.3, 0.3, 0.3),
+            });
+
+            yPosition -= 20;
+            page.drawText(`Report Type: ${reportType === "overall" ? "All Events" : selectedEvent}`, {
+                x: 50,
+                y: yPosition,
+                size: 12,
+                font: font,
+                color: rgb(0.3, 0.3, 0.3),
+            });
+
+            yPosition -= 40;
+            page.drawText("Summary Statistics", {
+                x: 50,
+                y: yPosition,
+                size: 16,
+                font: boldFont,
+            });
+
+            const totalAttendees = reportData.reduce((sum, r) => sum + r.attendees, 0);
+            const totalBookings = reportData.reduce((sum, r) => sum + r.bookings, 0);
+            const totalRevenue = reportData.reduce((sum, r) => sum + r.revenue, 0);
+
+            yPosition -= 25;
+            page.drawText(`Total Attendees: ${totalAttendees}`, {
+                x: 70,
+                y: yPosition,
+                size: 12,
+                font: font,
+            });
+
+            yPosition -= 20;
+            page.drawText(`Total Bookings: ${totalBookings}`, {
+                x: 70,
+                y: yPosition,
+                size: 12,
+                font: font,
+            });
+
+            yPosition -= 20;
+            page.drawText(`Total Revenue: R${totalRevenue}`, {
+                x: 70,
+                y: yPosition,
+                size: 12,
+                font: font,
+            });
+
+            yPosition -= 20;
+            page.drawText(`Total Events: ${reportData.length}`, {
+                x: 70,
+                y: yPosition,
+                size: 12,
+                font: font,
+            });
+
+            yPosition -= 40;
+            page.drawText("Event Details", {
+                x: 50,
+                y: yPosition,
+                size: 16,
+                font: boldFont,
+            });
+
+            yPosition -= 10;
+            page.drawText("Detailed breakdown by event", {
+                x: 50,
+                y: yPosition,
+                size: 10,
+                font: font,
+                color: rgb(0.4, 0.4, 0.4),
+            });
+
+            yPosition -= 30;
+            const headers = ["Event Name", "Attendees", "Bookings", "Revenue", "Date"];
+            const positions = [50, 200, 280, 350, 450];
+
+            headers.forEach((header, i) => {
+                page.drawText(header, { x: positions[i], y: yPosition, size: 10, font: boldFont });
+            });
+
+            yPosition -= 5;
+            page.drawLine({
+                start: { x: 50, y: yPosition },
+                end: { x: 550, y: yPosition },
+                thickness: 1,
+                color: rgb(0.8, 0.8, 0.8),
+            });
+
+            yPosition -= 20;
+            reportData.forEach((record) => {
+                page.drawText(record.eventName, { x: 50, y: yPosition, size: 10, font: boldFont });
+                page.drawText(record.attendees.toString(), { x: 220, y: yPosition, size: 10, font });
+                page.drawText(record.bookings.toString(), { x: 300, y: yPosition, size: 10, font });
+                page.drawText(`R${record.revenue}`, { x: 370, y: yPosition, size: 10, font });
+                page.drawText(record.date, { x: 470, y: yPosition, size: 10, font });
+                yPosition -= 25;
+
+                if (yPosition < 50) {
+                    page = pdfDoc.addPage([600, 800]);
+                    yPosition = 750;
+                }
+            });
+
+            const pdfBytes = await pdfDoc.save();
+
+            // Web download
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `report_${Date.now()}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+            alert("Failed to generate PDF: " + error.message);
+        }
+    };
+
+    const handleGenerateReport = async () => {
         if (reportType === "specific" && !selectedEvent) {
             alert("Please select an event to generate its report.");
             return;
         }
-        const reportInfo = {
-            reportType,
-            exportFormat,
-            selectedDays,
-            selectedEvent: reportType === "specific" ? selectedEvent : "All Events",
-        };
-        console.log("Generating report with data:", reportInfo);
-        alert(`Generating ${reportInfo.exportFormat} report for ${reportInfo.selectedEvent}`);
+
+        if (exportFormat === "PDF") {
+            await generatePDF();
+        } else if (exportFormat === "Excel") {
+            generateCSV();
+        }
     };
 
     return (
