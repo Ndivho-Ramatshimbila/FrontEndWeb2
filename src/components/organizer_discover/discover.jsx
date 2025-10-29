@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./_discover.scss";
 import { useNavigate } from 'react-router-dom';
 
+// ✅ Local fallback data (used if API fails or not yet connected)
 const eventsData = {
   events: [
     {
@@ -53,18 +54,55 @@ const eventsData = {
 };
 
 const Discover = () => {
+  const [events, setEvents] = useState([]);            // all events (from API or fallback)
+  const [filteredEvents, setFilteredEvents] = useState([]); // filtered display list
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Events');
-  const [filteredEvents, setFilteredEvents] = useState(eventsData.events);
-  const [showSharePopup, setShowSharePopup] = useState(null); // 👈 track which event popup is open
+  const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ Fetch data (with fallback)
   useEffect(() => {
-    let filtered = eventsData.events;
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Replace this URL with your real API later
+        const response = await fetch("https://your-api-url.com/events");
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch events: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Assuming your backend returns { events: [...] }
+        setEvents(data.events || []);
+        setFilteredEvents(data.events || []);
+      } catch (err) {
+        console.warn("Using fallback data due to fetch error:", err.message);
+        // 👇 Fallback to local eventsData
+        setEvents(eventsData.events);
+        setFilteredEvents(eventsData.events);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // ✅ Filter & search logic
+  useEffect(() => {
+    let filtered = [...events];
 
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
     }
+
     if (search.trim()) {
       filtered = filtered.filter(event =>
         event.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -72,15 +110,17 @@ const Discover = () => {
         event.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
       );
     }
-    setFilteredEvents(filtered);
-  }, [search, selectedCategory]);
 
+    setFilteredEvents(filtered);
+  }, [search, selectedCategory, events]);
+
+  // ✅ Handlers
   const handleCardClick = (id) => {
     navigate(`/organizer-view-event/${id}`);
   };
 
   const handleShareClick = (e, eventId) => {
-    e.stopPropagation(); // prevent card navigation
+    e.stopPropagation(); 
     setShowSharePopup(showSharePopup === eventId ? null : eventId);
   };
 
@@ -105,6 +145,27 @@ const Discover = () => {
     { id: 'community', name: 'Community', icon: 'fa-users' }
   ];
 
+  // ✅ Loading state
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <i className="fas fa-spinner fa-spin"></i>
+        <p>Loading events...</p>
+      </div>
+    );
+  }
+
+  // ✅ Error state
+  if (error) {
+    return (
+      <div className="error-container">
+        <i className="fas fa-exclamation-circle"></i>
+        <p>Failed to load events: {error}</p>
+      </div>
+    );
+  }
+
+  // ✅ Main UI
   return (
     <div className="discover-container">
       <div className="discover-header">
@@ -170,7 +231,7 @@ const Discover = () => {
                   <span>Share</span>
                 </button>
 
-                {/* 👇 Share popup */}
+                {/* Share popup */}
                 {showSharePopup === event.id && (
                   <div className="share-popup" onClick={(e) => e.stopPropagation()}>
                     <a href={links.facebook} target="_blank" rel="noopener noreferrer">
@@ -193,6 +254,7 @@ const Discover = () => {
         })}
       </div>
 
+      {/* Empty State */}
       {filteredEvents.length === 0 && (
         <div className="empty-container">
           <i className="fas fa-search"></i>

@@ -1,51 +1,70 @@
-
-
 import React, { useState } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, Edit3, Save } from "lucide-react";
 
-const ProfileCard = ({ name, email, profileImg, onImgClick, fileInputRef, onImageChange, onProfileUpdate, onLogout, onDeleteProfile }) => {
+const ProfileCard = ({
+  name,
+  email,
+  profileImg,
+  onImgClick,
+  fileInputRef,
+  onImageChange,
+  onProfileUpdate,
+  onLogout,
+}) => {
   const [editingField, setEditingField] = useState(null);
   const [userName, setUserName] = useState(name);
   const [userEmail, setUserEmail] = useState(email);
-  const [deleted, setDeleted] = useState(false);
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
 
-  const handleEdit = (field) => {
-    setEditingField(field);
-  };
+  // Load phone from localStorage or default +27 number
+  const [phone, setPhone] = useState(() => localStorage.getItem("organizerPhone") || "+27123456789");
+  const [tempPhone, setTempPhone] = useState(phone);
 
   const handleSave = (field) => {
     setEditingField(null);
-    if (field === 'name') onProfileUpdate('name', userName);
-    if (field === 'email') onProfileUpdate('email', userEmail);
+    if (field === "name") onProfileUpdate("name", userName);
+    if (field === "email") onProfileUpdate("email", userEmail);
   };
 
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete your profile? This action cannot be undone.')) {
-      onDeleteProfile();
+  // --- Strict +27 + 9 digits handling ---
+  const handlePhoneChange = (e) => {
+    let value = e.target.value;
+
+    // Ensure it always starts with "+27"
+    if (!value.startsWith("+27")) value = "+27";
+
+    // Allow only 9 digits after +27
+    const digits = value.slice(3).replace(/\D/g, "");
+    const limitedDigits = digits.slice(0, 9);
+    setTempPhone("+27" + limitedDigits);
+  };
+
+  const handlePhoneEdit = () => {
+    if (isEditingPhone) {
+      if (tempPhone.length === 12) {
+        setPhone(tempPhone);
+        localStorage.setItem("organizerPhone", tempPhone);
+      } else {
+        alert("Phone number must start with +27 and contain exactly 9 digits after +27.");
+        return; // stay in editing mode
+      }
     }
+    setIsEditingPhone(!isEditingPhone);
   };
-
-  if (deleted) {
-    return (
-      <div className="profile-card" style={{ textAlign: 'center', padding: '2rem' }}>
-        <h2 style={{ color: '#e60023' }}>Profile Deleted</h2>
-        <p>Your profile has been removed.</p>
-      </div>
-    );
-  }
 
   return (
-    <div className="profile-card">
+    <div className="profile-card" style={{ textAlign: "center" }}>
+      {/* Profile Image */}
       <img
-        src={profileImg}
+        src={profileImg && profileImg.trim() !== "" ? profileImg : "/profile.webp"}
         alt="profile"
         style={{
-          marginLeft: "0.5rem",
-          width: "200px",
-          height: "200px",
+          width: "180px",
+          height: "180px",
           borderRadius: "50%",
           objectFit: "cover",
           cursor: "pointer",
+          border: "3px solid #001d3d",
         }}
         onClick={onImgClick}
         title="Click to change profile picture"
@@ -57,53 +76,129 @@ const ProfileCard = ({ name, email, profileImg, onImgClick, fileInputRef, onImag
         style={{ display: "none" }}
         onChange={onImageChange}
       />
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        {editingField === 'name' ? (
-          <React.Fragment>
-            <input
-              type="text"
-              value={userName}
-              onChange={e => setUserName(e.target.value)}
-              style={{ fontSize: '1.1rem', padding: '0.2rem 0.5rem', borderRadius: 4, border: '1px solid #ccc' }}
-            />
 
-          </React.Fragment>
+      {/* Name */}
+      <div style={{ marginTop: "1rem" }}>
+        {editingField === "name" ? (
+          <input
+            type="text"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            onBlur={() => handleSave("name")}
+            style={{
+              fontSize: "1.1rem",
+              padding: "0.2rem 0.5rem",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              textAlign: "center",
+            }}
+          />
         ) : (
-          <React.Fragment>
-            <h3 className="profile-name" style={{ margin: 0 }}>{userName}</h3>
-
-
-          </React.Fragment>
+          <h3
+            onClick={() => setEditingField("name")}
+            style={{
+              margin: "0.5rem 0",
+              color: "#001d3d",
+              cursor: "pointer",
+            }}
+          >
+            {userName}
+          </h3>
         )}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-        {editingField === 'email' ? (
-          <React.Fragment>
-            <input
-              type="email"
-              value={userEmail}
-              onChange={e => setUserEmail(e.target.value)}
-              style={{ fontSize: '0.93rem', padding: '0.2rem 0.5rem', borderRadius: 4, border: '1px solid #ccc' }}
-            />
-         
-          </React.Fragment>
+
+      {/* Email */}
+      <div>
+        {editingField === "email" ? (
+          <input
+            type="email"
+            value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
+            onBlur={() => handleSave("email")}
+            style={{
+              fontSize: "0.95rem",
+              padding: "0.2rem 0.5rem",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              textAlign: "center",
+            }}
+          />
         ) : (
-          <React.Fragment>
-            <p className="profile-email" style={{ margin: 0 }}>{userEmail}</p>
-            
-          </React.Fragment>
+          <p
+            onClick={() => setEditingField("email")}
+            style={{
+              margin: "0",
+              color: "#555",
+              fontSize: "0.95rem",
+              cursor: "pointer",
+            }}
+          >
+            {userEmail}
+          </p>
         )}
       </div>
-      
-      <button
-        className="logout-btn"
-        style={{ marginTop: '1.2rem' }}
-        onClick={onLogout}
-      >
-        <LogOut size={16} />
-        <span style={{ marginLeft: "0.5rem" }}>Logout</span>
-      </button>
+
+      {/* Phone Number */}
+      <div style={{ marginTop: "1rem" }}>
+        <label
+          style={{
+            fontWeight: "bold",
+            color: "#001d3d",
+            marginRight: "0.5rem",
+          }}
+        >
+          Phone:
+        </label>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}>
+          <input
+            type="text"
+            value={isEditingPhone ? tempPhone : phone}
+            onChange={handlePhoneChange}
+            disabled={!isEditingPhone}
+            style={{
+              width: "140px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              padding: "0.3rem",
+              fontSize: "0.9rem",
+              textAlign: "center",
+              backgroundColor: isEditingPhone ? "#fff" : "#f8f9fa",
+              color: "#333",
+            }}
+          />
+          <button onClick={handlePhoneEdit} style={btnStyleSmall}>
+            {isEditingPhone ? <Save size={14} /> : <Edit3 size={14} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Logout Button */}
+      <div style={{ marginTop: "1.5rem" }}>
+        <button onClick={onLogout} style={btnStyle}>
+          <LogOut size={16} />
+          <span style={{ marginLeft: "0.5rem" }}>Logout</span>
+        </button>
+      </div>
     </div>
   );
 };
+
+const btnStyle = {
+  background: "#03045e",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  padding: "0.6rem 1.2rem",
+  cursor: "pointer",
+  display: "inline-flex",
+  alignItems: "center",
+  fontSize: "0.9rem",
+  fontWeight: 500,
+};
+
+const btnStyleSmall = {
+  ...btnStyle,
+  padding: "0.3rem 0.6rem",
+};
+
 export default ProfileCard;
