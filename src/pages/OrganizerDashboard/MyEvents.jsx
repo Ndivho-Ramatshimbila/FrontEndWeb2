@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/_myevents.scss';
 
-const myEventsData = [
+const staticMyEventsData = [
   {
     id: 1,
     title: "Annual Tech Summit",
@@ -49,7 +49,26 @@ const myEventsData = [
 
 const MyEvents = () => {
   const [filter, setFilter] = useState("All");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [refresh, setRefresh] = useState(0);
   const navigate = useNavigate();
+
+  // Load events from localStorage and combine with static data
+  const loadMyEvents = () => {
+    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    // Transform submitted events to match the format expected by MyEvents
+    const transformedSubmittedEvents = submittedEvents.map(event => ({
+      id: event.id,
+      title: event.title,
+      date: event.dateOfCommencement, // Use commencement date for filtering
+      status: event.organizerStatus, // Use organizerStatus for display
+      category: event.category,
+    }));
+    return [...staticMyEventsData, ...transformedSubmittedEvents];
+  };
+
+  const myEventsData = loadMyEvents();
 
   const filteredEvents = myEventsData.filter(event => {
     if (filter === "All") return true;
@@ -57,7 +76,30 @@ const MyEvents = () => {
     if (filter === "Past") return new Date(event.date) <= new Date();
     if (filter === "Cancelled") return event.status === "Cancelled";
     return false;
+  }).sort((a, b) => {
+    let aValue, bValue;
+
+    if (sortBy === "name") {
+      aValue = a.title.toLowerCase();
+      bValue = b.title.toLowerCase();
+    } else if (sortBy === "date") {
+      aValue = new Date(a.date);
+      bValue = new Date(b.date);
+    } else {
+      return 0;
+    }
+
+    if (sortOrder === "asc") {
+      return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+    } else {
+      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+    }
   });
+
+  // Force re-render when refresh changes
+  React.useEffect(() => {
+    // This effect will trigger when refresh changes
+  }, [refresh]);
 
   return (
     <div className="my-events-page">
@@ -76,8 +118,18 @@ const MyEvents = () => {
             ))}
           </div>
           <div className="sort-dropdown">
-            <select>
-              <option>Sort By</option>
+            <select
+              value={`${sortBy}-${sortOrder}`}
+              onChange={(e) => {
+                const [newSortBy, newSortOrder] = e.target.value.split('-');
+                setSortBy(newSortBy);
+                setSortOrder(newSortOrder);
+              }}
+            >
+              <option value="date-asc">Date (Ascending)</option>
+              <option value="date-desc">Date (Descending)</option>
+              <option value="name-asc">Name (A-Z)</option>
+              <option value="name-desc">Name (Z-A)</option>
             </select>
           </div>
         </div>

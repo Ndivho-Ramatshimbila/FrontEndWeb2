@@ -5,7 +5,6 @@ import TermsCheckbox from '../../components/TermsCheckbox';
 import "../../styles/pages/_createevent.scss";
 import { useNavigate, useLocation } from 'react-router-dom';
 
-
 export default function ModifyForm() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -16,12 +15,8 @@ export default function ModifyForm() {
     venueType: '',
     venue: '',
     campus: '',
-    emailAddress: '',
-    telephone: '',
-    cell: '',
     typeOfFunction: '',
     typeOfGuests: [],
-    //natureOfFunction: '',
     purposeOfFunction: '',
     numberOfGuestsExpected: '',
     dateOfCommencement: '',
@@ -48,32 +43,54 @@ export default function ModifyForm() {
     proofOfPayment: null,
   });
 
-  useEffect(() => {
-  if (location.state && location.state.eventData) {
-    const data = location.state.eventData;
-
+  const handleVenueSelect = (venue) => {
+    setSelectedVenue(venue);
+    // Auto-fill the venue name field when a venue is selected
     setFormData(prev => ({
       ...prev,
-      eventTitle: data.title || '',
-      venueType: data.type?.toLowerCase() || '',
-      venue: data.venue || '',
-      campus: data.campus || '',
-      purposeOfFunction: data.purpose || '',
-      numberOfGuestsExpected: data.capacity || '',
-      dateOfCommencement: data.date || '',
-      timeOfCommencement: data.time?.split(' - ')[0] || '',
-      timeToLockup: data.time?.split(' - ')[1] || '',
-      useOfLiquor: data.services?.liquor || '',
-      kitchenFacilities: data.services?.kitchen || '',
-      cleaningServices: data.services?.cleaning || '',
-      steelTable: data.resources?.tables || 10,
-      plasticChairs: data.resources?.chairs || 10,
-      microphone: data.resources?.microphones ? 'Yes' : 'No',
-      dataProjector: data.resources?.projectors ? 'Yes' : 'No',
-      remarks: '',
+      venue: venue.name
     }));
-  }
-}, [location.state]);
+  };
+
+  useEffect(() => {
+    if (location.state && location.state.eventData) {
+      const data = location.state.eventData;
+
+      setFormData(prev => ({
+        ...prev,
+        eventTitle: data.title || '',
+        venueType: data.venueType || '',
+        venue: data.venue || '',
+        campus: data.campus || '',
+        typeOfFunction: data.typeOfFunction || '',
+        typeOfGuests: data.typeOfGuests || [],
+        purposeOfFunction: data.purposeOfFunction || '',
+        numberOfGuestsExpected: data.numberOfGuestsExpected || '',
+        dateOfCommencement: data.dateOfCommencement || '',
+        endingDate: data.endingDate || '',
+        timeOfCommencement: data.timeOfCommencement || '',
+        timeToLockup: data.timeToLockup || '',
+        useOfLiquor: data.useOfLiquor || '',
+        kitchenFacilities: data.kitchenFacilities || '',
+        cleaningServices: data.cleaningServices || '',
+        steelTable: data.steelTable || 10,
+        examTables: data.examTables || 10,
+        plasticChairs: data.plasticChairs || 10,
+        parkingPlaces: data.parkingPlaces || 10,
+        laptop: data.laptop || '',
+        sound: data.sound || '',
+        screen: data.screen || '',
+        videoConferencing: data.videoConferencing || '',
+        dataProjector: data.dataProjector || '',
+        internetConnection: data.internetConnection || '',
+        microphone: data.microphone || '',
+        wifi: data.wifi || '',
+        remarks: data.remarks || '',
+        brandingImage: data.brandingImage || [],
+        proofOfPayment: data.proofOfPayment || null,
+      }));
+    }
+  }, [location.state]);
 
 
   const [errors, setErrors] = useState({});
@@ -311,18 +328,18 @@ export default function ModifyForm() {
       <div className="create-event-container">
         <div className="create-event-wrapper">
           <div className="create-event-header">
-           <button
-             className="back-button"
-               type="button"
+            <button
+              className="back-button"
+              type="button"
               aria-label="Go back to dashboard"
-               onClick={() => {
-                  window.location.href = '/dashboard';
-                   }}
-                      >
-                      <ArrowLeft size={20} />
-                      </button>
-                       <h1 className="create-event-title">Create Event</h1>
-                         </div>
+              onClick={() => {
+                window.location.href = '/dashboard';
+              }}
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <h1 className="create-event-title">Modify Event</h1>
+          </div>
 
 
           <div className="create-event-form-wrapper">
@@ -386,43 +403,7 @@ export default function ModifyForm() {
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Email Address *</label>
-                    <input
-                      type="email"
-                      name="emailAddress"
-                      value={formData.emailAddress}
-                      onChange={handleInputChange}
-                      placeholder="Email address"
-                      className={`form-input ${errors.emailAddress ? 'error' : ''}`}
-                    />
-                    {errors.emailAddress && <p className="error-message">{errors.emailAddress}</p>}
-                  </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Telephone</label>
-                    <input
-                      type="tel"
-                      name="telephone"
-                      value={formData.telephone}
-                      onChange={handleInputChange}
-                      placeholder="Telephone number"
-                      className="form-input"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label className="form-label">Cell *</label>
-                    <input
-                      type="tel"
-                      name="cell"
-                      value={formData.cell}
-                      onChange={handleInputChange}
-                      placeholder="Cell number"
-                      className={`form-input ${errors.cell ? 'error' : ''}`}
-                    />
-                    {errors.cell && <p className="error-message">{errors.cell}</p>}
-                  </div>
                 </div>
               </section>
 
@@ -511,9 +492,9 @@ export default function ModifyForm() {
                   </div>
                 </div>
 
-                <VenueCardGallery 
-                  selectedVenue={selectedVenue} 
-                  setSelectedVenue={setSelectedVenue}
+                <VenueCardGallery
+                  selectedVenue={selectedVenue}
+                  setSelectedVenue={handleVenueSelect}
                   minCapacity={parseInt(formData.numberOfGuestsExpected) || 0}
                 />
 
@@ -850,9 +831,9 @@ export default function ModifyForm() {
 
               {/* SUBMIT BUTTON */}
               <div className="form-footer">
-              <button 
+              <button
                type="button"
-             onClick={() => navigate('/confirm-modified-details')} // <-- navigate to ConfirmEventDetails page
+             onClick={() => navigate('/confirm-modified-details', { state: { modifiedData: formData } })} // <-- navigate to ConfirmEventDetails page with modified data
              className="btn btn-primary"
              >
                Modify Request

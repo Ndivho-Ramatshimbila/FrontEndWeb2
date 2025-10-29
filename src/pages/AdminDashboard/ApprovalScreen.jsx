@@ -5,7 +5,7 @@ import { FiSearch } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 
 
-const eventsData = [
+const staticEventsData = [
   {
       id: "REQ003",
       title: "Annual TUT Athletics Day",
@@ -84,13 +84,19 @@ const tabs = ["All", "Pending", "Approved", "Rejected"];
 
 export default function ApprovalScreen() {
   const [selectedTab, setSelectedTab] = useState("All");
-  const [filteredEvents, setFilteredEvents] = useState(eventsData);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [refresh, setRefresh] = useState(0);
   const navigate = useNavigate();
 
+  // Load events from localStorage and combine with static data
+  const loadEvents = () => {
+    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    return [...staticEventsData, ...submittedEvents];
+  };
 
   useEffect(() => {
+    const eventsData = loadEvents();
     let filtered = selectedTab === "All"
       ? eventsData
       : eventsData.filter((event) => event.status === selectedTab);
@@ -104,7 +110,7 @@ export default function ApprovalScreen() {
     }
 
     setFilteredEvents(filtered);
-  }, [selectedTab, searchTerm]);
+  }, [selectedTab, searchTerm, refresh]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -121,113 +127,70 @@ export default function ApprovalScreen() {
 
   return (
     <div className="approval-container">
-      {selectedEvent ? (
-        <div className="details-container">
-          <h2>Event Details</h2>
-          <h3>{selectedEvent.title}</h3>
-          <p><strong>Type:</strong> {selectedEvent.details.type}</p>
-          <p><strong>Purpose:</strong> {selectedEvent.details.purpose}</p>
-          <p><strong>Capacity:</strong> {selectedEvent.details.capacity}</p>
-          <p><strong>Date:</strong> {selectedEvent.details.eventDate}</p>
-          <p>
-            <strong>Venue:</strong> {selectedEvent.details.venue.campus}, {selectedEvent.details.venue.hall}
-          </p>
-          <p><strong>Buildings:</strong> {selectedEvent.details.venue.buildings.join(", ")}</p>
-          <p><strong>Time:</strong> {selectedEvent.details.time}</p>
+      <>
+        <h1 className="page-title">Event Requests</h1>
 
-          <h4>Services Required</h4>
-          <ul>
-            {Object.entries(selectedEvent.details.services).map(([key, value]) => (
-              <li key={key}>
-                {key}: {value ? "Yes" : "No"}
-              </li>
-            ))}
-          </ul>
-
-          <h4>Resources</h4>
-          <ul>
-            {Object.entries(selectedEvent.details.resources).map(([key, value]) => (
-              <li key={key}>
-                {key}: {value}
-              </li>
-            ))}
-          </ul>
-
-          <div className="details-actions">
-            <button className="approve">Approve</button>
-            <button className="reject">Reject</button>
-          </div>
-
-          <button className="back-btn" onClick={() => setSelectedEvent(null)}>
-            ← Back
-          </button>
+        {/* Search Bar */}
+        <div className="search-container">
+          <FiSearch className="search-icon" />
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search events..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
-      ) : (
-        <>
-          <h1 className="page-title">Event Requests</h1>
 
-          {/* Search Bar */}
-          <div className="search-container">
-            <FiSearch className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search events..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+        {/* Tabs */}
+        <div className="tabs-row">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`tab-btn ${selectedTab === tab ? "active" : ""}`}
+              onClick={() => setSelectedTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-          {/* Tabs */}
-          <div className="tabs-row">
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`tab-btn ${selectedTab === tab ? "active" : ""}`}
-                onClick={() => setSelectedTab(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+        <h3 className="tab-heading">{selectedTab}</h3>
+        <p className="count">{filteredEvents.length} items</p>
 
-          <h3 className="tab-heading">{selectedTab}</h3>
-          <p className="count">{filteredEvents.length} items</p>
-
-          <div className="cards">
-            {filteredEvents.length === 0 ? (
-              <p className="empty">No events in this category</p>
-            ) : (
-              filteredEvents.map((event) => (
-                <div key={event.id} className="event-card">
-                  <div className="event-left">
-                    <div className="icon-circle">
-                      <FaCalendarAlt className="calendar-icon" />
-                    </div>
-                    <div className="event-info">
-                      <h4 className="title">{event.title}</h4>
-                      <p className="request-id">Request ID: {event.id}</p>
-                      <p className="meta">
-                        <FaTag /> {event.category}
-                      </p>
-                      <p className="meta">
-                        <FaCalendarAlt /> {event.date}
-                      </p>
-                      <p className={`status ${getStatusColor(event.status)}`}>{event.status}</p>
-                    </div>
+        <div className="cards">
+          {filteredEvents.length === 0 ? (
+            <p className="empty">No events in this category</p>
+          ) : (
+            filteredEvents.map((event) => (
+              <div key={event.id} className="event-card">
+                <div className="event-left">
+                  <div className="icon-circle">
+                    <FaCalendarAlt className="calendar-icon" />
                   </div>
-                  <button
+                  <div className="event-info">
+                    <h4 className="title">{event.title}</h4>
+                    <p className="request-id">Request ID: {event.id}</p>
+                    <p className="meta">
+                      <FaTag /> {event.category}
+                    </p>
+                    <p className="meta">
+                      <FaCalendarAlt /> {event.date}
+                    </p>
+                    <p className={`status ${getStatusColor(event.status)}`}>{event.status}</p>
+                  </div>
+                </div>
+                <button
                   className="view-btn"
                   onClick={() => navigate(`/admin/details/${event.id}`)}
-                  >
+                >
                   View Details
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-        </>
-      )}
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+      </>
     </div>
   );
 }
