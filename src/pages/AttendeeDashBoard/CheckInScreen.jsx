@@ -1,25 +1,28 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "../../styles/pages/CheckInScreen.scss";
 
 export default function CheckInScreen() {
+    const location = useLocation();
+    const { ticketData } = location.state || {};
     const [ticket, setTicket] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate API delay and mock response
+        // Use passed ticket data or fallback to mock response
         const timer = setTimeout(() => {
-            const mockTicket = {
+            const ticketInfo = ticketData || {
                 eventName: "TUT Campus Connect Hackathon 2025",
                 qrCodeUrl: "https://api.qrserver.com/v1/create-qr-code/?data=TUT2025&size=150x150",
                 status: "Checked In",
                 lastSynced: "2025-10-15 09:45",
             };
-            setTicket(mockTicket);
+            setTicket(ticketInfo);
             setLoading(false);
         }, 1500); // simulate 1.5s delay
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [ticketData]);
 
     if (loading) {
         return (

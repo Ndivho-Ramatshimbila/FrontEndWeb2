@@ -278,14 +278,40 @@ export default function CreateEvent() {
     }
 
     const submissionData = {
+      id: `REQ${Date.now()}`, // Generate unique ID
+      title: formData.eventTitle,
+      type: formData.typeOfFunction,
+      date: `${formData.dateOfCommencement} at ${formData.timeOfCommencement || 'TBD'}`,
+      status: 'Pending', // For admin approval
+      organizerStatus: 'Waiting for Approval', // For organizer
+      category: formData.typeOfFunction,
       ...formData,
       selectedVenue: selectedVenue,
       termsAccepted: termsAccepted,
       submittedAt: new Date().toISOString()
     };
 
+    // Save to localStorage
+    const existingEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    existingEvents.push(submissionData);
+    localStorage.setItem('submittedEvents', JSON.stringify(existingEvents));
+
+    // Add notification for event submission
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    notifications.unshift({
+      id: `notif-${Date.now()}`,
+      title: "Event Submission",
+      message: `Your event "${formData.eventTitle}" has been submitted for approval.`,
+      time: "Just now"
+    });
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+
     console.log('Form submitted successfully:', submissionData);
     showToastMessage('Event booking request submitted successfully!');
+    setTimeout(() => {
+    navigate('/my-events');
+  }, 2000); // waits 2 seconds before redirecting
+
   };
 
   return (

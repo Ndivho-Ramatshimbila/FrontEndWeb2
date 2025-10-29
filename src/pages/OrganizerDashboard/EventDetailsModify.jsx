@@ -1,61 +1,79 @@
-// src/pages/OrganizerDashboard/EventDetails.jsx
-import React from "react";
+// src/pages/OrganizerDashboard/EventDetailsModify.jsx
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/pages/_eventdetails.scss";
-
-// 🧩 Mock event data (can be replaced later with API or DB)
-const mockEventDetails = {
-  1: {
-    id: 1,
-    title: "Annual Tech Summit",
-    venueType: "Auditorium",
-    venue: "Innovation Hall",
-    campus: "TUT Emalahleni Campus",
-    emailAddress: "organizer@tut.ac.za",
-    telephone: "013 000 0000",
-    cell: "082 555 0000",
-    typeOfFunction: "Academic",
-    typeOfGuests: ["Students", "Staff"],
-    purposeOfFunction: "To introduce students to tech innovations at TUT",
-    numberOfGuestsExpected: 150,
-    dateOfCommencement: "2025-11-15",
-    endingDate: "2025-11-15",
-    timeOfCommencement: "09:00 AM",
-    timeToLockup: "14:00 PM",
-    useOfLiquor: "Yes",
-    kitchenFacilities: "Yes",
-    cleaningServices: "Yes",
-    steelTable: 10,
-    examTables: 12,
-    plasticChairs: 150,
-    parkingPlaces: 30,
-    laptop: "Yes",
-    sound: "Yes",
-    screen: "Yes",
-    videoConferencing: "No",
-    dataProjector: "Yes",
-    internetConnection: "Yes",
-    microphone: "Yes",
-    wifi: "Yes",
-    remarks: "Ensure projector setup is ready before 8:30 AM",
-    brandingImage: [],
-    proofOfPayment: null,
-    banner: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-  },
-};
 
 const EventDetailsModify = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [event, setEvent] = useState(null);
 
-  // Get the event details
-  const event = mockEventDetails[id] || Object.values(mockEventDetails)[0];
+  useEffect(() => {
+    // Load event data from localStorage
+    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    const eventData = submittedEvents.find(e => e.id === id);
+    if (eventData) {
+      setEvent(eventData);
+    } else {
+      // Fallback to static data if not found
+      setEvent({
+        id: id,
+        title: "Event Not Found",
+        venueType: "N/A",
+        venue: "N/A",
+        campus: "N/A",
+        emailAddress: "",
+        telephone: "",
+        cell: "",
+        typeOfFunction: "N/A",
+        typeOfGuests: [],
+        purposeOfFunction: "N/A",
+        numberOfGuestsExpected: 0,
+        dateOfCommencement: "",
+        endingDate: "",
+        timeOfCommencement: "",
+        timeToLockup: "",
+        useOfLiquor: "No",
+        kitchenFacilities: "No",
+        cleaningServices: "No",
+        steelTable: 0,
+        examTables: 0,
+        plasticChairs: 0,
+        parkingPlaces: 0,
+        laptop: "No",
+        sound: "No",
+        screen: "No",
+        videoConferencing: "No",
+        dataProjector: "No",
+        internetConnection: "No",
+        microphone: "No",
+        wifi: "No",
+        remarks: "",
+        brandingImage: [],
+        proofOfPayment: null,
+        banner: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+      });
+    }
+  }, [id]);
 
   // 🔹 Navigate to Modify Form with prefilled event data
   const handleModify = () => {
     console.log("➡️ Sending event data to modify form:", event);
     navigate("/modify-event", { state: { eventData: event } });
   };
+
+  if (!event) {
+    return (
+      <div className="event-details-page">
+        <div className="top-bar">
+          <button className="back-btn" onClick={() => navigate("/my-events")}>
+            ← Back
+          </button>
+          <h2>Loading Event Details...</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="event-details-page">

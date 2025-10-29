@@ -1,12 +1,41 @@
 import React from 'react';
 import { ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils, Sparkles, Monitor, Wifi, Mic, Video, Laptop } from 'lucide-react';
 import "../../styles/pages/_confirmevent.scss";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-export default function ConfirmEventDetails() {
+export default function ConfirmModifiedDetails() {
   const navigate = useNavigate();
-  // This would come from your form submission or route params
-  const eventData = {
+  const location = useLocation();
+
+  // Get modified data from location state
+  const modifiedData = location.state?.modifiedData;
+
+  // Fallback to static data if no modified data
+  const eventData = modifiedData ? {
+    eventTitle: modifiedData.eventTitle,
+    eventType: modifiedData.typeOfFunction,
+    purpose: modifiedData.purposeOfFunction,
+    capacity: modifiedData.numberOfGuestsExpected,
+    date: modifiedData.dateOfCommencement,
+    venue: `${modifiedData.campus}, ${modifiedData.venue}`,
+    time: `${modifiedData.timeOfCommencement} - ${modifiedData.timeToLockup}`,
+    venueSelection: {
+      buildings: [modifiedData.venue]
+    },
+    services: {
+      liquor: modifiedData.useOfLiquor,
+      kitchenFacilities: modifiedData.kitchenFacilities,
+      cleaningServices: modifiedData.cleaningServices,
+      extraSecurity: 'No' // Assuming not in form
+    },
+    resources: {
+      chairs: modifiedData.plasticChairs,
+      projectors: modifiedData.dataProjector === 'Yes' ? 1 : 0,
+      microphones: modifiedData.microphone === 'Yes' ? 1 : 0,
+      tables: modifiedData.steelTable + modifiedData.examTables
+    },
+    headerImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80'
+  } : {
     eventTitle: 'New Student Orientation',
     eventType: 'Social Event',
     purpose: 'purpose of event is to introduce the students to the Campus',
@@ -161,12 +190,22 @@ export default function ConfirmEventDetails() {
 
             {/* Submit Button */}
             <div className="submit-button-container">
-              <button 
+              <button
                 className="btn-submit"
                 type="button"
                 onClick={() => {
-                  // Handle final submission
-                  console.log('Event confirmed and submitted');
+                  // Handle final submission - update localStorage with modified data
+                  if (modifiedData) {
+                    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+                    // Find the original event and update it (assuming we have an ID or some identifier)
+                    // For now, we'll just add the modified data as a new entry or update existing
+                    // In a real app, you'd have proper ID matching
+                    const updatedEvents = submittedEvents.map(event =>
+                      event.id === modifiedData.id ? { ...event, ...modifiedData, status: 'Pending' } : event
+                    );
+                    localStorage.setItem('submittedEvents', JSON.stringify(updatedEvents));
+                  }
+                  console.log('Event modification confirmed and submitted');
                   navigate("/my-events");
                 }}
               >
