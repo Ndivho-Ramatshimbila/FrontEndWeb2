@@ -6,33 +6,12 @@ import { useNavigate } from 'react-router-dom';
 
 
 const staticEventsData = [
-  {
-      id: "REQ003",
-      title: "Annual TUT Athletics Day",
-      type: "Sports Event",
-      date: "2024-09-10 at 09:00 AM",
-      status: "Approved", // ✅ Approved
-    },
     {
       id: "REQ004",
       title: "Tech Conference 2024",
       type: "Conference",
       date: "2024-10-15 at 10:00 AM",
-      status: "Pending", // ✅ Pending
-    },
-    {
-      id: "REQ005",
-      title: "Music Festival",
-      type: "Entertainment",
-      date: "2024-11-20 at 02:00 PM",
-      status: "Rejected", // ✅ Rejected
-    },
-    {
-      id: "REQ006",
-      title: "Workshop on AI",
-      type: "Educational",
-      date: "2024-12-05 at 10:00 AM",
-      status: "Approved",
+      status: "Pending",
     },
     {
       id: "REQ007",
@@ -42,39 +21,11 @@ const staticEventsData = [
       status: "Pending",
     },
     {
-      id: "REQ008",
-      title: "Art Exhibition",
-      type: "Cultural",
-      date: "2025-02-10 at 11:00 AM",
-      status: "Approved",
-    },
-    {
-      id: "REQ009",
-      title: "Business Seminar",
-      type: "Professional",
-      date: "2025-03-05 at 09:00 AM",
-      status: "Rejected",
-    },
-    {
-      id: "REQ010",
-      title: "Science Fair",
-      type: "Educational",
-      date: "2025-04-20 at 10:00 AM",
-      status: "Approved",
-    },
-    {
       id: "REQ011",
       title: "Film Screening",
       type: "Entertainment",
       date: "2025-05-15 at 07:00 PM",
       status: "Pending",
-    },
-    {
-      id: "REQ012",
-      title: "Book Launch",
-      type: "Literary",
-      date: "2025-06-10 at 03:00 PM",
-      status: "Rejected",
     },
 
   // You can add more events if needed
@@ -92,7 +43,19 @@ export default function ApprovalScreen() {
   // Load events from localStorage and combine with static data
   const loadEvents = () => {
     const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
-    return [...staticEventsData, ...submittedEvents];
+    const allEvents = [...staticEventsData];
+
+    // Override static events with submitted events if they have the same id
+    submittedEvents.forEach(submittedEvent => {
+      const index = allEvents.findIndex(staticEvent => staticEvent.id === submittedEvent.id);
+      if (index !== -1) {
+        allEvents[index] = submittedEvent;
+      } else {
+        allEvents.push(submittedEvent);
+      }
+    });
+
+    return allEvents;
   };
 
   useEffect(() => {
@@ -111,6 +74,16 @@ export default function ApprovalScreen() {
 
     setFilteredEvents(filtered);
   }, [selectedTab, searchTerm, refresh]);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setRefresh(prev => prev + 1);
+    };
+
+    window.addEventListener('localStorageUpdate', handleUpdate);
+
+    return () => window.removeEventListener('localStorageUpdate', handleUpdate);
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
