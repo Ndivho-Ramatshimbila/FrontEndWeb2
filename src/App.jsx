@@ -15,6 +15,10 @@ import CreateEvent from './pages/OrganizerDashboard/CreateEvent';
 import ConfirmEventDetails from './pages/OrganizerDashboard/ConfirmEventDetails';
 import OrganizerEventRating from './pages/OrganizerDashboard/EventRating';
 import EventDetails from './pages/OrganizerDashboard/EventDetails';
+import ModifyForm from './pages/OrganizerDashboard/ModifyForm';
+import EventDetailsModify from './pages/OrganizerDashboard/EventDetailsModify'; 
+import ConfirmModifiedDetails from './pages/OrganizerDashboard/ConfirmModifiedDetails';
+import RegisterForEvent from './pages/OrganizerDashboard/RegisterForEvent';
 
 // Admin Pages
 import AnalyticsDashboard from './pages/AdminDashboard/AnalyticsDashboard';
@@ -34,7 +38,6 @@ import AttendeeEventRating from './pages/AttendeeDashBoard/EventRating';
 import CheckInScreen from './pages/AttendeeDashBoard/CheckInScreen';
 import AttendeeDiscover from './components/attendee_discover/attendee-discover';
 import AttendeeEventDetails from './pages/AttendeeDashboard/EventDetails';
-import EventRegistration from "./pages/AttendeeDashBoard/EventRegistration";
 
 // Auth Pages
 import HomePage from './pages/Auth/HomePage';
@@ -49,12 +52,10 @@ import './styles/abstracts/profile.scss';
 
 /* ---------------- LAYOUT COMPONENTS ---------------- */
 
-// Layout for auth pages (no sidebar/footer)
 function AuthLayout({ children }) {
   return <div className="auth-layout">{children}</div>;
 }
 
-// Layout for organizer dashboard pages
 function DashboardLayout({ children }) {
   return (
     <div className="app">
@@ -65,7 +66,6 @@ function DashboardLayout({ children }) {
   );
 }
 
-// Optional: Fallback 404 page
 function NotFound() {
   return <h2 className="text-center mt-5">404 - Page Not Found</h2>;
 }
@@ -92,13 +92,15 @@ function App() {
         <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
         <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
         <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
+        <Route path="/organizer-view-event/:id" element={<DashboardLayout><RegisterForEvent /></DashboardLayout>} />
 
         {/* ✅ View Event Details */}
         <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
+        <Route path="/event-details-modify/:id" element={<DashboardLayout><EventDetailsModify /></DashboardLayout>} />
+        <Route path="/confirm-modified-details" element={<DashboardLayout><ConfirmModifiedDetails /></DashboardLayout>} />
 
-        {/* ✅ Edit Event Page (REQUIRED for `navigate('/event/:id/edit')`) */}
-        <Route path="/event/:id/edit" element={<DashboardLayout><CreateEvent mode="edit" /></DashboardLayout>} />
-
+        {/* ✅ NEW — Modify Event Route (Step 1) */}
+        <Route path="/modify-event" element={<DashboardLayout><ModifyForm /></DashboardLayout>} />
 
         {/* ---------- ADMIN ROUTES (Nested) ---------- */}
         <Route path="/admin" element={<AdminLayout />}>
@@ -112,16 +114,14 @@ function App() {
 
         {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
         <Route path="/attendee" element={<AttendeeLayout />}>
-        <Route index element={<AttendeeDiscover />} />
-        <Route path="events-profile" element={<AttendeeProfilePage />} />
-        <Route path="rate-events" element={<AttendeeEventRating />} />
-        <Route path="sports" element={<SportsEvents />} />
-        <Route path="my-events" element={<Events />} />
-        <Route path="qr-code" element={<CheckInScreen />} />
-        <Route path="/attendee/event-registration" element={<EventRegistration />} />
-        <Route path="view-event/:id" element={<AttendeeEventDetails />} />
+          <Route index element={<AttendeeDiscover />} />
+          <Route path="events-profile" element={<AttendeeProfilePage />} />
+          <Route path="rate-events" element={<AttendeeEventRating />} />
+          <Route path="sports" element={<SportsEvents />} />
+          <Route path="my-events" element={<Events />} />
+          <Route path="qr-code" element={<CheckInScreen />} />
+          <Route path="view-event/:id" element={<AttendeeEventDetails />} />
         </Route>
-
 
         {/* ---------- 404 FALLBACK ---------- */}
         <Route path="*" element={<NotFound />} />

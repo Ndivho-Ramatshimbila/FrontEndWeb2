@@ -98,21 +98,11 @@ const MyEvents = () => {
               {event.status === "Waiting for Approval" && (
                 <button
                   className="modify-btn"
-                  onClick={() => navigate(`/event/${event.id}`)}
+                  onClick={() => navigate(`/event-details-modify/${event.id}`)}
                 >
                   Modify
                 </button>
               )}
-
-              {/* Show Rate button if event is in the past */}
-              {new Date(event.date) <= new Date() && (
-              <button
-              className="rate-btn"
-             onClick={() => navigate('/rate-your-event')}
-             >
-             Rate
-             </button>
-            )}
 
             </div>
           </div>

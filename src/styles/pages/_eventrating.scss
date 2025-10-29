@@ -258,21 +258,30 @@
   }
 
   .footer {
-    padding: 15px;
-    background-color: white;
-    border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: center; /* centers the button horizontally */
+  align-items: center;
+  background-color: white;
+  border-top: 1px solid #e0e0e0;
+  padding: 20px 0;
+  width: 800px;
 
-    .submit-button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #0077B6;
-      padding: 15px;
-      border-radius: 12px;
-      width: 100%;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0077B6;
+  color: white;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 12px 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 300px; /* keeps button size smaller and centered */
+
 
       &:hover:not(.disabled) {
         background-color: #005a8c;

@@ -44,7 +44,7 @@ const mockEventDetails = {
   },
 };
 
-const EventDetails = () => {
+const EventDetailsModify = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -101,8 +101,16 @@ const EventDetails = () => {
         </div>
       </div>
 
+      <div className="actions">
+        <button
+          className="modify-btn"
+          onClick={handleModify}
+        >
+          Modify Details
+        </button>
+      </div>
     </div>
   );
 };
 
-export default EventDetails;
+export default EventDetailsModify;

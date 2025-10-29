@@ -45,8 +45,8 @@ const Sidebar = () => {
         </NavLink>
 
         <NavLink to="/rate-your-event" className="sidebar-item">
-        <i className="fas fa-star"></i>
-        <span>Rate Your Events</span>
+        <i className="fas fa-star"></i> {/* or any icon you prefer */}
+        <span>Rate Experience</span>
         </NavLink>
 
         {/* Notification Icon */}

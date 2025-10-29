@@ -23,11 +23,6 @@ const AttendeeSidebar = () => {
           <span>Home</span>
         </NavLink>
 
-          <NavLink to="/attendee/event-registration" className="sidebar-item">
-          <i className="fas fa-edit"></i>
-          <span>Event Registration</span>
-        </NavLink>
-
         <NavLink to="/attendee/events-profile" className="sidebar-item">
           <i className="fas fa-calendar-alt"></i>
           <span>Profile</span>
@@ -36,16 +31,6 @@ const AttendeeSidebar = () => {
         <NavLink to="/attendee/my-events" className="sidebar-item">
           <i className="fas fa-ticket-alt"></i>
           <span>My Events</span>
-        </NavLink>
-
-        <NavLink to="/attendee/qr-code" className="sidebar-item">
-          <i className="fas fa-qrcode"></i>
-          <span>QR Code</span>
-        </NavLink>
-
-        <NavLink to="/attendee/rate-events" className="sidebar-item">
-          <i className="fas fa-star"></i>
-          <span>Rate Events</span>
         </NavLink>
 
         {/* Notifications at Bottom */}
