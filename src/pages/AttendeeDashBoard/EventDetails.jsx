@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Calendar, MapPin, Clock, Users, Building, Tag, Mail, ArrowLeft } from 'lucide-react';
 import { IoInformationCircleOutline, IoLockClosedOutline } from 'react-icons/io5';
 import '../../styles/pages/ViewEventDetails.scss';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const EventDetails = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { eventData } = location.state || {};
 
-  const [event] = useState({
+  const [event] = useState(eventData || {
     title: "Annual Tech Summit",
     category: "Technology",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop",
@@ -44,10 +46,30 @@ const EventDetails = () => {
       setLoading(false);
       setToast(true); // show toast
 
-      // Auto-hide toast and navigate after 2 seconds
+      // Generate QR code data with event title and details
+      const qrData = {
+        eventName: event.title,
+        eventDetails: {
+          date: event.date,
+          location: event.location,
+          organizer: event.organizer,
+          price: event.price,
+        },
+        qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(JSON.stringify({
+          title: event.title,
+          date: event.date,
+          location: event.location,
+          organizer: event.organizer,
+          price: event.price,
+        }))}&size=150x150`,
+        status: "Checked In",
+        lastSynced: new Date().toLocaleString(),
+      };
+
+      // Auto-hide toast and navigate to QR code page with data
       setTimeout(() => {
         setToast(false);
-        navigate('/attendee/my-events');
+        navigate('/attendee/qr-code', { state: { ticketData: qrData } });
       }, 2000);
     }, 1000);
   };
