@@ -23,7 +23,6 @@ const eventsData = {
       tags: ["Music", "Art", "Culture"],
       category: "Arts & Culture"
     },
-    // ... add more fallback events
   ]
 };
 
@@ -44,51 +43,50 @@ const getApprovedEvents = () => {
 };
 
 const AttendeeDiscover = () => {
-  const [events, setEvents] = useState([]);            
-  const [filteredEvents, setFilteredEvents] = useState([]); 
+  const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Events');
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Load events: approved events + fallback data
+  // ✅ Load events immediately from fallback + approved events
   useEffect(() => {
-    const loadEvents = async () => {
+    const approvedEvents = getApprovedEvents();
+    const initialEvents = [...eventsData.events, ...approvedEvents];
+    setEvents(initialEvents);
+    setFilteredEvents(initialEvents);
+    setLoading(false); // UI loads immediately
+
+    // Try fetching API but don't block UI
+    const fetchEvents = async () => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 1000); // 1s timeout
       try {
-        setLoading(true);
-        // Attempt to fetch API (optional)
-        const response = await fetch("https://your-api-url.com/events");
-        const data = await response.ok ? await response.json() : { events: [] };
-
-        // Merge fallback + API + approved events
-        const approvedEvents = getApprovedEvents();
-        const allEvents = [...(data.events || []), ...eventsData.events, ...approvedEvents];
-
-        setEvents(allEvents);
-        setFilteredEvents(allEvents);
+        const response = await fetch("https://your-api-url.com/events", { signal: controller.signal });
+        if (response.ok) {
+          const data = await response.json();
+          const apiEvents = data.events || [];
+          setEvents(prev => [...apiEvents, ...prev]); // Merge API events on top
+          setFilteredEvents(prev => [...apiEvents, ...prev]);
+        }
       } catch (err) {
-        console.warn("Using fallback data due to error:", err.message);
-        const approvedEvents = getApprovedEvents();
-        const allEvents = [...eventsData.events, ...approvedEvents];
-        setEvents(allEvents);
-        setFilteredEvents(allEvents);
+        console.warn("API fetch failed or timed out, using fallback:", err.message);
       } finally {
-        setLoading(false);
+        clearTimeout(timeout);
       }
     };
 
-    loadEvents();
+    fetchEvents();
   }, []);
 
   // ✅ Filter and search
   useEffect(() => {
     let filtered = [...events];
-
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
     }
-
     if (search.trim()) {
       filtered = filtered.filter(event =>
         event.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -96,7 +94,6 @@ const AttendeeDiscover = () => {
         event.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
       );
     }
-
     setFilteredEvents(filtered);
   }, [search, selectedCategory, events]);
 
@@ -128,8 +125,6 @@ const AttendeeDiscover = () => {
     { id: 'community', name: 'Community', icon: 'fa-users' }
   ];
 
-  if (loading) return <div className="loading-container"><i className="fas fa-spinner fa-spin"></i><p>Loading events...</p></div>;
-
   return (
     <div className="discover-container">
       <div className="discover-header">
@@ -143,23 +138,21 @@ const AttendeeDiscover = () => {
         />
       </div>
 
-      {/* Categories */}
       <div className="categories-container">
         <div className="categories-scroll">
-          {categories.map(category => (
+          {categories.map(cat => (
             <button
-              key={category.id}
-              className={`category-button ${selectedCategory === category.name ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(category.name)}
+              key={cat.id}
+              className={`category-button ${selectedCategory === cat.name ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat.name)}
             >
-              <i className={`fas ${category.icon}`}></i>
-              <span>{category.name}</span>
+              <i className={`fas ${cat.icon}`}></i>
+              <span>{cat.name}</span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Events */}
       <div className="events-list">
         {filteredEvents.map(event => {
           const links = shareLinks(event);
@@ -185,10 +178,7 @@ const AttendeeDiscover = () => {
                   {event.tags.map((tag, i) => <span key={i} className="tag">{tag}</span>)}
                 </div>
 
-                <button
-                  className="share-button"
-                  onClick={(e) => handleShareClick(e, event.id)}
-                >
+                <button className="share-button" onClick={(e) => handleShareClick(e, event.id)}>
                   <i className="fas fa-share-alt"></i><span>Share</span>
                 </button>
 

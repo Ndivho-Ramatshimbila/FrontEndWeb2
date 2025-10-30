@@ -57,6 +57,10 @@
         margin-top: 5px;
         z-index: 999;
 
+        // 🔹 Add scrolling
+        max-height: 300px; // adjust as needed
+        overflow-y: auto;
+
         ul {
           list-style: none;
           padding: 0;
@@ -123,6 +127,10 @@
     z-index: 999;
     padding: 0.5rem 0;
 
+    // 🔹 Add scrolling
+    max-height: 300px; // adjust as needed
+    overflow-y: auto;
+
     ul {
       list-style: none;
       margin: 0;
@@ -164,4 +172,3 @@
     }
   }
 }
-

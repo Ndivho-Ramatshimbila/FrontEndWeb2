@@ -57,6 +57,10 @@
         margin-top: 5px;
         z-index: 999;
 
+        // 🔹 Scrollable notifications
+        max-height: 300px; // adjust as needed
+        overflow-y: auto;
+
         ul {
           list-style: none;
           padding: 0;
