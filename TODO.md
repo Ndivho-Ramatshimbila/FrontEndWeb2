@@ -1,5 +1,0 @@
-- [ ] Update RegisterForEvent.jsx to save registered event to localStorage after successful registration
-- [ ] Update Events.jsx to load and display registered events from localStorage, ensuring they have "Ticket" button for upcoming status
-- [ ] Update Events.jsx to pass event data when navigating to /attendee/qr-code
-- [ ] Update CheckInScreen.jsx to use passed event data to generate unique QR code
-- [ ] Test the registration flow: register -> navigate to my-events -> event appears with Ticket button -> click Ticket -> QR generated

@@ -50,7 +50,7 @@ const staticMyEventsData = [
 const MyEvents = () => {
   const [filter, setFilter] = useState("All");
   const [sortBy, setSortBy] = useState("date");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [refresh, setRefresh] = useState(0);
   const navigate = useNavigate();
 
