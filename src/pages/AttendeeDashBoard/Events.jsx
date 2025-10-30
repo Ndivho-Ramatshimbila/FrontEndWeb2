@@ -24,10 +24,17 @@ const mockEvents = [
 
 const Events = () => {
   const navigate = useNavigate();
-  const [events, setEvents] = useState(mockEvents);
+  const [events, setEvents] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [filteredEvents, setFilteredEvents] = useState(events);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  useEffect(() => {
+    // Load registered events from localStorage and merge with mockEvents
+    const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
+    const allEvents = [...mockEvents, ...registeredEvents];
+    setEvents(allEvents);
+  }, []);
 
   useEffect(() => {
     setFilteredEvents(
@@ -109,8 +116,7 @@ const Events = () => {
                     className="action-btn"
                     onClick={(e) => {
                       e.stopPropagation();
-                      alert(`Viewing details for: ${item.title}`);
-                      navigate("/attendee/qr-code");
+                      navigate("/attendee/qr-code", { state: { ticketData: item } });
                     }}
                   >
                     Ticket

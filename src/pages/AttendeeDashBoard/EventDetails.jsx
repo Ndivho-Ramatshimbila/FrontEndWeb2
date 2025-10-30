@@ -40,38 +40,7 @@ const EventDetails = () => {
 
   const handleRegister = () => {
     if (!acceptedTerms) return;
-    setLoading(true);
-
-    setTimeout(() => {
-      setLoading(false);
-      setToast(true); // show toast
-
-      // Generate QR code data with event title and details
-      const qrData = {
-        eventName: event.title,
-        eventDetails: {
-          date: event.date,
-          location: event.location,
-          organizer: event.organizer,
-          price: event.price,
-        },
-        qrCodeUrl: `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(JSON.stringify({
-          title: event.title,
-          date: event.date,
-          location: event.location,
-          organizer: event.organizer,
-          price: event.price,
-        }))}&size=150x150`,
-        status: "Checked In",
-        lastSynced: new Date().toLocaleString(),
-      };
-
-      // Auto-hide toast and navigate to QR code page with data
-      setTimeout(() => {
-        setToast(false);
-        navigate('/attendee/qr-code', { state: { ticketData: qrData } });
-      }, 2000);
-    }, 1000);
+    navigate('/attendee/register/' + (event.id || 'default'), { state: { eventData: event } });
   };
 
   return (
