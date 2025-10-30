@@ -375,6 +375,20 @@ export default function ModifyForm() {
 
     console.log('Form submitted successfully:', submissionData);
     showToastMessage('Event booking request submitted successfully!');
+    // 🔔 Add modification notification
+const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+notifications.unshift({
+  id: `notif-${Date.now()}`,
+  title: "Event Modified",
+  message: `Your event "${formData.eventTitle}" has been updated successfully.`,
+  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  read: false
+});
+localStorage.setItem('notifications', JSON.stringify(notifications));
+
+// Dispatch a custom event so Sidebar updates immediately
+window.dispatchEvent(new Event("notificationsUpdated"));
+
   };
 
   return (

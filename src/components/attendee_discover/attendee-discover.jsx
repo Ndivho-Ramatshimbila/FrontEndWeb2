@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./_attendee-discover.scss";
 import { useNavigate } from 'react-router-dom';
 
-// ✅ Local fallback data (used if API fails or not yet connected)
+// ✅ Local fallback data
 const eventsData = {
   events: [
     {
@@ -23,100 +23,65 @@ const eventsData = {
       tags: ["Music", "Art", "Culture"],
       category: "Arts & Culture"
     },
-    {
-      id: 3,
-      title: "Career Development Workshop",
-      date: "Friday, 25 October at 18:30 PM",
-      location: "TechHub Co-working Space",
-      image: "https://images.unsplash.com/photo-1559223607-ca4c3a29500d?w=800&q=80",
-      tags: ["Entrepreneurship", "Networking", "Innovation"],
-      category: "Academic"
-    },
-    {
-      id: 4,
-      title: "Jazz Under The Stars",
-      date: "Saturday, 02 November at 19:00 PM",
-      location: "Riverside Gardens",
-      image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=800&q=80",
-      tags: ["Music", "Entertainment", "Outdoor"],
-      category: "Arts & Culture"
-    },
-    {
-      id: 5,
-      title: "AI & Machine Learning Workshop",
-      date: "Wednesday, 30 October at 10:00 AM",
-      location: "Digital Innovation Center, Room 301",
-      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&q=80",
-      tags: ["Technology", "Workshop", "AI"],
-      category: "Academic"
-    }
+    // ... add more fallback events
   ]
 };
 
-// ✅ Function to get approved events from localStorage
+// ✅ Function to get only approved events from localStorage
 const getApprovedEvents = () => {
   const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
-  console.log('Submitted events:', submittedEvents); // Debug log
-  const approvedEvents = submittedEvents.filter(event => event.status === 'Approved');
-  console.log('Approved events:', approvedEvents); // Debug log
-
-  return approvedEvents.map(event => ({
-    id: event.id,
-    title: event.title,
-    date: event.date,
-    location: event.venue || "TUT Polokwane Campus",
-    image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80", // Use fallback image for now
-    tags: [event.typeOfFunction || "Event"],
-    category: event.category || "Academic"
-  }));
+  return submittedEvents
+    .filter(event => event.status === 'Approved')
+    .map(event => ({
+      id: event.id,
+      title: event.title,
+      date: event.date,
+      location: event.venue || "TUT Polokwane Campus",
+      image: event.image || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+      tags: [event.typeOfFunction || "Event"],
+      category: event.category || "Academic"
+    }));
 };
 
 const AttendeeDiscover = () => {
-  const [events, setEvents] = useState([]);            // all events (from API or fallback)
-  const [filteredEvents, setFilteredEvents] = useState([]); // filtered display list
+  const [events, setEvents] = useState([]);            
+  const [filteredEvents, setFilteredEvents] = useState([]); 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Events');
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Fetch data (with fallback and approved events)
- useEffect(() => {
-  const fetchEvents = async () => {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1000); // 3s timeout
+  // ✅ Load events: approved events + fallback data
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        setLoading(true);
+        // Attempt to fetch API (optional)
+        const response = await fetch("https://your-api-url.com/events");
+        const data = await response.ok ? await response.json() : { events: [] };
 
-    try {
-      setLoading(true);
-      const response = await fetch("https://your-api-url.com/events", {
-        signal: controller.signal,
-      });
+        // Merge fallback + API + approved events
+        const approvedEvents = getApprovedEvents();
+        const allEvents = [...(data.events || []), ...eventsData.events, ...approvedEvents];
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        setEvents(allEvents);
+        setFilteredEvents(allEvents);
+      } catch (err) {
+        console.warn("Using fallback data due to error:", err.message);
+        const approvedEvents = getApprovedEvents();
+        const allEvents = [...eventsData.events, ...approvedEvents];
+        setEvents(allEvents);
+        setFilteredEvents(allEvents);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      const data = await response.json();
-      const approvedEvents = getApprovedEvents();
-      const allEvents = [...(data.events || []), ...approvedEvents];
-      setEvents(allEvents);
-      setFilteredEvents(allEvents);
-    } catch (err) {
-      console.warn("Using fallback data:", err.message);
-      const approvedEvents = getApprovedEvents();
-      const allEvents = [...eventsData.events, ...approvedEvents];
-      setEvents(allEvents);
-      setFilteredEvents(allEvents);
-    } finally {
-      clearTimeout(timeout);
-      setLoading(false);
-    }
-  };
+    loadEvents();
+  }, []);
 
-  fetchEvents();
-}, []);
-
-
-  // ✅ Filter & search logic
+  // ✅ Filter and search
   useEffect(() => {
     let filtered = [...events];
 
@@ -136,10 +101,7 @@ const AttendeeDiscover = () => {
   }, [search, selectedCategory, events]);
 
   // ✅ Handlers
-  const handleCardClick = (id) => {
-    navigate(`/organizer-view-event/${id}`);
-  };
-
+  const handleCardClick = (id) => navigate(`/organizer-view-event/${id}`);
   const handleShareClick = (e, eventId) => {
     e.stopPropagation(); 
     setShowSharePopup(showSharePopup === eventId ? null : eventId);
@@ -166,27 +128,8 @@ const AttendeeDiscover = () => {
     { id: 'community', name: 'Community', icon: 'fa-users' }
   ];
 
-  // ✅ Loading state
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <i className="fas fa-spinner fa-spin"></i>
-        <p>Loading events...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="loading-container"><i className="fas fa-spinner fa-spin"></i><p>Loading events...</p></div>;
 
-  // ✅ Error state
-  if (error) {
-    return (
-      <div className="error-container">
-        <i className="fas fa-exclamation-circle"></i>
-        <p>Failed to load events: {error}</p>
-      </div>
-    );
-  }
-
-  // ✅ Main UI
   return (
     <div className="discover-container">
       <div className="discover-header">
@@ -200,7 +143,7 @@ const AttendeeDiscover = () => {
         />
       </div>
 
-      {/* Category Filter Bar */}
+      {/* Categories */}
       <div className="categories-container">
         <div className="categories-scroll">
           {categories.map(category => (
@@ -216,7 +159,7 @@ const AttendeeDiscover = () => {
         </div>
       </div>
 
-      {/* Events List */}
+      {/* Events */}
       <div className="events-list">
         {filteredEvents.map(event => {
           const links = shareLinks(event);
@@ -239,34 +182,22 @@ const AttendeeDiscover = () => {
                   <span>{event.location}</span>
                 </div>
                 <div className="tags-container">
-                  {event.tags.map((tag, i) => (
-                    <span key={i} className="tag">{tag}</span>
-                  ))}
+                  {event.tags.map((tag, i) => <span key={i} className="tag">{tag}</span>)}
                 </div>
 
                 <button
                   className="share-button"
                   onClick={(e) => handleShareClick(e, event.id)}
                 >
-                  <i className="fas fa-share-alt"></i>
-                  <span>Share</span>
+                  <i className="fas fa-share-alt"></i><span>Share</span>
                 </button>
 
-                {/* Share popup */}
                 {showSharePopup === event.id && (
                   <div className="share-popup" onClick={(e) => e.stopPropagation()}>
-                    <a href={links.facebook} target="_blank" rel="noopener noreferrer">
-                      <i className="fab fa-facebook"></i>
-                    </a>
-                    <a href={links.twitter} target="_blank" rel="noopener noreferrer">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a href={links.linkedin} target="_blank" rel="noopener noreferrer">
-                      <i className="fab fa-linkedin"></i>
-                    </a>
-                    <a href={links.whatsapp} target="_blank" rel="noopener noreferrer">
-                      <i className="fab fa-whatsapp"></i>
-                    </a>
+                    <a href={links.facebook} target="_blank" rel="noopener noreferrer"><i className="fab fa-facebook"></i></a>
+                    <a href={links.twitter} target="_blank" rel="noopener noreferrer"><i className="fab fa-twitter"></i></a>
+                    <a href={links.linkedin} target="_blank" rel="noopener noreferrer"><i className="fab fa-linkedin"></i></a>
+                    <a href={links.whatsapp} target="_blank" rel="noopener noreferrer"><i className="fab fa-whatsapp"></i></a>
                   </div>
                 )}
               </div>
@@ -275,7 +206,6 @@ const AttendeeDiscover = () => {
         })}
       </div>
 
-      {/* Empty State */}
       {filteredEvents.length === 0 && (
         <div className="empty-container">
           <i className="fas fa-search"></i>
