@@ -84,14 +84,11 @@ const AttendeeDiscover = () => {
   // ✅ Filter and search
   useEffect(() => {
     let filtered = [...events];
-<<<<<<< Updated upstream
-=======
 
     // Filter out registered events
     const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
     filtered = filtered.filter(event => !registeredEvents.some(reg => reg.id === event.id));
 
->>>>>>> Stashed changes
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
     }
@@ -108,7 +105,7 @@ const AttendeeDiscover = () => {
   // ✅ Handlers
   const handleCardClick = (event) => navigate(`/attendee/register/${event.id}`, { state: { eventData: event } });
   const handleShareClick = (e, eventId) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setShowSharePopup(showSharePopup === eventId ? null : eventId);
   };
 
