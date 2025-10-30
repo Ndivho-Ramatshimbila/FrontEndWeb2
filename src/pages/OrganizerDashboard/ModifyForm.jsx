@@ -461,14 +461,16 @@ window.dispatchEvent(new Event("notificationsUpdated"));
 
                   <div className="form-group">
                     <label className="form-label">Campus</label>
-                    <input
-                      type="text"
+                    <select
                       name="campus"
                       value={formData.campus}
                       onChange={handleInputChange}
-                      placeholder="Campus name"
                       className="form-input"
-                    />
+                    >
+                      <option value="">Select Campus</option>
+                      <option value="Emalahleni">Emalahleni</option>
+                      <option value="Polokwane">Polokwane</option>
+                    </select>
                   </div>
 
 
@@ -563,6 +565,8 @@ window.dispatchEvent(new Event("notificationsUpdated"));
                 <VenueCardGallery
                   selectedVenue={selectedVenue}
                   setSelectedVenue={handleVenueSelect}
+                  campusFilter={formData.campus}
+                  venueTypeFilter={formData.venueType}
                   minCapacity={parseInt(formData.numberOfGuestsExpected) || 0}
                 />
 

@@ -39,6 +39,7 @@ const CheckInScreen = lazy(() => import('./pages/AttendeeDashBoard/CheckInScreen
 const AttendeeDiscover = lazy(() => import('./components/attendee_discover/attendee-discover'));
 const AttendeeEventDetails = lazy(() => import('./pages/AttendeeDashBoard/EventDetails'));
 const AttendeeRegisterForEvent = lazy(() => import('./pages/AttendeeDashBoard/RegisterForEvent'));
+const ViewEventDetails = lazy(() => import('./pages/AttendeeDashBoard/ViewEventDetails'));
 
 // Lazy load Auth Pages
 const HomePage = lazy(() => import('./pages/Auth/HomePage'));
@@ -133,6 +134,7 @@ function App() {
             <Route path="qr-code" element={<CheckInScreen />} />
             <Route path="view-event/:id" element={<AttendeeEventDetails />} />
             <Route path="register/:id" element={<AttendeeRegisterForEvent />} />
+            <Route path="view-event-details" element={<ViewEventDetails />} />
           </Route>
 
           {/* ---------- 404 FALLBACK ---------- */}
