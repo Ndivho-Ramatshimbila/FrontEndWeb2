@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import '../styles/components/_attendeesidebar.scss';
 
 const AttendeeSidebar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
-  const notifications = [
-    "Your QR Code is ready for 'Music Fest 2025'.",
-    "Event 'Tech Conference 2025' starts tomorrow!",
-    "You rated 'Digital Expo' successfully.",
-  ];
+  // 🔹 Load notifications from localStorage
+  useEffect(() => {
+    const storedNotifications = JSON.parse(localStorage.getItem('attendeeNotifications') || '[]');
+    setNotifications(storedNotifications);
+
+    // 🔹 Listen for updates (live)
+    const handleNotificationsUpdated = () => {
+      const updatedNotifications = JSON.parse(localStorage.getItem('attendeeNotifications') || '[]');
+      setNotifications(updatedNotifications);
+    };
+
+    window.addEventListener('attendeeNotificationsUpdated', handleNotificationsUpdated);
+    return () => window.removeEventListener('attendeeNotificationsUpdated', handleNotificationsUpdated);
+  }, []);
 
   const toggleNotifications = () => {
     setShowNotifications(!showNotifications);
@@ -33,16 +43,22 @@ const AttendeeSidebar = () => {
           <span>My Events</span>
         </NavLink>
 
-        {/* Notifications at Bottom */}
+        {/* Notifications */}
         <div className="sidebar-item notification-icon" onClick={toggleNotifications}>
           <i className="fas fa-bell"></i>
           <span>Notifications</span>
+          {notifications.length > 0 && <span className="badge">{notifications.filter(n => !n.read).length}</span>}
+          
           {showNotifications && (
             <div className="notification-popup">
               {notifications.length > 0 ? (
                 <ul>
-                  {notifications.map((note, index) => (
-                    <li key={index}>{note}</li>
+                  {notifications.map((note) => (
+                    <li key={note.id} className={note.read ? 'read' : 'unread'}>
+                      <strong>{note.title}</strong>
+                      <p>{note.message}</p>
+                      <small>{note.timestamp}</small>
+                    </li>
                   ))}
                 </ul>
               ) : (

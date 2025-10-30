@@ -1,33 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaTag, FaUsers, FaGlobe, FaMapMarkerAlt, FaClock, FaBuilding, FaWineGlassAlt, FaUtensils, FaBroom, FaShieldAlt, FaChair, FaVideo, FaMicrophone, FaTable } from 'react-icons/fa';
+import {
+  FaCalendarAlt, FaUsers, FaGlobe, FaMapMarkerAlt, FaClock,
+  FaBuilding, FaWineGlassAlt, FaUtensils, FaBroom, FaShieldAlt,
+  FaChair, FaVideo, FaMicrophone, FaTable
+} from 'react-icons/fa';
 import eventPic from '../../assets/images/eventPic.PNG';
 import '../../styles/pages/EventDetails.scss';
 
 const staticEventsData = [
-    {
-      id: "REQ004",
-      title: "Tech Conference 2024",
-      type: "Conference",
-      date: "2024-10-15 at 10:00 AM",
-      status: "Pending",
-    },
-    {
-      id: "REQ007",
-      title: "Charity Run",
-      type: "Sports Event",
-      date: "2025-01-15 at 08:00 AM",
-      status: "Pending",
-    },
-    {
-      id: "REQ011",
-      title: "Film Screening",
-      type: "Entertainment",
-      date: "2025-05-15 at 07:00 PM",
-      status: "Pending",
-    },
-
-  // You can add more events if needed
+  { id: "REQ004", title: "Tech Conference 2024", type: "Conference", date: "2024-10-15 at 10:00 AM", status: "Pending" },
+  { id: "REQ007", title: "Charity Run", type: "Sports Event", date: "2025-01-15 at 08:00 AM", status: "Pending" },
+  { id: "REQ011", title: "Film Screening", type: "Entertainment", date: "2025-05-15 at 07:00 PM", status: "Pending" },
 ];
 
 export default function AdminEventDetails() {
@@ -39,8 +23,6 @@ export default function AdminEventDetails() {
     const loadEvents = () => {
       const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
       const allEvents = [...staticEventsData];
-
-      // Override static events with submitted events if they have the same id
       submittedEvents.forEach(submittedEvent => {
         const index = allEvents.findIndex(staticEvent => staticEvent.id === submittedEvent.id);
         if (index !== -1) {
@@ -49,7 +31,6 @@ export default function AdminEventDetails() {
           allEvents.push(submittedEvent);
         }
       });
-
       return allEvents;
     };
 
@@ -58,56 +39,61 @@ export default function AdminEventDetails() {
     setEvent(foundEvent);
   }, [id]);
 
-  const handleApprove = () => {
-    updateEventStatus("Approved");
-  };
-
-  const handleReject = () => {
-    updateEventStatus("Rejected");
-  };
+  const handleApprove = () => updateEventStatus("Approved");
+  const handleReject = () => updateEventStatus("Rejected");
 
   const updateEventStatus = (newStatus) => {
     const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
-    const staticEvents = staticEventsData;
-
-    // Check if event is in submittedEvents
     const submittedIndex = submittedEvents.findIndex(e => e.id === id);
+
     if (submittedIndex !== -1) {
       submittedEvents[submittedIndex].status = newStatus;
-      submittedEvents[submittedIndex].organizerStatus = newStatus; // Update organizerStatus as well
+      submittedEvents[submittedIndex].organizerStatus = newStatus;
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     } else {
-      // If not in submitted, assume it's static, but since static is read-only, we might need to handle differently
-      // For now, alert or handle as needed. But since static is in code, perhaps add to submitted if not there.
       const modifiedEvent = { ...event, status: newStatus, organizerStatus: newStatus };
       submittedEvents.push(modifiedEvent);
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     }
 
-    // Update the local state to reflect the change immediately
-    setEvent(prevEvent => ({ ...prevEvent, status: newStatus }));
+    // ✅ Create a user notification
+    const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+    const newNotification = {
+      id: Date.now(),
+      title: `Event ${newStatus}`,
+      message:
+        newStatus === "Approved"
+          ? `Your event "${event.title}" has been approved. 🎉`
+          : `Your event "${event.title}" has been rejected.`,
+      timestamp: new Date().toLocaleString(),
+      read: false,
+    };
 
-    // Dispatch custom event to notify ApprovalScreen to refresh
+    // Add and save the new notification
+    const updatedNotifications = [newNotification, ...notifications];
+    localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+
+    // 🔄 Let user sidebar update immediately
+    window.dispatchEvent(new Event('notificationsUpdated'));
+
+    // Update local UI
+    setEvent((prev) => ({ ...prev, status: newStatus }));
+
+    // Notify admin approval screen to refresh
     window.dispatchEvent(new Event('localStorageUpdate'));
 
-    // Navigate back to approvals
+    // ✅ Go back to approvals page
     navigate('/admin/approvals');
   };
 
-  if (!event) {
-    return <div>Loading...</div>;
-  }
+  if (!event) return <div>Loading...</div>;
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Pending":
-        return "pending";
-      case "Approved":
-        return "approved";
-      case "Rejected":
-        return "rejected";
-      default:
-        return "";
+      case "Pending": return "pending";
+      case "Approved": return "approved";
+      case "Rejected": return "rejected";
+      default: return "";
     }
   };
 
@@ -115,9 +101,7 @@ export default function AdminEventDetails() {
     <div className="event-details">
       <h2 className="header-title">Details</h2>
 
-      <img
-        className="event-image"
-        src={eventPic} alt="Event" />
+      <img className="event-image" src={eventPic} alt="Event" />
 
       <section className="info-section">
         <h3>Event Details</h3>

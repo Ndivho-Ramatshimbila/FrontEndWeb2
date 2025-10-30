@@ -1,12 +1,7 @@
-# TODO: Implement Date Picker with Disabled TUT Important Dates
+# TODO: Create Attendee Register Page
 
-## Overview
-Modify the CreateEvent.jsx form to use react-datepicker that disables important TUT dates (public holidays, recess periods, examination periods) to prevent event date clashes.
-
-## Steps
-- [x] Define disabled dates and ranges based on TUT 2025 Academic Calendar
-- [x] Import DatePicker component and CSS from react-datepicker
-- [x] Create isDateDisabled function to check if a date should be disabled
-- [x] Replace dateOfCommencement input with DatePicker component
-- [x] Replace endingDate input with DatePicker component (with minDate validation)
-- [x] Test the date picker functionality to ensure dates are properly disabled
+- [x] Create new file `src/pages/AttendeeDashBoard/RegisterForEvent.jsx` with the provided identical code.
+- [x] Modify `src/components/attendee_discover/attendee-discover.jsx` to change navigation from `/organizer-view-event/${id}` to `/attendee-register/${id}`.
+- [x] Add route in `src/App.jsx` for `/attendee/register/:id` to use the new AttendeeRegisterForEvent component.
+- [x] Verified navigation works correctly from attendee discover to the new register page (dev server running on http://localhost:5174).
+- [x] Ensured no organizer routes are accessed (attendee routes are separate).
