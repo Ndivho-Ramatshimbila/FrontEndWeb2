@@ -1,42 +1,3 @@
-<<<<<<< HEAD
-// src/pages/OrganizerDashboard/ConfirmEventDetails.jsx
-import React from "react";
-import {
-  ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils,
-  Sparkles, Monitor, Mic
-} from "lucide-react";
-import "../../styles/pages/_confirmevent.scss";
-import { useNavigate } from "react-router-dom";
-
-export default function ConfirmEventDetails() {
-  const navigate = useNavigate();
-
-  const eventData = {
-    eventTitle: "New Student Orientation",
-    eventType: "Social Event",
-    purpose: "Purpose of event is to introduce the students to the Campus",
-    capacity: 150,
-    date: "Friday, October 27, 2024",
-    venue: "TUT Emalahleni Campus, Innovation Hall",
-    time: "09:00 AM - 14:00 PM",
-    venueSelection: {
-      buildings: ["Building 16", "Building 15"],
-    },
-    services: {
-      liquor: "Yes",
-      kitchenFacilities: "yes",
-      cleaningServices: "yes",
-      extraSecurity: "yes",
-    },
-    resources: {
-      chairs: 150,
-      projectors: 3,
-      microphones: 3,
-      tables: 12,
-    },
-    headerImage:
-      "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-=======
 import React, { useState } from 'react';
 import { ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils, Sparkles, Monitor, Wifi, Mic, Video, Laptop } from 'lucide-react';
 import "../../styles/pages/_confirmevent.scss";
@@ -89,7 +50,6 @@ export default function ConfirmEventDetails() {
       tables: (formData?.steelTable || 0) + (formData?.examTables || 0)
     },
     headerImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' // Default image
->>>>>>> 0ed39e0034e5a3fe7f795713b7191b3f28f92cfc
   };
 
   const handleSubmit = () => {
@@ -172,9 +132,6 @@ export default function ConfirmEventDetails() {
 
             {/* Submit Button */}
             <div className="submit-button-container">
-<<<<<<< HEAD
-              <button className="btn-submit" type="button" onClick={handleSubmit}>
-=======
               <button
                 className="btn-submit"
                 type="button"
@@ -216,7 +173,6 @@ export default function ConfirmEventDetails() {
                   }, 2000); // waits 2 seconds before redirecting
                 }}
               >
->>>>>>> 0ed39e0034e5a3fe7f795713b7191b3f28f92cfc
                 Submit
               </button>
             </div>
