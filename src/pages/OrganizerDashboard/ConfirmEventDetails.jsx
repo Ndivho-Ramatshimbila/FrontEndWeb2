@@ -1,35 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils, Sparkles, Monitor, Wifi, Mic, Video, Laptop } from 'lucide-react';
 import "../../styles/pages/_confirmevent.scss";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function ConfirmEventDetails() {
   const navigate = useNavigate();
-  // This would come from your form submission or route params
+  const location = useLocation();
+  const { formData, selectedVenue, termsAccepted } = location.state || {};
+
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const toastTimerRef = React.useRef(null);
+
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+
+    if (toastTimerRef.current) {
+      clearTimeout(toastTimerRef.current);
+    }
+
+    toastTimerRef.current = setTimeout(() => {
+      setShowToast(false);
+    }, 5000);
+  };
+
+  // Build dynamic eventData from formData
   const eventData = {
-    eventTitle: 'New Student Orientation',
-    eventType: 'Social Event',
-    purpose: 'purpose of event is to introduce the students to the Campus',
-    capacity: 150,
-    date: 'Friday, October 27, 2024',
-    venue: 'TUT emalahleni Campus, Innovation Hall',
-    time: '09:00 AM - 14:00 PM',
+    eventTitle: formData?.eventTitle || 'Event Title',
+    eventType: formData?.typeOfFunction || 'Event Type',
+    purpose: formData?.purposeOfFunction || 'Purpose of event',
+    capacity: formData?.numberOfGuestsExpected || 0,
+    date: formData?.dateOfCommencement ? `${formData.dateOfCommencement.toDateString()} - ${formData.endingDate?.toDateString() || 'TBD'}` : 'Date TBD',
+    venue: `${formData?.campus || 'Campus'} ${formData?.venueType || 'Venue Type'}, ${formData?.venue || 'Venue'}`,
+    time: `${formData?.timeOfCommencement || 'TBD'} - ${formData?.timeToLockup || 'TBD'}`,
     venueSelection: {
-      buildings: ['Building 16', 'Building 15']
+      buildings: selectedVenue ? [selectedVenue.name] : ['Venue not selected']
     },
     services: {
-      liquor: 'Yes',
-      kitchenFacilities: 'yes',
-      cleaningServices: 'yes',
-      extraSecurity: 'yes'
+      liquor: formData?.useOfLiquor || 'No',
+      kitchenFacilities: formData?.kitchenFacilities || 'No',
+      cleaningServices: formData?.cleaningServices || 'No',
+      extraSecurity: 'No' // Assuming not in formData
     },
     resources: {
-      chairs: 150,
-      projectors: 3,
-      microphones: 3,
-      tables: 12
+      chairs: formData?.plasticChairs || 0,
+      projectors: formData?.dataProjector === 'Yes' ? 1 : 0,
+      microphones: formData?.microphone === 'Yes' ? 1 : 0,
+      tables: (formData?.steelTable || 0) + (formData?.examTables || 0)
     },
-    headerImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80'
+    headerImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' // Default image
   };
 
   return (
@@ -161,13 +181,45 @@ export default function ConfirmEventDetails() {
 
             {/* Submit Button */}
             <div className="submit-button-container">
-              <button 
+              <button
                 className="btn-submit"
                 type="button"
                 onClick={() => {
                   // Handle final submission
-                  console.log('Event confirmed and submitted');
-                  navigate("/my-events");
+                  const submissionData = {
+                    id: `REQ${Date.now()}`, // Generate unique ID
+                    title: formData.eventTitle,
+                    type: formData.typeOfFunction,
+                    date: `${formData.dateOfCommencement} at ${formData.timeOfCommencement || 'TBD'}`,
+                    status: 'Pending', // For admin approval
+                    organizerStatus: 'Waiting for Approval', // For organizer
+                    category: formData.typeOfFunction,
+                    ...formData,
+                    selectedVenue: selectedVenue,
+                    termsAccepted: termsAccepted,
+                    submittedAt: new Date().toISOString()
+                  };
+
+                  // Save to localStorage
+                  const existingEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+                  existingEvents.push(submissionData);
+                  localStorage.setItem('submittedEvents', JSON.stringify(existingEvents));
+
+                  // Add notification for event submission
+                  const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                  notifications.unshift({
+                    id: `notif-${Date.now()}`,
+                    title: "Event Submission",
+                    message: `Your event "${formData.eventTitle}" has been submitted for approval.`,
+                    time: "Just now"
+                  });
+                  localStorage.setItem('notifications', JSON.stringify(notifications));
+
+                  console.log('Event confirmed and submitted:', submissionData);
+                  showToastMessage('Event booking request submitted successfully!');
+                  setTimeout(() => {
+                    navigate('/my-events');
+                  }, 2000); // waits 2 seconds before redirecting
                 }}
               >
                 Submit
@@ -175,6 +227,26 @@ export default function ConfirmEventDetails() {
             </div>
           </div>
         </div>
+
+        {/* TOAST NOTIFICATION */}
+        {showToast && (
+          <div className="bottom-toast" role="status" aria-live="polite">
+            <div className="bottom-toast-inner">
+              <span className="toast-message">{toastMessage}</span>
+              <button
+                type="button"
+                className="toast-close"
+                aria-label="Dismiss notification"
+                onClick={() => {
+                  setShowToast(false);
+                  if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+                }}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
