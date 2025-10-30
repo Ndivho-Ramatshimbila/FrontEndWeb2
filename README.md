@@ -1,4 +1,4 @@
-# 🎯 FrontEndWeb2 - Event Management System
+# 🎯 FrontEndWeb2 - Smart Event System
 
 A comprehensive **React-based event management platform** built with **Vite**, featuring **role-based dashboards** for administrators, organizers, and attendees.  
 The system enables seamless **event creation**, **approval workflows**, **attendee registration**, and **real-time notifications** — providing a smooth digital event management experience across campuses.
@@ -34,3 +34,4 @@ The system enables seamless **event creation**, **approval workflows**, **attend
    ```bash
    git clone https://github.com/your-username/FrontEndWeb2.git
    cd FrontEndWeb2
+
