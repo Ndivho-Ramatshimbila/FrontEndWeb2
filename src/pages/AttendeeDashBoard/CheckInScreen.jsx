@@ -17,6 +17,13 @@ export default function CheckInScreen() {
                 status: "Checked In",
                 lastSynced: "2025-10-15 09:45",
             };
+            // If ticketData is provided, generate unique QR based on event id and title
+            if (ticketData) {
+                ticketInfo.eventName = ticketData.title;
+                ticketInfo.qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`EventID:${ticketData.id}-Title:${ticketData.title}`)}&size=150x150`;
+                ticketInfo.status = "Registered";
+                ticketInfo.lastSynced = new Date().toLocaleString();
+            }
             setTicket(ticketInfo);
             setLoading(false);
         }, 1500); // simulate 1.5s delay

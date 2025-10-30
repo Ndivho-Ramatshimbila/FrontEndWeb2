@@ -84,6 +84,11 @@ const AttendeeDiscover = () => {
   // ✅ Filter and search
   useEffect(() => {
     let filtered = [...events];
+
+    // Filter out registered events
+    const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
+    filtered = filtered.filter(event => !registeredEvents.some(reg => reg.id === event.id));
+
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
     }
@@ -98,9 +103,9 @@ const AttendeeDiscover = () => {
   }, [search, selectedCategory, events]);
 
   // ✅ Handlers
-  const handleCardClick = (id) => navigate(`/attendee/register/${id}`);
+  const handleCardClick = (event) => navigate(`/attendee/register/${event.id}`, { state: { eventData: event } });
   const handleShareClick = (e, eventId) => {
-    e.stopPropagation(); 
+    e.stopPropagation();
     setShowSharePopup(showSharePopup === eventId ? null : eventId);
   };
 
@@ -160,7 +165,7 @@ const AttendeeDiscover = () => {
             <div
               key={event.id}
               className="event-card"
-              onClick={() => handleCardClick(event.id)}
+              onClick={() => handleCardClick(event)}
               style={{ cursor: "pointer" }}
             >
               <img src={event.image} alt={event.title} className="event-image" />

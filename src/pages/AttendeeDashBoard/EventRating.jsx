@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/pages/_eventrating.scss';
 
 export default function RatingsPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { department, adminName } = location.state || {};
-  
+  const { department, adminName, eventData } = location.state || {};
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comments, setComments] = useState('');
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [alreadyRated, setAlreadyRated] = useState(false);
+
+  // Check if already rated on mount
+  useEffect(() => {
+    const key = eventData ? `rating_${eventData.title}` : `rating_${adminName || department}`;
+    const existingRating = localStorage.getItem(key);
+    if (existingRating) {
+      setAlreadyRated(true);
+    }
+  }, [adminName, department, eventData]);
 
   const ratingCategories = [
     { id: 'response_time', label: 'Response Time', icon: 'access_time' },
@@ -29,6 +39,11 @@ export default function RatingsPage() {
   };
 
   const submitRating = () => {
+    if (alreadyRated) {
+      alert(`You have already rated ${eventData ? 'this event' : 'this administrator'}.`);
+      return;
+    }
+
     if (rating === 0) {
       alert('Please select a star rating before submitting.');
       return;
@@ -47,6 +62,11 @@ export default function RatingsPage() {
       adminName,
       timestamp: new Date(),
     };
+
+    // Store in localStorage to prevent multiple ratings
+    const key = eventData ? `rating_${eventData.title}` : `rating_${adminName || department}`;
+    localStorage.setItem(key, JSON.stringify(ratingData));
+    setAlreadyRated(true); // Update state to prevent further submissions
 
     console.log('Rating submitted:', ratingData);
 
@@ -88,7 +108,7 @@ export default function RatingsPage() {
         <div className="header-info">
           <h1 className="header-title">Rate Your Experience</h1>
           <p className="header-subtitle">
-            {adminName ? `with ${adminName}` : 'with TUT Administration'}
+            {eventData ? `for ${eventData.title}` : adminName ? `with ${adminName}` : 'with TUT Administration'}
           </p>
         </div>
         <div style={{ width: '24px' }} />
@@ -99,7 +119,7 @@ export default function RatingsPage() {
         <div className="section">
           <h2 className="section-title">Overall Rating</h2>
           <p className="section-description">
-            How would you rate your experience with {adminName || 'the administrator'}?
+            How would you rate your experience {eventData ? `at ${eventData.title}` : `with ${adminName || 'the administrator'}`}?
           </p>
 
           <div className="stars-container">
@@ -182,16 +202,23 @@ export default function RatingsPage() {
 
       {/* Submit Button */}
       <div className="footer">
-        <button
-          className={`submit-button ${
-            rating === 0 || selectedCategories.length === 0 ? 'disabled' : ''
-          }`}
-          onClick={submitRating}
-          disabled={rating === 0 || selectedCategories.length === 0}
-        >
-          <span className="submit-button-text">Submit Rating</span>
-          <span className="material-icons">check_circle_outline</span>
-        </button>
+        {alreadyRated ? (
+          <div className="already-rated-message">
+            <span className="material-icons">check_circle</span>
+            <p>You have already rated {eventData ? 'this event' : 'this administrator'}.</p>
+          </div>
+        ) : (
+          <button
+            className={`submit-button ${
+              rating === 0 || selectedCategories.length === 0 ? 'disabled' : ''
+            }`}
+            onClick={submitRating}
+            disabled={rating === 0 || selectedCategories.length === 0}
+          >
+            <span className="submit-button-text">Submit Rating</span>
+            <span className="material-icons">check_circle_outline</span>
+          </button>
+        )}
       </div>
     </div>
   );

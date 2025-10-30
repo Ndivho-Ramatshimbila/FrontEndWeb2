@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Calendar, MapPin, Clock, Users, Building, Tag, Mail, ArrowLeft } from 'lucide-react';
 import { IoInformationCircleOutline, IoLockClosedOutline } from 'react-icons/io5';
 import '../../styles/pages/ViewEventDetails.scss';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const RegisterForEvent = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { eventData } = location.state || {};
 
-  const [event] = useState({
+  const [event] = useState(eventData || {
     title: "Annual Tech Summit",
     category: "Technology",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=400&fit=crop",
@@ -44,10 +46,21 @@ const RegisterForEvent = () => {
       setLoading(false);
       setToast(true); // show toast
 
+      // Save registered event to localStorage
+      const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
+      const newEvent = {
+        id: Date.now(), // unique id
+        ...event,
+        status: 'Upcoming',
+        registeredAt: new Date().toISOString(),
+      };
+      registeredEvents.push(newEvent);
+      localStorage.setItem('registeredEvents', JSON.stringify(registeredEvents));
+
       // Auto-hide toast and navigate after 2 seconds
       setTimeout(() => {
         setToast(false);
-        navigate('/discover');
+        navigate('/attendee/my-events');
       }, 2000);
     }, 1000);
   };
