@@ -151,13 +151,7 @@ export default function ApprovalScreen() {
                 </div>
               </div>
 
-              {/* Approve / Reject Buttons */}
-              {event.status === "Pending" && (
-                <div className="action-buttons">
-                  <button className="approve-btn" onClick={() => updateEventStatus(event.id, "Approved")}>Approve</button>
-                  <button className="reject-btn" onClick={() => updateEventStatus(event.id, "Rejected")}>Reject</button>
-                </div>
-              )}
+
 
               <button
                 className="view-btn"

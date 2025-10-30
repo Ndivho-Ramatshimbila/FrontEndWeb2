@@ -127,7 +127,13 @@ const Events = () => {
                     className="action-btn gray"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate("/attendee/rate-events");
+                      const key = `rating_${item.title}`; // Use event title as key
+                      const existingRating = localStorage.getItem(key);
+                      if (existingRating) {
+                        alert('You have already rated this event.');
+                      } else {
+                        navigate("/attendee/rate-events", { state: { eventData: item } });
+                      }
                     }}
                   >
                     Rate Event
