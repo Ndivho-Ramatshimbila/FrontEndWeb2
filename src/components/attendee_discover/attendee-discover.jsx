@@ -101,7 +101,7 @@ const AttendeeDiscover = () => {
   }, [search, selectedCategory, events]);
 
   // ✅ Handlers
-  const handleCardClick = (id) => navigate(`/organizer-view-event/${id}`);
+  const handleCardClick = (id) => navigate(`/attendee/register/${id}`);
   const handleShareClick = (e, eventId) => {
     e.stopPropagation(); 
     setShowSharePopup(showSharePopup === eventId ? null : eventId);
