@@ -13,7 +13,7 @@ const staticMyEventsData = [
   {
     id: 2,
     title: "Marketing Strategy Workshop",
-    date: "2025-10-28",
+    date: "2025-12-15",
     status: "Approved",
     category: "Academic",
   },
@@ -45,6 +45,13 @@ const staticMyEventsData = [
     status: "Past",
     category: "Academic",
   },
+  {
+    id: 7,
+    title: "Guluv's Event",
+    date: "2025-12-20",
+    status: "Approved",
+    category: "Academic",
+  },
 ];
 
 const MyEvents = () => {
@@ -71,8 +78,8 @@ const MyEvents = () => {
   const filteredEvents = useMemo(() => {
     return myEventsData.filter(event => {
       if (filter === "All") return true;
-      if (filter === "Upcoming") return new Date(event.date) > new Date();
-      if (filter === "Past") return new Date(event.date) <= new Date();
+      if (filter === "Upcoming") return new Date(event.date) > new Date() && (event.status === "Waiting for Approval" || event.status === "Approved");
+      if (filter === "Past") return event.status === "Past";
       if (filter === "Cancelled") return event.status === "Cancelled";
       return false;
     }).sort((a, b) => {

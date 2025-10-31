@@ -1,0 +1,1 @@
+- [ ] Modify the "Upcoming" filter in MyEvents.jsx to include only future events with status "Waiting for Approval" or "Approved"
