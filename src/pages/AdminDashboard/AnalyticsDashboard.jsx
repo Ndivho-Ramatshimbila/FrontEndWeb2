@@ -162,7 +162,7 @@ const AnalyticsDashboard = () => {
                 <span className="occupancy-label">{item.name}</span>
                 {renderOccupancyBar(item.occupied, item.total)}
                 <span className="occupancy-value">
-                  {item.occupied}/{item.total}
+                  {Math.round((item.occupied / item.total) * 100)}%
                 </span>
               </div>
             ))}

@@ -63,23 +63,28 @@ export default function CreateEvent() {
   const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
 
+    let updatedFormData = { ...formData };
+
     if (type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
+      updatedFormData = {
+        ...updatedFormData,
         [name]: checked
-          ? [...(prev[name] || []), value]
-          : (prev[name] || []).filter(item => item !== value)
-      }));
+          ? [...(updatedFormData[name] || []), value]
+          : (updatedFormData[name] || []).filter(item => item !== value)
+      };
+      setFormData(updatedFormData);
     } else if (type === 'radio') {
-      setFormData(prev => ({
-        ...prev,
+      updatedFormData = {
+        ...updatedFormData,
         [name]: value
-      }));
+      };
+      setFormData(updatedFormData);
     } else {
-      setFormData(prev => ({
-        ...prev,
+      updatedFormData = {
+        ...updatedFormData,
         [name]: value
-      }));
+      };
+      setFormData(updatedFormData);
     }
 
     // Clear venue selection when campus or venue type changes
@@ -89,15 +94,32 @@ export default function CreateEvent() {
         ...prev,
         venue: ''
       }));
+      updatedFormData.venue = '';
     }
 
+    // Clear individual field errors
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
         [name]: ''
       }));
     }
-  }, [errors]);
+
+    // Clear group errors based on updated data
+    const audiovisualServices = ['laptop', 'sound', 'screen', 'videoConferencing', 'dataProjector', 'internetConnection', 'microphone', 'wifi'];
+    if (audiovisualServices.includes(name)) {
+      const hasAudiovisual = audiovisualServices.some(service => updatedFormData[service] === 'Yes');
+      if (hasAudiovisual) {
+        setErrors(prev => ({ ...prev, audiovisual: '' }));
+      }
+    }
+
+    if (name === 'typeOfGuests') {
+      if (updatedFormData.typeOfGuests.length > 0) {
+        setErrors(prev => ({ ...prev, typeOfGuests: '' }));
+      }
+    }
+  }, [errors, formData]);
 
   const handleDateChange = useCallback((name, date) => {
     setFormData(prev => ({
