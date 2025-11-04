@@ -60,9 +60,13 @@ function AuthLayout({ children }) {
 
 function DashboardLayout({ children }) {
   return (
-    <div className="app">
+    <div className="dashboard-layout-container">
       <Sidebar />
-      <div className="main-content">{children}</div>
+      <div className="dashboard-main-wrapper">
+        <div className="dashboard-content-area">
+          {children}
+        </div>
+      </div>
       <Footer />
     </div>
   );
