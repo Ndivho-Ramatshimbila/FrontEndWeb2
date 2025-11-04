@@ -297,14 +297,14 @@
   }
 }
 .reject-container {
-  background: #fffafa; // very light red tone
-  border: 1px solid #ffd7d7;
-  border-left: 6px solid #e63946; // bold red accent
+  background: #fff5f5;
+  border: 1px solid #ffc8c8;
+  border-left: 6px solid #e63946;
   padding: 25px 30px;
   border-radius: 16px;
   margin-top: 25px;
   max-width: 600px;
-  box-shadow: 0 6px 18px rgba(230, 57, 70, 0.15);
+  box-shadow: 0 6px 18px rgba(230, 57, 70, 0.12);
   animation: fadeIn 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -316,20 +316,22 @@
     font-size: 15px;
   }
 
-  /* DROPDOWN */
+  /* =============================
+     DROPDOWN — Red Theme
+  ============================== */
   .reject-dropdown {
     width: 100%;
     padding: 12px 14px;
     font-size: 15px;
     border: 1px solid #e63946;
     border-radius: 10px;
-    background-color: #fff0f0; // light red background
+    background-color: #fff0f0;
     color: #b71c1c;
     outline: none;
     transition: all 0.25s ease-in-out;
-    appearance: none;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(230, 57, 70, 0.08);
+    appearance: none;
 
     &:hover {
       background-color: #ffe3e3;
@@ -341,7 +343,9 @@
     }
   }
 
-  /* CUSTOM REASON BOX */
+  /* =============================
+     TEXTAREA — Custom Reason
+  ============================== */
   .reject-textarea {
     width: 100%;
     min-height: 120px;
@@ -370,55 +374,58 @@
     font-size: 14px;
   }
 
-  /* BUTTONS */
-  .buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 14px;
-    margin-top: 10px;
+  /* =============================
+     BUTTONS — Match JSX structure
+  ============================== */
+  button {
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.3px;
+    align-self: flex-end;
+    margin-left: 10px;
+  }
 
-    button {
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      border-radius: 30px; // rounded pill shape
-      cursor: pointer;
-      transition: all 0.25s ease-in-out;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  /* Confirm Reject */
+  .approve {
+    background: linear-gradient(135deg, #ff4d4d, #b30000);
+    box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
 
-      &.approve {
-        background: linear-gradient(135deg, #e63946, #b71c1c);
-        color: #fff;
+    &:hover {
+      background: linear-gradient(135deg, #ff3333, #990000);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(255, 77, 77, 0.4);
+    }
 
-        &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(230, 57, 70, 0.35);
-        }
+    &:active {
+      transform: scale(0.97);
+    }
+  }
 
-        &:active {
-          transform: scale(0.97);
-        }
-      }
+  /* Cancel */
+  .reject {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    box-shadow: 0 5px 15px rgba(73, 80, 87, 0.25);
 
-      &.reject {
-        background: linear-gradient(135deg, #cfd3d7, #9aa1a9);
-        color: #222;
+    &:hover {
+      background: linear-gradient(135deg, #868e96, #343a40);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(73, 80, 87, 0.35);
+    }
 
-        &:hover {
-          background: linear-gradient(135deg, #e4e7eb, #b7bcc2);
-          transform: translateY(-2px);
-        }
-
-        &:active {
-          transform: scale(0.97);
-        }
-      }
+    &:active {
+      transform: scale(0.97);
     }
   }
 }
 
-/* Fade animation */
+/* Fade In Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -427,13 +434,5 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* Responsive */
-@media (min-width: 768px) {
-  .reject-container {
-    margin-left: auto;
-    margin-right: auto;
   }
 }
