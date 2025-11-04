@@ -324,13 +324,20 @@ export default function CreateEvent() {
       newErrors.endingDate = 'Ending date is required';
     }
 
-    const audiovisualServices = ['laptop', 'sound', 'screen', 'videoConferencing', 
-                                  'dataProjector', 'internetConnection', 'microphone', 'wifi'];
-    const hasAudiovisual = audiovisualServices.some(service => formData[service] === 'Yes');
-    
-    if (!hasAudiovisual) {
-      newErrors.audiovisual = 'Please select at least one audiovisual service';
-    }
+    // Audiovisual Services should require selecting Yes or No on each — not force Yes
+const audiovisualServices = [
+  'laptop','sound','screen','videoConferencing',
+  'dataProjector','internetConnection','microphone','wifi'
+];
+
+const allAVAnswered = audiovisualServices.every(service => 
+  formData[service] === 'Yes' || formData[service] === 'No'
+);
+
+if (!allAVAnswered) {
+  newErrors.audiovisual = 'Please answer all audiovisual service questions';
+}
+
 
     if (!selectedVenue) {
       newErrors.venueSelection = 'Please select a venue from the gallery';

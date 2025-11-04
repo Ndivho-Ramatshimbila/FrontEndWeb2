@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   FaCalendarAlt, FaUsers, FaGlobe, FaMapMarkerAlt, FaClock,
-  FaBuilding, FaWineGlassAlt, FaUtensils, FaBroom, FaShieldAlt,
-  FaChair, FaVideo, FaMicrophone, FaTable
+  FaBuilding, FaWineGlassAlt, FaUtensils, FaBroom,
+  FaShieldAlt, FaChair, FaVideo, FaMicrophone, FaTable
 } from 'react-icons/fa';
 import eventPic from '../../assets/images/eventPic.PNG';
 import '../../styles/pages/EventDetails.scss';
@@ -18,6 +18,10 @@ export default function AdminEventDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
+  const [showRejectReason, setShowRejectReason] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
+  const [customReason, setCustomReason] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const loadEvents = () => {
@@ -40,23 +44,35 @@ export default function AdminEventDetails() {
   }, [id]);
 
   const handleApprove = () => updateEventStatus("Approved");
-  const handleReject = () => updateEventStatus("Rejected");
 
-  const updateEventStatus = (newStatus) => {
+  const handleRejectClick = () => {
+    setShowRejectReason(true);
+  };
+
+  const submitRejection = () => {
+    const reasonToSave = rejectReason === "Other" ? customReason.trim() : rejectReason.trim();
+    if (!reasonToSave) {
+      setError("Please provide a reason for rejecting the event");
+      return;
+    }
+    updateEventStatus("Rejected", reasonToSave);
+  };
+
+  const updateEventStatus = (newStatus, reason = null) => {
     const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
     const submittedIndex = submittedEvents.findIndex(e => e.id === id);
 
     if (submittedIndex !== -1) {
       submittedEvents[submittedIndex].status = newStatus;
       submittedEvents[submittedIndex].organizerStatus = newStatus;
+      submittedEvents[submittedIndex].rejectionReason = reason;
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     } else {
-      const modifiedEvent = { ...event, status: newStatus, organizerStatus: newStatus };
+      const modifiedEvent = { ...event, status: newStatus, organizerStatus: newStatus, rejectionReason: reason };
       submittedEvents.push(modifiedEvent);
       localStorage.setItem('submittedEvents', JSON.stringify(submittedEvents));
     }
 
-    // ✅ Create a user notification
     const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
     const newNotification = {
       id: Date.now(),
@@ -64,25 +80,17 @@ export default function AdminEventDetails() {
       message:
         newStatus === "Approved"
           ? `Your event "${event.title}" has been approved. 🎉`
-          : `Your event "${event.title}" has been rejected.`,
+          : `Your event "${event.title}" has been rejected.\nReason: ${reason}`,
       timestamp: new Date().toLocaleString(),
       read: false,
     };
 
-    // Add and save the new notification
     const updatedNotifications = [newNotification, ...notifications];
     localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
 
-    // 🔄 Let user sidebar update immediately
     window.dispatchEvent(new Event('notificationsUpdated'));
-
-    // Update local UI
     setEvent((prev) => ({ ...prev, status: newStatus }));
-
-    // Notify admin approval screen to refresh
     window.dispatchEvent(new Event('localStorageUpdate'));
-
-    // ✅ Go back to approvals page
     navigate('/admin/approvals');
   };
 
@@ -140,16 +148,53 @@ export default function AdminEventDetails() {
         </ul>
       </section>
 
+      {/* Reject Reason Box */}
+      {showRejectReason && (
+        <div className="reject-container">
+          <label htmlFor="reject-dropdown">Select a reason for rejection:</label>
+          <select
+            id="reject-dropdown"
+            className="reject-dropdown"
+            value={rejectReason}
+            onChange={(e) => { setRejectReason(e.target.value); setError(""); }}
+          >
+            <option value="">-- Select a reason --</option>
+            <option value="Incomplete event details">Incomplete event details</option>
+            <option value="Venue not available">Venue not available</option>
+            <option value="Conflict with another event">Conflict with another event</option>
+            <option value="Budget or resource constraints">Budget or resource constraints</option>
+            <option value="Event does not meet policy requirements">Event does not meet policy requirements</option>
+            <option value="Other">Other (enter below)</option>
+          </select>
+
+          {rejectReason === "Other" && (
+            <textarea
+              placeholder="Enter custom reason for rejection..."
+              className="reject-textarea"
+              value={customReason}
+              onChange={(e) => { setCustomReason(e.target.value); setError(""); }}
+            />
+          )}
+
+          {error && <p className="error-text">{error}</p>}
+
+          <button className="approve" onClick={submitRejection}>Confirm Reject</button>
+          <button className="reject" onClick={() => setShowRejectReason(false)}>Cancel</button>
+        </div>
+      )}
+
       <div className="buttons">
-        {event.status === "Pending" && (
+        {event.status === "Pending" && !showRejectReason && (
           <>
             <button className="approve" onClick={handleApprove}>Approve</button>
-            <button className="reject" onClick={handleReject}>Reject</button>
+            <button className="reject" onClick={handleRejectClick}>Reject</button>
           </>
         )}
+
         {event.status === "Approved" && (
-          <button className="reject" onClick={handleReject}>Reject</button>
+          <button className="reject" onClick={handleRejectClick}>Reject</button>
         )}
+
         {event.status === "Rejected" && (
           <button className="approve" onClick={handleApprove}>Approve</button>
         )}

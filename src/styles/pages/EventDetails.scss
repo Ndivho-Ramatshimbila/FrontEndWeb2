@@ -296,3 +296,144 @@
     cursor: not-allowed;
   }
 }
+.reject-container {
+  background: #fffafa; // very light red tone
+  border: 1px solid #ffd7d7;
+  border-left: 6px solid #e63946; // bold red accent
+  padding: 25px 30px;
+  border-radius: 16px;
+  margin-top: 25px;
+  max-width: 600px;
+  box-shadow: 0 6px 18px rgba(230, 57, 70, 0.15);
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  label {
+    font-weight: 600;
+    color: #2b2b2b;
+    font-size: 15px;
+  }
+
+  /* DROPDOWN */
+  .reject-dropdown {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    border: 1px solid #e63946;
+    border-radius: 10px;
+    background-color: #fff0f0; // light red background
+    color: #b71c1c;
+    outline: none;
+    transition: all 0.25s ease-in-out;
+    appearance: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(230, 57, 70, 0.08);
+
+    &:hover {
+      background-color: #ffe3e3;
+    }
+
+    &:focus {
+      border-color: #b71c1c;
+      box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.25);
+    }
+  }
+
+  /* CUSTOM REASON BOX */
+  .reject-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px 14px;
+    border: 1px solid #e63946;
+    border-radius: 10px;
+    background-color: #fff8f8;
+    font-size: 15px;
+    resize: vertical;
+    transition: all 0.25s ease-in-out;
+
+    &:focus {
+      border-color: #b71c1c;
+      box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.25);
+    }
+
+    &::placeholder {
+      color: #b3b3b3;
+      font-style: italic;
+    }
+  }
+
+  .error-text {
+    color: #b71c1c;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* BUTTONS */
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 10px;
+
+    button {
+      padding: 12px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 30px; // rounded pill shape
+      cursor: pointer;
+      transition: all 0.25s ease-in-out;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+
+      &.approve {
+        background: linear-gradient(135deg, #e63946, #b71c1c);
+        color: #fff;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(230, 57, 70, 0.35);
+        }
+
+        &:active {
+          transform: scale(0.97);
+        }
+      }
+
+      &.reject {
+        background: linear-gradient(135deg, #cfd3d7, #9aa1a9);
+        color: #222;
+
+        &:hover {
+          background: linear-gradient(135deg, #e4e7eb, #b7bcc2);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: scale(0.97);
+        }
+      }
+    }
+  }
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+  .reject-container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
