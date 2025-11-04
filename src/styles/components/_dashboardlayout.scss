@@ -1,0 +1,20 @@
+@import '../abstracts-auth/_variable';
+
+.dashboard-layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .dashboard-main-wrapper {
+    flex: 1;
+    display: flex;
+    margin-left: 250px; // Sidebar width
+    width: calc(100% - 250px);
+
+    .dashboard-content-area {
+      flex: 1;
+      padding: 20px;
+      min-height: calc(100vh - 200px); // Ensure content area takes up space, adjust footer height as needed
+    }
+  }
+}
