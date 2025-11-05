@@ -8,7 +8,7 @@ import Footer from './components/Footer';
 // Lazy load Organizer Layouts/Pages
 const Dashboard = lazy(() => import('./pages/OrganizerDashboard/Dashboard'));
 const MyEvents = lazy(() => import('./pages/OrganizerDashboard/MyEvents'));
-const Discover = lazy(() => import("./components/organizer_discover/discover"));
+const Discover = lazy(() => import('./components/organizer_discover/discover'));
 const Inbox = lazy(() => import('./pages/OrganizerDashboard/Inbox'));
 const ProfilePage = lazy(() => import('./pages/OrganizerDashboard/ProfilePage'));
 const CreateEvent = lazy(() => import('./pages/OrganizerDashboard/CreateEvent'));
@@ -29,8 +29,7 @@ const ApprovedScreen = lazy(() => import('./pages/AdminDashboard/ApprovalScreen'
 const AdminEventDetails = lazy(() => import('./pages/AdminDashboard/AdminEventDetails'));
 const AdminChat = lazy(() => import('./pages/AdminDashboard/AdminChat'));
 const AvailableVenues = lazy(() => import('./pages/AdminDashboard/AvailableVenues'));
-// const AdminCalendar = lazy(() => import('./pages/AdminDashboard/AdminCalendar'));
-
+const UserManagement = lazy(() => import('./pages/AdminDashboard/UserManagement')); // ✅ fixed import path
 
 // Lazy load Attendee Pages
 const AttendeeLayout = lazy(() => import('./layouts/AttendeeLayout'));
@@ -112,28 +111,24 @@ function App() {
           <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
           <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
           <Route path="/organizer-view-event/:id" element={<DashboardLayout><RegisterForEvent /></DashboardLayout>} />
-
-          {/* ✅ View Event Details */}
           <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
           <Route path="/event-details-modify/:id" element={<DashboardLayout><EventDetailsModify /></DashboardLayout>} />
           <Route path="/confirm-modified-details" element={<DashboardLayout><ConfirmModifiedDetails /></DashboardLayout>} />
-
-          {/* ✅ NEW — Modify Event Route (Step 1) */}
           <Route path="/modify-event" element={<DashboardLayout><ModifyForm /></DashboardLayout>} />
 
-          {/* ---------- ADMIN ROUTES (Nested) ---------- */}
+          {/* ---------- ADMIN ROUTES ---------- */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AnalyticsDashboard />} />
             <Route path="export" element={<AnalyticsExportScreen />} />
             <Route path="profile" element={<AdminProfilePage />} />
             <Route path="approvals" element={<ApprovedScreen />} />
             <Route path="details/:id" element={<AdminEventDetails />} />
-            <Route path="/admin/chat" element={<AdminChat />} />
+            <Route path="chat" element={<AdminChat />} />
             <Route path="add-venue" element={<AvailableVenues />} />
-            {/* <Route path="calendar" element={<AdminCalendar />} /> */}
+            <Route path="user-management" element={<UserManagement />} /> {/* ✅ Fixed Route */}
           </Route>
 
-          {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
+          {/* ---------- ATTENDEE ROUTES ---------- */}
           <Route path="/attendee" element={<AttendeeLayout />}>
             <Route index element={<AttendeeDiscover />} />
             <Route path="events-profile" element={<AttendeeProfilePage />} />
