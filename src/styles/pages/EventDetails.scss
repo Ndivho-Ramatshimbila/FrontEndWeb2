@@ -296,4 +296,143 @@
     cursor: not-allowed;
   }
 }
+.reject-container {
+  background: #fff5f5;
+  border: 1px solid #ffc8c8;
+  border-left: 6px solid #e63946;
+  padding: 25px 30px;
+  border-radius: 16px;
+  margin-top: 25px;
+  max-width: 600px;
+  box-shadow: 0 6px 18px rgba(230, 57, 70, 0.12);
+  animation: fadeIn 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
+  label {
+    font-weight: 600;
+    color: #2b2b2b;
+    font-size: 15px;
+  }
+
+  /* =============================
+     DROPDOWN — Red Theme
+  ============================== */
+  .reject-dropdown {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 15px;
+    border: 1px solid #e63946;
+    border-radius: 10px;
+    background-color: #fff0f0;
+    color: #b71c1c;
+    outline: none;
+    transition: all 0.25s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(230, 57, 70, 0.08);
+    appearance: none;
+
+    &:hover {
+      background-color: #ffe3e3;
+    }
+
+    &:focus {
+      border-color: #b71c1c;
+      box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.25);
+    }
+  }
+
+  /* =============================
+     TEXTAREA — Custom Reason
+  ============================== */
+  .reject-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px 14px;
+    border: 1px solid #e63946;
+    border-radius: 10px;
+    background-color: #fff8f8;
+    font-size: 15px;
+    resize: vertical;
+    transition: all 0.25s ease-in-out;
+
+    &:focus {
+      border-color: #b71c1c;
+      box-shadow: 0 0 0 3px rgba(214, 40, 40, 0.25);
+    }
+
+    &::placeholder {
+      color: #b3b3b3;
+      font-style: italic;
+    }
+  }
+
+  .error-text {
+    color: #b71c1c;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* =============================
+     BUTTONS — Match JSX structure
+  ============================== */
+  button {
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.3px;
+    align-self: flex-end;
+    margin-left: 10px;
+  }
+
+  /* Confirm Reject */
+  .approve {
+    background: linear-gradient(135deg, #ff4d4d, #b30000);
+    box-shadow: 0 5px 15px rgba(255, 77, 77, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, #ff3333, #990000);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(255, 77, 77, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  /* Cancel */
+  .reject {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    box-shadow: 0 5px 15px rgba(73, 80, 87, 0.25);
+
+    &:hover {
+      background: linear-gradient(135deg, #868e96, #343a40);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(73, 80, 87, 0.35);
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

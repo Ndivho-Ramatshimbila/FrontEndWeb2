@@ -46,8 +46,9 @@ const AdminProfileCard = ({
     <div className="profile-card" style={{ textAlign: "center" }}>
       {/* Profile Image */}
       <img
-        src={profileImg && profileImg.trim() !== "" ? profileImg : "/admin.webp"}
+        src={profileImg && profileImg.trim() !== "" ? profileImg : "/profile.webp"}
         alt="profile"
+        onError={(e) => (e.target.src = "/profile.webp")}
         style={{
           width: "180px",
           height: "180px",
@@ -107,7 +108,7 @@ const AdminProfileCard = ({
         </div>
       </div>
 
-      {/* Logout */}
+      {/* Logout Button */}
       <div style={{ marginTop: "1.8rem" }}>
         <button onClick={onLogout} style={logoutBtnStyle}>
           <LogOut size={16} />
@@ -118,6 +119,7 @@ const AdminProfileCard = ({
   );
 };
 
+// --- Button Styles ---
 const logoutBtnStyle = {
   background: "#03045e",
   color: "white",

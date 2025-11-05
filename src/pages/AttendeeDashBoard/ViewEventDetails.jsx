@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Calendar, MapPin, Clock, Users, Building, Tag, Mail, ArrowLeft } from 'lucide-react';
-import { IoInformationCircleOutline, IoLockClosedOutline } from 'react-icons/io5';
 import '../../styles/pages/ViewEventDetails.scss';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const EventDetails = () => {
+const ViewEventDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { eventData } = location.state || {};
@@ -25,11 +24,6 @@ const EventDetails = () => {
     contact: "info@techinnovators.com",
   });
 
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [subscribeUpdates, setSubscribeUpdates] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [toast, setToast] = useState(false);
-
   const handleContact = () => {
     window.location.href = `mailto:${event.contact}`;
   };
@@ -38,25 +32,8 @@ const EventDetails = () => {
     navigate(-1);
   };
 
-  const handleRegister = () => {
-    if (!acceptedTerms) return;
-    navigate('/attendee/register/' + (event.id || 'default'), { state: { eventData: event } });
-  };
-
   return (
     <div className="event-details">
-      {/* Toast Message */}
-      {toast && (
-        <div className="bottom-toast">
-          <div className="bottom-toast-inner">
-            <span className="toast-message">
-             Successfully registered for <strong>{event.title}</strong>
-            </span>
-            <button className="toast-close" onClick={() => setToast(false)}>×</button>
-          </div>
-        </div>
-      )}
-
       {/* Image & Back Button */}
       <div className="event-details__image-container">
         <img src={event.image} alt={event.title} className="event-details__image" />
@@ -124,52 +101,9 @@ const EventDetails = () => {
             <span>{event.contact}</span>
           </button>
         </section>
-
-        {/* Checkboxes & Register */}
-        <section className="event-details__section">
-          <div className="checkbox-section">
-            <label className="checkbox">
-              <input
-                type="checkbox"
-                checked={acceptedTerms}
-                onChange={() => setAcceptedTerms(!acceptedTerms)}
-              />
-              <span>
-                I agree to the <a href="#">Terms</a> and <a href="#">Privacy Policy</a> *
-              </span>
-            </label>
-
-            <label className="checkbox">
-              <input
-                type="checkbox"
-                checked={subscribeUpdates}
-                onChange={() => setSubscribeUpdates(!subscribeUpdates)}
-              />
-              <span>Subscribe to event updates and notifications</span>
-            </label>
-          </div>
-
-          {/* Info Box */}
-          <div className="info-box">
-            <IoInformationCircleOutline size={20} color="#1976d2" />
-            <p>
-              You’ll receive a confirmation email with event details. Bring your student ID to check in.
-            </p>
-          </div>
-
-          {/* Register Button */}
-          <button
-            className="register-btn"
-            onClick={handleRegister}
-            disabled={!acceptedTerms || loading}
-          >
-            {loading ? "Processing..." : "Register Now"}
-            <IoLockClosedOutline size={18} />
-          </button>
-        </section>
       </div>
     </div>
   );
 };
 
-export default EventDetails;
+export default ViewEventDetails;

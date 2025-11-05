@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/pages/CheckInScreen.scss";
 
 export default function CheckInScreen() {
     const location = useLocation();
+    const navigate = useNavigate();
     const { ticketData } = location.state || {};
     const [ticket, setTicket] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,6 +18,13 @@ export default function CheckInScreen() {
                 status: "Checked In",
                 lastSynced: "2025-10-15 09:45",
             };
+            // If ticketData is provided, generate unique QR based on event id and title
+            if (ticketData) {
+                ticketInfo.eventName = ticketData.title;
+                ticketInfo.qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`EventID:${ticketData.id}-Title:${ticketData.title}`)}&size=150x150`;
+                ticketInfo.status = "Registered";
+                ticketInfo.lastSynced = new Date().toLocaleString();
+            }
             setTicket(ticketInfo);
             setLoading(false);
         }, 1500); // simulate 1.5s delay
@@ -71,7 +79,7 @@ export default function CheckInScreen() {
                 </div>
 
                 {/* Button */}
-                <button className="button">
+                <button className="button" onClick={() => navigate('/attendee/view-event-details', { state: { eventData: ticketData } })}>
                     <span className="button-text">View Event Details</span>
                 </button>
             </div>

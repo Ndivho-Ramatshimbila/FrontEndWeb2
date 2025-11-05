@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
+import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import '../../styles/pages/_analyticsexport.scss';
 
 const AnalyticsExportScreen = () => {
     const [exportFormat, setExportFormat] = useState("PDF");
     const [selectedDays, setSelectedDays] = useState(30);
-    const [reportType, setReportType] = useState("overall"); // "overall" or "specific"
-    const [selectedEvent, setSelectedEvent] = useState("");
 
     const dayOptions = [
         { label: "Last 7 Days", value: 7 },
@@ -16,74 +15,264 @@ const AnalyticsExportScreen = () => {
         { label: "Last 90 Days", value: 90 },
     ];
 
-    // This will later be replaced by data fetched from backend
-    const eventOptions = [
-        { label: "Tech Innovation Hackathon", value: "hackathon" },
-        { label: "Community Outreach", value: "community" },
-        { label: "TUT Developers Meetup", value: "meetup" },
-        { label: "AI Research Conference", value: "ai-conference" },
+    // Mock venue-based data
+    const reportData = [
+        {
+            venueName: "Vayne Arena",
+            eventName: "Tech Innovation Hackathon",
+            attendees: 150,
+            bookings: 120,
+            revenue: 15000,
+            date: "2025-10-15",
+        },
+        {
+            venueName: "Vayne Arena",
+            eventName: "AI Research Conference",
+            attendees: 200,
+            bookings: 180,
+            revenue: 25000,
+            date: "2025-11-01",
+        },
+        {
+            venueName: "TUT Main Hall",
+            eventName: "Community Outreach",
+            attendees: 80,
+            bookings: 70,
+            revenue: 5000,
+            date: "2025-10-20",
+        },
+        {
+            venueName: "Innovation Hub",
+            eventName: "TUT Developers Meetup",
+            attendees: 60,
+            bookings: 55,
+            revenue: 3000,
+            date: "2025-10-25",
+        },
+        {
+            venueName: "Vayne Arena",
+            eventName: "Startup Showcase",
+            attendees: 120,
+            bookings: 110,
+            revenue: 15000,
+            date: "2025-10-30",
+        },
     ];
 
-    const handleGenerateReport = () => {
-        if (reportType === "specific" && !selectedEvent) {
-            alert("Please select an event to generate its report.");
-            return;
-        }
-        const reportInfo = {
-            reportType,
-            exportFormat,
-            selectedDays,
-            selectedEvent: reportType === "specific" ? selectedEvent : "All Events",
+    // Group events by venue
+    const groupByVenue = (data) => {
+        const grouped = {};
+        data.forEach((item) => {
+            if (!grouped[item.venueName]) {
+                grouped[item.venueName] = {
+                    venueName: item.venueName,
+                    totalEvents: 0,
+                    totalRevenue: 0,
+                };
+            }
+            grouped[item.venueName].totalEvents += 1;
+            grouped[item.venueName].totalRevenue += item.revenue;
+        });
+        return Object.values(grouped);
+    };
+
+    // Prepare TUT logo for embedding
+    const [logoUri, setLogoUri] = useState(null);
+
+    useEffect(() => {
+        const prepareLogo = async () => {
+            try {
+                // For web, use fetch to get the image as base64
+                const response = await fetch('/src/assets/images/tut_logo.png'); // Adjust path as needed
+                const blob = await response.blob();
+                const reader = new FileReader();
+                reader.onload = () => setLogoUri(reader.result);
+                reader.readAsDataURL(blob);
+            } catch (error) {
+                console.warn("Logo not found or failed to prepare:", error);
+            }
         };
-        console.log("Generating report with data:", reportInfo);
-        alert(`Generating ${reportInfo.exportFormat} report for ${reportInfo.selectedEvent}`);
+        prepareLogo();
+    }, []);
+
+    const generateCSV = () => {
+        try {
+            const venueReports = groupByVenue(reportData);
+
+            let csvContent = "VENUE ANALYTICS REPORT\n";
+            csvContent += `Report Period: Last ${selectedDays} Days\n\n`;
+            csvContent += "Venue,Events Hosted,Total Revenue\n";
+
+            venueReports.forEach((venue) => {
+                csvContent += `${venue.venueName},${venue.totalEvents},R${venue.totalRevenue}\n`;
+            });
+
+            // Web download
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `venue_report_${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating CSV:", error);
+            alert("Failed to generate CSV");
+        }
+    };
+
+    const generatePDF = async () => {
+        try {
+            const venueReports = groupByVenue(reportData);
+
+            const pdfDoc = await PDFDocument.create();
+            let page = pdfDoc.addPage([600, 800]);
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+            let yPosition = 750;
+
+            // === Load and Draw Logo ===
+            if (logoUri) {
+                try {
+                    const logoBytes = logoUri.split(',')[1]; // Remove data:image/png;base64,
+                    const logoImage = await pdfDoc.embedPng(logoBytes);
+                    const logoDims = logoImage.scale(0.25);
+                    page.drawImage(logoImage, {
+                        x: (600 - logoDims.width) / 2,
+                        y: 650,
+                        width: logoDims.width,
+                        height: logoDims.height,
+                    });
+                    yPosition = 630;
+                } catch (error) {
+                    console.warn("Failed to embed logo:", error);
+                }
+            }
+
+            // === Header ===
+            page.drawText("Tshwane University of Technology", {
+                x: 145,
+                y: yPosition,
+                size: 16,
+                font: boldFont,
+                color: rgb(0, 0.2, 0.6), // TUT blue
+            });
+
+            yPosition -= 25;
+            page.drawText("Venue Analytics Report", {
+                x: 210,
+                y: yPosition,
+                size: 14,
+                font: boldFont,
+                color: rgb(0, 0, 0),
+            });
+
+            yPosition -= 20;
+            page.drawText(`Report Period: Last ${selectedDays} Days`, {
+                x: 210,
+                y: yPosition,
+                size: 11,
+                font: font,
+                color: rgb(0.3, 0.3, 0.3),
+            });
+
+            // === Divider ===
+            yPosition -= 25;
+            page.drawLine({
+                start: { x: 50, y: yPosition },
+                end: { x: 550, y: yPosition },
+                thickness: 1,
+                color: rgb(0.8, 0.8, 0.8),
+            });
+
+            yPosition -= 40;
+            page.drawText("Venue Summary", {
+                x: 50,
+                y: yPosition,
+                size: 14,
+                font: boldFont,
+                color: rgb(0, 0.2, 0.6),
+            });
+
+            yPosition -= 25;
+
+            // === Venue Summary Section ===
+            venueReports.forEach((venue) => {
+                const textBlock = `${venue.venueName} hosted ${venue.totalEvents} event${venue.totalEvents > 1 ? "s" : ""} in the last ${selectedDays} days, earning a total of R${venue.totalRevenue}.`;
+
+                page.drawText(textBlock, {
+                    x: 65,
+                    y: yPosition,
+                    size: 11,
+                    font: font,
+                    color: rgb(0.1, 0.1, 0.1),
+                });
+
+                yPosition -= 20;
+                page.drawLine({
+                    start: { x: 60, y: yPosition },
+                    end: { x: 540, y: yPosition },
+                    thickness: 0.5,
+                    color: rgb(0.85, 0.85, 0.85),
+                });
+                yPosition -= 20;
+
+                if (yPosition < 80) {
+                    page.drawText("Generated by TUT Connect Analytics System", {
+                        x: 180,
+                        y: 50,
+                        size: 10,
+                        font: font,
+                        color: rgb(0.4, 0.4, 0.4),
+                    });
+                    page = pdfDoc.addPage([600, 800]);
+                    yPosition = 750;
+                }
+            });
+
+            // === Footer ===
+            page.drawText("Generated by TUT Connect Analytics System", {
+                x: 180,
+                y: 50,
+                size: 10,
+                font: font,
+                color: rgb(0.4, 0.4, 0.4),
+            });
+
+            // === Save PDF ===
+            const pdfBytes = await pdfDoc.save();
+
+            // Web download
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `venue_report_${Date.now()}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+            alert("Failed to generate PDF: " + error.message);
+        }
+    };
+
+    const handleGenerateReport = async () => {
+        if (exportFormat === "PDF") {
+            await generatePDF();
+        } else if (exportFormat === "Excel") {
+            generateCSV();
+        }
     };
 
     return (
         <div className="analytics-export-container">
             <div className="analytics-export-content">
-                <h1 className="export-header">Analytics & Exports</h1>
+                <h1 className="export-header">Venue Analytics & Exports</h1>
 
-                {/* Report Type Selection */}
-                <div className="export-card">
-                    <h3 className="section-title">Select Report Type</h3>
-                    <div className="button-row">
-                        <button
-                            className={`format-button ${reportType === "overall" ? "selected" : ""}`}
-                            onClick={() => setReportType("overall")}
-                        >
-                            Overall Events
-                        </button>
-
-                        <button
-                            className={`format-button ${reportType === "specific" ? "selected" : ""}`}
-                            onClick={() => setReportType("specific")}
-                        >
-                            Specific Event
-                        </button>
-                    </div>
-
-                    {/* Event Picker (only visible when 'Specific Event' is chosen) */}
-                    {reportType === "specific" && (
-                        <div className="date-container">
-                            <Calendar size={20} color="#555" />
-                            <select
-                                value={selectedEvent}
-                                className="picker"
-                                onChange={(e) => setSelectedEvent(e.target.value)}
-                            >
-                                <option value="">Select an Event</option>
-                                {eventOptions.map((event) => (
-                                    <option key={event.value} value={event.value}>
-                                        {event.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    )}
-                </div>
-
-                {/* Export Report Section */}
                 <div className="export-card">
                     <h3 className="section-title">Export Format</h3>
                     <div className="button-row">
@@ -102,7 +291,7 @@ const AnalyticsExportScreen = () => {
                         </button>
                     </div>
 
-                    {/* Date Range */}
+                    {/* Date Range Picker */}
                     <div className="date-container">
                         <Calendar size={20} color="#555" />
                         <select
@@ -119,9 +308,8 @@ const AnalyticsExportScreen = () => {
                     </div>
                 </div>
 
-                {/* Generate Report Button */}
                 <button className="generate-button" onClick={handleGenerateReport}>
-                    Generate Report
+                    Generate Venue Report
                 </button>
             </div>
         </div>

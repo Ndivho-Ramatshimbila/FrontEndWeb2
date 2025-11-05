@@ -1,67 +1,76 @@
 import React from 'react';
-import hall from '../assets/images/hall.jpg';
-import sport from '../assets/images/sport.jpg';
-import auditorium from '../assets/images/auditorium.jpg';
-import lecturer from '../assets/images/lecturer.jpg';
+import { MapPin } from 'lucide-react';
+import { MdImage } from 'react-icons/md';
 import "../styles/pages/_createEvent.scss";
 
-export default function VenueCardGallery({ selectedVenue, setSelectedVenue, minCapacity = 0, campusFilter = '', venueTypeFilter = '' }) {
-  const venues = [
-    // --- Polokwane Campus Venues ---
-    { name: 'Hall', image: hall, location: 'Polokwane', campus: 'Polokwane', type: 'indoor', capacity: 200, price: 5000 },
-    { name: 'Sport Centre', image: sport, location: 'Polokwane', campus: 'Polokwane', type: 'outdoor', capacity: 150, price: 3000 },
-    { name: 'Auditorium', image: auditorium, location: 'Polokwane', campus: 'Polokwane', type: 'indoor', capacity: 300, price: 7000 },
-    { name: 'Lecturer Room', image: lecturer, location: 'Polokwane', campus: 'Polokwane', type: 'indoor', capacity: 50, price: 1000 },
-
-    // --- Emalahleni Campus Venues ---
-    { name: 'Conference Hall', image: hall, location: 'Emalahleni', campus: 'Emalahleni', type: 'indoor', capacity: 180, price: 4800 },
-    { name: 'Sports Arena', image: sport, location: 'Emalahleni', campus: 'Emalahleni', type: 'outdoor', capacity: 200, price: 3500 },
-    { name: 'Auditorium B', image: auditorium, location: 'Emalahleni', campus: 'Emalahleni', type: 'indoor', capacity: 280, price: 6500 },
-    { name: 'Seminar Room', image: lecturer, location: 'Emalahleni', campus: 'Emalahleni', type: 'indoor', capacity: 60, price: 1200 },
-  ];
-
-  // Filter by campus, venue type, and capacity
-  const filteredVenues = venues.filter(venue => {
-    const campusMatch = !campusFilter || venue.campus === campusFilter;
-    const typeMatch = !venueTypeFilter || venue.type === venueTypeFilter;
-    const capacityMatch = venue.capacity >= minCapacity;
+export default function VenueCardGallery({
+  venues = [],
+  selectedVenue,
+  setSelectedVenue,
+  campusFilter = '',
+  venueTypeFilter = '',
+  minCapacity = 0,
+}) {
+  // ✅ Filter dynamically based on props
+  const filteredVenues = venues.filter((venue) => {
+    const campusMatch =
+      !campusFilter ||
+      venue.location?.toLowerCase().includes(campusFilter.toLowerCase());
+    const typeMatch =
+      !venueTypeFilter ||
+      venue.type?.toLowerCase().includes(venueTypeFilter.toLowerCase()); // ✅ fixed
+    const capacityMatch = !minCapacity || Number(venue.capacity) >= Number(minCapacity);
     return campusMatch && typeMatch && capacityMatch;
   });
 
-  const maxCapacity = Math.max(...venues.map(v => v.capacity));
-
   return (
     <section className="form-section">
-      <h2 className="section-title">Select Venue *</h2>
-
-      {minCapacity > 0 && filteredVenues.length === 0 && (
-        <div className="warning-box">
-          No venues available for {minCapacity} guests. The largest venue can accommodate {maxCapacity} guests.
-        </div>
-      )}
-
-      {campusFilter === '' && (
-        <div className="hint-box">Please select a campus to view available venues.</div>
-      )}
+      <div className="section-header">
+        <h2 className="section-title">Venue Selection</h2>
+      </div>
 
       <div className="venue-gallery">
-        {filteredVenues.map((venue, index) => (
-          <div
-            key={index}
-            className={`venue-card ${selectedVenue?.name === venue.name ? 'selected' : ''}`}
-            onClick={() => setSelectedVenue(venue)}
-          >
-            <h3 className="venue-name">{venue.name}</h3>
-            <img src={venue.image} alt={venue.name} />
-            <div className="venue-details">
-              <p>Campus: {venue.campus}</p>
-              <p>Location: {venue.location}</p>
-              <p>Type: {venue.type}</p>
-              <p>Capacity: {venue.capacity}</p>
-              <p>Price: R{venue.price}</p>
+        {filteredVenues.length === 0 ? (
+          <p className="no-venues">No venues available that match your filters.</p>
+        ) : (
+          filteredVenues.map((venue, index) => (
+            <div
+              key={index}
+              className={`venue-card ${selectedVenue?.name === venue.name ? 'selected' : ''}`}
+              onClick={() => setSelectedVenue(venue)}
+            >
+              {/* Venue Info */}
+              <div className="venue-info">
+                <h3 className="venue-name">{venue.name}</h3>
+                <p className="venue-location">
+                  <MapPin size={14} /> {venue.location || 'Unknown location'}
+                </p>
+                <p className="venue-type">Type: {venue.type || '—'}</p> {/* ✅ added venue type */}
+                <p className="venue-price">R{venue.price || '—'}</p>
+              </div>
+
+              {/* Venue Image */}
+              <div className="venue-image">
+                {venue.images && venue.images.length > 0 ? (
+                  <img src={venue.images[0]} alt={venue.name} />
+                ) : (
+                  <div className="image-placeholder">
+                    <MdImage size={40} color="#0077B6" />
+                    <p>No image</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Venue Availability */}
+              <div className="venue-availability">
+                <p>Live Availability:</p>
+                <span className="capacity-badge">
+                  Capacity: {venue.capacity || '—'}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </section>
   );

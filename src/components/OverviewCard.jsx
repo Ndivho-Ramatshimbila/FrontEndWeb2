@@ -8,9 +8,11 @@ const OverviewCard = ({ title, value, change, isPositive, icon }) => {
         <i className={icon}></i>
       </div>
       <h2>{value}</h2>
-      <p className={isPositive ? 'positive' : 'negative'}>
-        {isPositive ? '▲' : '▼'} {change} {isPositive ? 'increase' : 'decrease'}
-      </p>
+      {change && (
+        <p className={isPositive ? 'positive' : 'negative'}>
+          {isPositive ? '▲' : '▼'} {change} {isPositive ? 'increase' : 'decrease'}
+        </p>
+      )}
     </div>
   );
 };
