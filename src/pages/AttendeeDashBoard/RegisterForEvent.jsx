@@ -4,7 +4,7 @@ import { IoInformationCircleOutline, IoLockClosedOutline } from 'react-icons/io5
 import '../../styles/pages/ViewEventDetails.scss';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const EventDetails = () => {
+const RegisterForEvent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { eventData } = location.state || {};
@@ -40,7 +40,29 @@ const EventDetails = () => {
 
   const handleRegister = () => {
     if (!acceptedTerms) return;
-    navigate('/attendee/register/' + (event.id || 'default'), { state: { eventData: event } });
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      setToast(true); // show toast
+
+      // Save registered event to localStorage
+      const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
+      const newEvent = {
+        id: Date.now(), // unique id
+        ...event,
+        status: 'Upcoming',
+        registeredAt: new Date().toISOString(),
+      };
+      registeredEvents.push(newEvent);
+      localStorage.setItem('registeredEvents', JSON.stringify(registeredEvents));
+
+      // Auto-hide toast and navigate after 2 seconds
+      setTimeout(() => {
+        setToast(false);
+        navigate('/attendee/my-events');
+      }, 2000);
+    }, 1000);
   };
 
   return (
@@ -50,7 +72,7 @@ const EventDetails = () => {
         <div className="bottom-toast">
           <div className="bottom-toast-inner">
             <span className="toast-message">
-             Successfully registered for <strong>{event.title}</strong>
+              Successfully registered for <strong>{event.title}</strong>
             </span>
             <button className="toast-close" onClick={() => setToast(false)}>×</button>
           </div>
@@ -172,4 +194,4 @@ const EventDetails = () => {
   );
 };
 
-export default EventDetails;
+export default RegisterForEvent;

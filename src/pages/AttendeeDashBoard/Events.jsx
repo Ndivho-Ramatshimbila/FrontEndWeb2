@@ -24,10 +24,17 @@ const mockEvents = [
 
 const Events = () => {
   const navigate = useNavigate();
-  const [events, setEvents] = useState(mockEvents);
+  const [events, setEvents] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [filteredEvents, setFilteredEvents] = useState(events);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  useEffect(() => {
+    // Load registered events from localStorage and merge with mockEvents
+    const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
+    const allEvents = [...mockEvents, ...registeredEvents];
+    setEvents(allEvents);
+  }, []);
 
   useEffect(() => {
     setFilteredEvents(
@@ -94,7 +101,7 @@ const Events = () => {
           <div className="empty-box">No events found in this category.</div>
         ) : (
           filteredEvents.map((item) => (
-            <div key={item.id} className="event-row" onClick={() => navigate(`/eventdetails/${item.id}`)}>
+            <div key={item.id} className="event-row" onClick={() => navigate(`/attendee/view-event/${item.id}`, { state: { eventData: item } })}>
               <div className="event-left">
                 <FaCalendarAlt size={26} color="#3627d7ff" />
               </div>
@@ -109,8 +116,7 @@ const Events = () => {
                     className="action-btn"
                     onClick={(e) => {
                       e.stopPropagation();
-                      alert(`Viewing details for: ${item.title}`);
-                      navigate("/attendee/qr-code");
+                      navigate("/attendee/qr-code", { state: { ticketData: item } });
                     }}
                   >
                     Ticket
@@ -121,7 +127,13 @@ const Events = () => {
                     className="action-btn gray"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate("/attendee/rate-events");
+                      const key = `rating_${item.title}`; // Use event title as key
+                      const existingRating = localStorage.getItem(key);
+                      if (existingRating) {
+                        alert('You have already rated this event.');
+                      } else {
+                        navigate("/attendee/rate-events", { state: { eventData: item } });
+                      }
                     }}
                   >
                     Rate Event

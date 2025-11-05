@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/pages/_myevents.scss';
 
@@ -13,7 +13,7 @@ const staticMyEventsData = [
   {
     id: 2,
     title: "Marketing Strategy Workshop",
-    date: "2025-10-28",
+    date: "2025-12-15",
     status: "Approved",
     category: "Academic",
   },
@@ -45,17 +45,24 @@ const staticMyEventsData = [
     status: "Past",
     category: "Academic",
   },
+  {
+    id: 7,
+    title: "Guluv's Event",
+    date: "2025-12-20",
+    status: "Approved",
+    category: "Academic",
+  },
 ];
 
 const MyEvents = () => {
   const [filter, setFilter] = useState("All");
   const [sortBy, setSortBy] = useState("date");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [refresh, setRefresh] = useState(0);
   const navigate = useNavigate();
 
-  // Load events from localStorage and combine with static data
-  const loadMyEvents = () => {
+  // Memoize events data to avoid recalculating on every render
+  const myEventsData = useMemo(() => {
     const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
     // Transform submitted events to match the format expected by MyEvents
     const transformedSubmittedEvents = submittedEvents.map(event => ({
@@ -66,35 +73,35 @@ const MyEvents = () => {
       category: event.category,
     }));
     return [...staticMyEventsData, ...transformedSubmittedEvents];
-  };
+  }, [refresh]); // Only recalculate when refresh changes
 
-  const myEventsData = loadMyEvents();
+  const filteredEvents = useMemo(() => {
+    return myEventsData.filter(event => {
+      if (filter === "All") return true;
+      if (filter === "Upcoming") return new Date(event.date) > new Date() && (event.status === "Waiting for Approval" || event.status === "Approved");
+      if (filter === "Past") return event.status === "Past";
+      if (filter === "Cancelled") return event.status === "Cancelled";
+      return false;
+    }).sort((a, b) => {
+      let aValue, bValue;
 
-  const filteredEvents = myEventsData.filter(event => {
-    if (filter === "All") return true;
-    if (filter === "Upcoming") return new Date(event.date) > new Date();
-    if (filter === "Past") return new Date(event.date) <= new Date();
-    if (filter === "Cancelled") return event.status === "Cancelled";
-    return false;
-  }).sort((a, b) => {
-    let aValue, bValue;
+      if (sortBy === "name") {
+        aValue = a.title.toLowerCase();
+        bValue = b.title.toLowerCase();
+      } else if (sortBy === "date") {
+        aValue = new Date(a.date);
+        bValue = new Date(b.date);
+      } else {
+        return 0;
+      }
 
-    if (sortBy === "name") {
-      aValue = a.title.toLowerCase();
-      bValue = b.title.toLowerCase();
-    } else if (sortBy === "date") {
-      aValue = new Date(a.date);
-      bValue = new Date(b.date);
-    } else {
-      return 0;
-    }
-
-    if (sortOrder === "asc") {
-      return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
-    } else {
-      return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
-    }
-  });
+      if (sortOrder === "asc") {
+        return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
+      } else {
+        return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
+      }
+    });
+  }, [myEventsData, filter, sortBy, sortOrder]);
 
   // Force re-render when refresh changes
   React.useEffect(() => {
@@ -136,29 +143,32 @@ const MyEvents = () => {
       </div>
 
       <div className="event-list">
-        {filteredEvents.map(event => (
-          <div key={event.id} className="event-card">
-            <div className="event-info">
-              <h4>{event.title}</h4>
-              <p className="date">{event.date}</p>
-              {event.status !== "Past" && (
-                <p className="status">{event.status}</p>
-              )}
-            </div>
-            <div className="event-action">
-              {/* ✅ Only show Modify button if event is Waiting for Approval */}
-              {event.status === "Waiting for Approval" && (
-                <button
-                  className="modify-btn"
-                  onClick={() => navigate(`/event-details-modify/${event.id}`)}
-                >
-                  Modify
-                </button>
-              )}
+        {filteredEvents.map(event => {
+          const formattedDate = new Date(event.date).toLocaleDateString();
+          return (
+            <div key={event.id} className="event-card" onClick={() => navigate(`/event/${event.id}`, { state: { eventData: event } })}>
+              <div className="event-info">
+                <h4>{event.title}</h4>
+                <p className="date">{formattedDate}</p>
+                {event.status !== "Past" && (
+                  <p className="status">{event.status}</p>
+                )}
+              </div>
+              <div className="event-action">
+                {/* ✅ Only show Modify button if event is Waiting for Approval */}
+                {event.status === "Waiting for Approval" && (
+                  <button
+                    className="modify-btn"
+                    onClick={(e) => { e.stopPropagation(); navigate(`/event-details-modify/${event.id}`); }}
+                  >
+                    Modify
+                  </button>
+                )}
 
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

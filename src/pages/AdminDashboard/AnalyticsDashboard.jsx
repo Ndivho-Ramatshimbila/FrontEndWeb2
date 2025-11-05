@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { TrendingUp, Users, Calendar, CalendarCheck, Settings, Search } from 'lucide-react';
+import { TrendingUp, Users, Calendar, CalendarCheck, Settings } from 'lucide-react';
 import '../../styles/pages/_analyticsdashboard.scss';
 import { useNavigate } from 'react-router-dom';
 
@@ -77,14 +76,11 @@ const LineGraph = ({ data, color = '#000000' }) => {
 const AnalyticsDashboard = () => {
   const navigate = useNavigate();
 
-  // ✅ Fixed: handleExportClick must be here, not inside LineGraph
-  const handleExportClick = () => {
-    navigate('/admin/export');
-  };
-  
-  const handleApproveClick = () => {
-    navigate('/admin/approvals');
-  };
+  const handleExportClick = () => navigate('/admin/export');
+  const handleApproveClick = () => navigate('/admin/approvals');
+  const handleCalendarClick = () => navigate('/admin/calendar');
+  const handleAddVenueClick = () => navigate('/admin/add-venue');
+
   const occupancyData = [
     { name: 'Lecture', occupied: 80, total: 100 },
     { name: 'Sports', occupied: 80, total: 100 },
@@ -145,9 +141,6 @@ const AnalyticsDashboard = () => {
         <h1 className="header-title">Admin Dashboard</h1>
       </header>
 
-      {/* Search Bar */}
-
-
       {/* Main Dashboard Content */}
       <div className="dashboard-content">
         {/* Occupancy Overview */}
@@ -162,7 +155,7 @@ const AnalyticsDashboard = () => {
                 <span className="occupancy-label">{item.name}</span>
                 {renderOccupancyBar(item.occupied, item.total)}
                 <span className="occupancy-value">
-                  {item.occupied}/{item.total}
+                  {Math.round((item.occupied / item.total) * 100)}%
                 </span>
               </div>
             ))}
@@ -209,15 +202,26 @@ const AnalyticsDashboard = () => {
           ))}
         </div>
 
-        {/* Actions */}
+        {/* ✅ Actions Section */}
         <div className="action-links">
           <button className="action-link" onClick={handleApproveClick}>
             <span className="action-icon">|||</span>
             <span>Admin Approval Queue</span>
           </button>
+
           <button className="action-link" onClick={handleExportClick}>
             <span className="action-icon">↑</span>
             <span>Analytics Export Options</span>
+          </button>
+
+          <button className="action-link" onClick={handleCalendarClick}>
+            <Calendar size={16} className="action-icon" />
+            <span>View Calendar</span>
+          </button>
+
+          <button className="action-link" onClick={handleAddVenueClick}>
+            <Settings size={16} className="action-icon" />
+            <span>Add Venue</span>
           </button>
         </div>
       </div>

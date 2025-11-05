@@ -51,7 +51,7 @@ export default function RatingsPage() {
     console.log('Rating submitted:', ratingData);
 
     alert('Thank you! Your rating has been submitted successfully.');
-    navigate("/my-events");
+    navigate("/dashboard");
   };
 
   const getRatingText = () => {

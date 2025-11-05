@@ -1,9 +1,4 @@
-- [x] Modify CreateEvent.jsx handleSubmit to save submissionData to localStorage under 'submittedEvents'
-- [x] Update ApprovalScreen.jsx to load submittedEvents from localStorage and display as Pending
-- [x] Update MyEvents.jsx to load submittedEvents from localStorage and display as Waiting for Approval
-- [x] Test the flow: Submit event, check admin approval queue, check organizer my events
-- [x] Update ModifyForm.jsx to populate form with existing event data from location.state.eventData
-- [x] Update ModifyForm.jsx to navigate to ConfirmModifiedDetails with modified data
-- [x] Update ConfirmModifiedDetails.jsx to display modified data from location.state.modifiedData
-- [x] Update ConfirmModifiedDetails.jsx submit button to update localStorage with modified data
-- [x] Add sorting functionality to MyEvents.jsx (sort by name and date ASC/DESC)
+# TODO: Fix Event Card Click to Show Full Details
+
+- [x] Update EventDetails.jsx to fetch full event data from localStorage or mock data based on event ID
+- [x] Test navigation from MyEvents to EventDetails to verify full details are displayed
