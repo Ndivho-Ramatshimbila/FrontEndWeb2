@@ -29,6 +29,7 @@ const ApprovedScreen = lazy(() => import('./pages/AdminDashboard/ApprovalScreen'
 const AdminEventDetails = lazy(() => import('./pages/AdminDashboard/AdminEventDetails'));
 const AdminChat = lazy(() => import('./pages/AdminDashboard/AdminChat'));
 const AvailableVenues = lazy(() => import('./pages/AdminDashboard/AvailableVenues'));
+const AdminCalendar = lazy(() => import('./pages/AdminDashboard/AdminCalendar'));
 const UserManagement = lazy(() => import('./pages/AdminDashboard/UserManagement')); // ✅ fixed import path
 
 // Lazy load Attendee Pages
@@ -125,6 +126,7 @@ function App() {
             <Route path="details/:id" element={<AdminEventDetails />} />
             <Route path="chat" element={<AdminChat />} />
             <Route path="add-venue" element={<AvailableVenues />} />
+            <Route path="calendar" element={<AdminCalendar />} />
             <Route path="user-management" element={<UserManagement />} /> {/* ✅ Fixed Route */}
           </Route>
 
