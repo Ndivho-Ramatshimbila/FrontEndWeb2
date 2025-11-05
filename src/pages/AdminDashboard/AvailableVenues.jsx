@@ -12,17 +12,14 @@ export default function AvailableVenues() {
     price: "",
     capacity: "",
     images: [],
-    type: "", // Added venue type
+    type: "",
   });
   const [editIndex, setEditIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Load saved venues from localStorage on mount
   useEffect(() => {
     const storedVenues = localStorage.getItem("venues");
-    if (storedVenues) {
-      setVenues(JSON.parse(storedVenues));
-    }
+    if (storedVenues) setVenues(JSON.parse(storedVenues));
   }, []);
 
   const openModal = () => {
@@ -44,9 +41,9 @@ export default function AvailableVenues() {
     });
   };
 
-  // Save or update venue
   const handleSave = () => {
-    if (!venueData.name || !venueData.location || !venueData.price || !venueData.capacity || !venueData.type) {
+    const { name, location, price, capacity, type } = venueData;
+    if (!name || !location || !price || !capacity || !type) {
       alert("Please fill in all fields.");
       return;
     }
@@ -61,20 +58,17 @@ export default function AvailableVenues() {
 
     setVenues(updatedVenues);
     localStorage.setItem("venues", JSON.stringify(updatedVenues));
-
     setVenueData({ name: "", location: "", price: "", capacity: "", images: [], type: "" });
     setEditIndex(null);
     setModalVisible(false);
   };
 
-  // Edit venue
   const handleEdit = (index) => {
     setVenueData(venues[index]);
     setEditIndex(index);
     setModalVisible(true);
   };
 
-  // Delete venue
   const handleDelete = (index) => {
     const updated = venues.filter((_, i) => i !== index);
     setVenues(updated);
@@ -86,8 +80,7 @@ export default function AvailableVenues() {
       <h2 className="header">Available Venues</h2>
 
       <button className="add-button" onClick={openModal}>
-        <MdAddCircle size={20} style={{ marginRight: 5 }} />
-        Add Venue
+        <MdAddCircle size={20} style={{ marginRight: 5 }} /> Add Venue
       </button>
 
       {venues.length === 0 && <p className="empty-text">No venues available</p>}
@@ -111,7 +104,7 @@ export default function AvailableVenues() {
             <p>Location: {item.location}</p>
             <p>Price: R{item.price}</p>
             <p>Capacity: {item.capacity}</p>
-            <p>Type: {item.type}</p> {/* Display venue type */}
+            <p>Type: {item.type}</p>
 
             <div className="actions">
               <button onClick={() => handleEdit(index)}>
@@ -128,9 +121,9 @@ export default function AvailableVenues() {
       {modalVisible && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>{editIndex !== null ? "Edit Venue" : "Add Venue"}</h3>
+            <h3 className="modal-header">{editIndex !== null ? "Edit Venue" : "Add Venue"}</h3>
 
-            <input type="file" multiple accept="image/*" onChange={handlePickImage} />
+            <input type="file" multiple accept="image/*" onChange={handlePickImage} className="input" />
 
             <div className="image-preview">
               {venueData.images.map((img, i) => (
@@ -142,6 +135,7 @@ export default function AvailableVenues() {
             </div>
 
             <input
+              className="input"
               type="text"
               placeholder="Venue Name"
               value={venueData.name}
@@ -149,6 +143,7 @@ export default function AvailableVenues() {
             />
 
             <select
+              className="input"
               value={venueData.location}
               onChange={(e) => setVenueData({ ...venueData, location: e.target.value })}
             >
@@ -158,6 +153,7 @@ export default function AvailableVenues() {
             </select>
 
             <select
+              className="input"
               value={venueData.type}
               onChange={(e) => setVenueData({ ...venueData, type: e.target.value })}
             >
@@ -168,12 +164,14 @@ export default function AvailableVenues() {
             </select>
 
             <input
+              className="input"
               type="number"
               placeholder="Price"
               value={venueData.price}
               onChange={(e) => setVenueData({ ...venueData, price: e.target.value })}
             />
             <input
+              className="input"
               type="number"
               placeholder="Capacity"
               value={venueData.capacity}
