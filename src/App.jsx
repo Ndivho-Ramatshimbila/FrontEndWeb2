@@ -28,6 +28,9 @@ const AdminLayout = lazy(() => import('./layouts/AdminLayout'));
 const ApprovedScreen = lazy(() => import('./pages/AdminDashboard/ApprovalScreen'));
 const AdminEventDetails = lazy(() => import('./pages/AdminDashboard/AdminEventDetails'));
 const AdminChat = lazy(() => import('./pages/AdminDashboard/AdminChat'));
+const AvailableVenues = lazy(() => import('./pages/AdminDashboard/AvailableVenues'));
+// const AdminCalendar = lazy(() => import('./pages/AdminDashboard/AdminCalendar'));
+
 
 // Lazy load Attendee Pages
 const AttendeeLayout = lazy(() => import('./layouts/AttendeeLayout'));
@@ -122,6 +125,8 @@ function App() {
             <Route path="approvals" element={<ApprovedScreen />} />
             <Route path="details/:id" element={<AdminEventDetails />} />
             <Route path="/admin/chat" element={<AdminChat />} />
+            <Route path="add-venue" element={<AvailableVenues />} />
+            {/* <Route path="calendar" element={<AdminCalendar />} /> */}
           </Route>
 
           {/* ---------- ATTENDEE ROUTES (Nested) ---------- */}
