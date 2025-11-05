@@ -5,13 +5,4 @@
 @import './styles/components/sidebar';
 @import './styles/components/_chat';
 @import './styles/components/_datepicker';
-.app {
-  display: flex;
-  
-  .main-content {
-    margin-left: 250px; // Same as sidebar width
-    padding: 20px;
-    width: calc(100% - 250px);
-    min-height: 50vh;
-  }
-}
+@import './styles/components/_dashboardlayout';

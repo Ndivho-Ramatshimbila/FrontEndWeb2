@@ -1,6 +1,6 @@
 // src/pages/OrganizerDashboard/EventDetails.jsx
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import "../../styles/pages/_eventdetails.scss";
 
 // 🧩 Mock event data (can be replaced later with API or DB)
@@ -47,9 +47,25 @@ const mockEventDetails = {
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Get the event details
-  const event = mockEventDetails[id] || Object.values(mockEventDetails)[0];
+  // Get the event ID from state or params
+  const eventId = location.state?.eventData?.id || id;
+
+  // Fetch full event details from localStorage or mock data
+  const getFullEventDetails = (eventId) => {
+    // First, check localStorage for submitted events
+    const submittedEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
+    const submittedEvent = submittedEvents.find(event => event.id == eventId);
+    if (submittedEvent) {
+      return submittedEvent;
+    }
+
+    // Fallback to mock data
+    return mockEventDetails[eventId] || Object.values(mockEventDetails)[0];
+  };
+
+  const event = getFullEventDetails(eventId);
 
   // 🔹 Navigate to Modify Form with prefilled event data
   const handleModify = () => {

@@ -143,29 +143,32 @@ const MyEvents = () => {
       </div>
 
       <div className="event-list">
-        {filteredEvents.map(event => (
-          <div key={event.id} className="event-card">
-            <div className="event-info">
-              <h4>{event.title}</h4>
-              <p className="date">{event.date}</p>
-              {event.status !== "Past" && (
-                <p className="status">{event.status}</p>
-              )}
-            </div>
-            <div className="event-action">
-              {/* ✅ Only show Modify button if event is Waiting for Approval */}
-              {event.status === "Waiting for Approval" && (
-                <button
-                  className="modify-btn"
-                  onClick={() => navigate(`/event-details-modify/${event.id}`)}
-                >
-                  Modify
-                </button>
-              )}
+        {filteredEvents.map(event => {
+          const formattedDate = new Date(event.date).toLocaleDateString();
+          return (
+            <div key={event.id} className="event-card" onClick={() => navigate(`/event/${event.id}`, { state: { eventData: event } })}>
+              <div className="event-info">
+                <h4>{event.title}</h4>
+                <p className="date">{formattedDate}</p>
+                {event.status !== "Past" && (
+                  <p className="status">{event.status}</p>
+                )}
+              </div>
+              <div className="event-action">
+                {/* ✅ Only show Modify button if event is Waiting for Approval */}
+                {event.status === "Waiting for Approval" && (
+                  <button
+                    className="modify-btn"
+                    onClick={(e) => { e.stopPropagation(); navigate(`/event-details-modify/${event.id}`); }}
+                  >
+                    Modify
+                  </button>
+                )}
 
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

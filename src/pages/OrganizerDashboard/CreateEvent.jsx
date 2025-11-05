@@ -179,12 +179,66 @@ export default function CreateEvent() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.eventTitle.trim()) newErrors.eventTitle = 'Event title is required';
-    if (!formData.campus) newErrors.campus = 'Please select a campus';
-    if (!formData.venueType) newErrors.venueType = 'Please select a venue type';
-    if (!formData.venue.trim()) newErrors.venue = 'Venue name is required';
-    if (!selectedVenue) newErrors.venueSelection = 'Please select a venue from the gallery';
-    if (!termsAccepted) newErrors.terms = 'You must accept the terms and conditions';
+
+    if (!formData.eventTitle.trim()) {
+      newErrors.eventTitle = 'Event title is required';
+    }
+
+    if (!formData.campus) {
+      newErrors.campus = 'Please select a campus';
+    }
+
+    if (!formData.venueType) {
+      newErrors.venueType = 'Please select a venue type';
+    }
+
+    if (!formData.venue.trim()) {
+      newErrors.venue = 'Venue name is required';
+    }
+
+    if (!formData.typeOfFunction) {
+      newErrors.typeOfFunction = 'Please select a type of function';
+    }
+
+    if (formData.typeOfGuests.length === 0) {
+      newErrors.typeOfGuests = 'Please select at least one guest type';
+    }
+
+    if (!formData.numberOfGuestsExpected || formData.numberOfGuestsExpected <= 0) {
+      newErrors.numberOfGuestsExpected = 'Please enter the expected number of guests';
+    }
+
+    if (!formData.dateOfCommencement) {
+      newErrors.dateOfCommencement = 'Commencement date is required';
+    }
+
+    if (!formData.endingDate) {
+      newErrors.endingDate = 'Ending date is required';
+    }
+
+    // Audiovisual Services should require selecting Yes or No on each — not force Yes
+const audiovisualServices = [
+  'laptop','sound','screen','videoConferencing',
+  'dataProjector','internetConnection','microphone','wifi'
+];
+
+const allAVAnswered = audiovisualServices.every(service => 
+  formData[service] === 'Yes' || formData[service] === 'No'
+);
+
+if (!allAVAnswered) {
+  newErrors.audiovisual = 'Please answer all audiovisual service questions';
+}
+
+
+    if (!selectedVenue) {
+      newErrors.venueSelection = 'Please select a venue from the gallery';
+    }
+
+    if (!termsAccepted) {
+      newErrors.terms = 'You must accept the terms and conditions';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

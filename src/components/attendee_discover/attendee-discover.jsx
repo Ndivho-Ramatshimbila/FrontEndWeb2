@@ -51,6 +51,13 @@ const AttendeeDiscover = () => {
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
+  // ✅ Helper function to check if an event is past
+  const isPastEvent = (eventDate) => {
+    const now = new Date();
+    const eventDateObj = new Date(eventDate);
+    return eventDateObj < now;
+  };
+
   // ✅ Load events immediately from fallback + approved events
   useEffect(() => {
     const approvedEvents = getApprovedEvents();
@@ -88,6 +95,13 @@ const AttendeeDiscover = () => {
     // Filter out registered events
     const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
     filtered = filtered.filter(event => !registeredEvents.some(reg => reg.id === event.id));
+
+    // Filter out attended events
+    const attendedEvents = JSON.parse(localStorage.getItem('attendedEvents')) || [];
+    filtered = filtered.filter(event => !attendedEvents.some(att => att.id === event.id));
+
+    // Filter out past events
+    filtered = filtered.filter(event => !isPastEvent(event.date));
 
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
