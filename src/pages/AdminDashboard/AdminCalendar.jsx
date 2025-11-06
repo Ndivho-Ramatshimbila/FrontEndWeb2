@@ -11,7 +11,7 @@ export default function AdminCalendar() {
 
   const dateStr = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
 
-  const isFullyBooked = (date) => {
+  const hasApprovedEvents = (date) => {
     const key = date.toISOString().split("T")[0];
     const dayEvents = approvedEvents.filter(e => e.date === key);
     return dayEvents.length > 0;
@@ -19,20 +19,14 @@ export default function AdminCalendar() {
 
   const isAvailable = (date) => {
     const key = date.toISOString().split("T")[0];
-    return availableDates.some(d => d.date === key) && !isFullyBooked(date);
-  };
-
-  const getTileClassName = ({ date }) => {
-    if (isFullyBooked(date)) return "tile-booked";  // red dot
-    if (isAvailable(date)) return "tile-available"; // blue dot
-    return "";
+    return availableDates.some(d => d.date === key);
   };
 
   const getTileContent = ({ date }) => {
     return (
       <div className="dot-container">
-        {isFullyBooked(date) && <span className="dot red-dot" />}
-        {!isFullyBooked(date) && isAvailable(date) && <span className="dot blue-dot" />}
+        {hasApprovedEvents(date) && <span className="dot red-dot" />}
+        {isAvailable(date) && <span className="dot blue-dot" />}
       </div>
     );
   };
@@ -51,7 +45,6 @@ export default function AdminCalendar() {
       <h2>Admin Calendar</h2>
       <Calendar
         onClickDay={setSelectedDate}
-        tileClassName={getTileClassName}
         tileContent={getTileContent}
       />
 

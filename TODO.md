@@ -1,0 +1,2 @@
+- [ ] Update AdminCalendar.jsx logic to show red dot for approved events and blue dot for availability slots independently
+- [ ] Test the calendar display to ensure both dots appear on dates with both approved events and availability slots
