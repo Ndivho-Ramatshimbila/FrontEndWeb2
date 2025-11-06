@@ -67,32 +67,42 @@
       background-color: #E3F2FD;
     }
 
-    .view-btn,
-    .edit-btn,
-    .delete-btn {
-      margin-right: 0.5rem;
-      padding: 0.3rem 0.6rem;
+    .view-btn {
+      background-color: #FFD700;
+      color: #000;
       border: none;
       border-radius: 4px;
+      padding: 0.4rem 0.8rem;
       cursor: pointer;
 
-      &.view-btn {
-        background-color: #17a2b8;
-        color: #fff;
+      &:hover {
+        opacity: 0.9;
       }
+    }
 
-      &.edit-btn {
-        background-color: #ffc107;
-        color: #000;
-      }
-
-      &.delete-btn {
-        background-color: #dc3545;
-        color: #fff;
-      }
+    .edit-btn {
+      background-color: #0077B6;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
 
       &:hover {
-        opacity: 0.8;
+        background-color: darken(#0077B6, 10%);
+      }
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken(#e74c3c, 10%);
       }
     }
   }

@@ -21,6 +21,19 @@
       font-size: 1rem;
     }
 
+    .add-user-btn {
+      background-color: #0077B6;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken(#0077B6, 10%);
+      }
+    }
+
     .bulk-delete-btn {
       background-color: #e74c3c;
       color: #fff;
@@ -48,6 +61,45 @@
 
     th {
       background-color: #E3F2FD;
+    }
+
+    .view-btn {
+      background-color: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+
+    .edit-btn {
+      background-color: #0077B6;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken(#0077B6, 10%);
+      }
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+
+      &:hover {
+        background-color: darken(#e74c3c, 10%);
+      }
     }
   }
 
@@ -124,12 +176,20 @@
           cursor: pointer;
           color: #fff;
 
-          &.save-btn {
+          &:first-child {
             background: #0077B6;
+
+            &:hover {
+              background-color: darken(#0077B6, 10%);
+            }
           }
 
-          &.cancel-btn {
-            background: gray;
+          &:last-child {
+            background: #e74c3c;
+
+            &:hover {
+              background-color: darken(#e74c3c, 10%);
+            }
           }
         }
       }
