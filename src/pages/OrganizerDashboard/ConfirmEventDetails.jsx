@@ -3,6 +3,8 @@ import { ArrowLeft, Calendar, MapPin, Clock, Users, Building, Wine, Utensils, Sp
 import "../../styles/pages/_confirmevent.scss";
 import { useNavigate, useLocation } from 'react-router-dom';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 export default function ConfirmEventDetails() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -135,43 +137,67 @@ export default function ConfirmEventDetails() {
               <button
                 className="btn-submit"
                 type="button"
-                onClick={() => {
-                  // Handle final submission
+                onClick={async () => {
+                try {
+                  // Data to send to backend
                   const submissionData = {
-                    id: `REQ${Date.now()}`, // Generate unique ID
-                    title: formData.eventTitle,
-                    type: formData.typeOfFunction,
-                    date: `${formData.dateOfCommencement} at ${formData.timeOfCommencement || 'TBD'}`,
-                    status: 'Pending', // For admin approval
-                    organizerStatus: 'Waiting for Approval', // For organizer
-                    category: formData.typeOfFunction,
-                    ...formData,
-                    selectedVenue: selectedVenue,
-                    termsAccepted: termsAccepted,
-                    submittedAt: new Date().toISOString()
+                    eventTitle: formData.eventTitle,
+                    eventType: formData.typeOfFunction,
+                    purpose: formData.purposeOfFunction,
+                    capacity: formData.numberOfGuestsExpected,
+                    dateStart: formData.dateOfCommencement,
+                    dateEnd: formData.endingDate,
+                    timeStart: formData.timeOfCommencement,
+                    timeEnd: formData.timeToLockup,
+                    campus: formData.campus,
+                    venueType: formData.venueType,
+                    venue: selectedVenue?.name,
+                    services: {
+                      liquor: formData.useOfLiquor,
+                      kitchenFacilities: formData.kitchenFacilities,
+                      cleaningServices: formData.cleaningServices,
+                    },
+                    resources: {
+                      chairs: formData.plasticChairs,
+                      microphones: formData.microphone === "Yes" ? 1 : 0,
+                      projectors: formData.dataProjector === "Yes" ? 1 : 0,
+                      tables: (formData.steelTable || 0) + (formData.examTables || 0),
+                    },
+                    termsAccepted,
+                    submittedAt: new Date().toISOString(),
                   };
 
-                  // Save to localStorage
-                  const existingEvents = JSON.parse(localStorage.getItem('submittedEvents') || '[]');
-                  existingEvents.push(submissionData);
-                  localStorage.setItem('submittedEvents', JSON.stringify(existingEvents));
-
-                  // Add notification for event submission
-                  const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-                  notifications.unshift({
-                    id: `notif-${Date.now()}`,
-                    title: "Event Submission",
-                    message: `Your event "${formData.eventTitle}" has been submitted for approval.`,
-                    time: "Just now"
+                  // ✅ Make API Request to backend
+                  const response = await fetch(`${API_BASE_URL}/api/events`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                      // ✅ If your backend uses auth token, include it:
+                      // "Authorization": `Bearer ${localStorage.getItem("token")}`
+                    },
+                    body: JSON.stringify(submissionData),
                   });
-                  localStorage.setItem('notifications', JSON.stringify(notifications));
 
-                  console.log('Event confirmed and submitted:', submissionData);
-                  showToastMessage('Event booking request submitted successfully!');
+                  if (!response.ok) {
+                    throw new Error("Failed to submit event to server");
+                  }
+
+                  // Optional: Get server response
+                  const result = await response.json();
+                  console.log("✅ Event saved to DB:", result);
+
+                  showToastMessage("Event booking request submitted successfully!");
+
                   setTimeout(() => {
-                    navigate('/my-events');
-                  }, 2000); // waits 2 seconds before redirecting
-                }}
+                    navigate("/my-events");
+                  }, 2000);
+
+                } catch (error) {
+                  console.error("❌ Error submitting event:", error);
+                  showToastMessage("Failed to submit event. Please try again.");
+                }
+              }}
+
               >
                 Submit
               </button>
@@ -202,3 +228,4 @@ export default function ConfirmEventDetails() {
     </div>
   );
 }
+ 

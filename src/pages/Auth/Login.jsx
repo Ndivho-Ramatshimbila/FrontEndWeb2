@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/abstracts-auth/Login.scss'; // Import your SCSS
+import '../../styles/abstracts-auth/Login.scss'; // Keep existing styling
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,40 +11,44 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // ✅ Define mock users with roles and passwords
-  const mockUsers = [
-    { email: 'admin@example.com', password: 'admin123', role: 'admin' },
-    { email: 'organizer@example.com', password: 'organizer123', role: 'organizer' },
-    { email: 'attendee@example.com', password: 'attendee123', role: 'attendee' },
-  ];
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
+    setLoading(true);
 
-    // Simulate a fake "backend delay"
-    setTimeout(() => {
-      const foundUser = mockUsers.find(
-        (user) => user.email === email && user.password === password
-      );
+    try {
+      // Replace this URL with your backend login endpoint
+      const res = await axios.post('http://localhost:3000/auth/login', {
+        email,
+        password,
+      });
 
       setLoading(false);
 
-      if (foundUser) {
-        // ✅ Redirect based on user role
-        if (foundUser.role === 'admin') {
-          navigate('/admin');
-        } else if (foundUser.role === 'organizer') {
-          navigate('/dashboard');
-        } else if (foundUser.role === 'attendee') {
-          navigate('/attendee');
-        }
+      // Assuming your backend returns user info including role
+      const user = res.data.user; // adjust according to your backend response
+      const token = res.data.token; // optional: store JWT in localStorage/sessionStorage
+      console.log('Logged in user:', user);
+      console.log('Token:', token);
+      if (token) localStorage.setItem('token', token);
+
+      // Redirect based on role
+      if (user.role === 'ADMIN') {
+        navigate('/admin');
+      } else if (user.role === 'ORGANIZER') {
+        navigate('/dashboard');
+      } else if (user.role === 'ATTENDEE') {
+        navigate('/attendee');
       } else {
-        // Invalid credentials
-        setError('Invalid email or password');
+        navigate('/'); // fallback
       }
-    }, 1000);
+    } catch (err) {
+      setLoading(false);
+      // Show backend error message if available
+      setError(
+        err.response?.data?.message || 'Login failed. Please check your credentials.'
+      );
+    }
   };
 
   return (

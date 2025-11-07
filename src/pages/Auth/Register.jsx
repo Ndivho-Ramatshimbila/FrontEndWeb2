@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/abstracts-auth/Login.scss';
+import '../../styles/abstracts-auth/Login.scss'; // keep your existing styles
 
 export default function Register() {
   const navigate = useNavigate();
@@ -13,7 +14,9 @@ export default function Register() {
     phone: '',
     role: 'attendee',
   });
+
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -23,42 +26,64 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
+    setLoading(true);
 
+    // ✅ Check password match first
     if (form.password !== form.confirmPassword) {
+      setLoading(false);
       setError('Passwords do not match.');
       return;
     }
 
-    setLoading(true);
-
-    // Simulated registration request
     try {
-      // 👇 Simulate sending to backend API
-      const response = await fakeRegisterAPI(form);
+      const res = await axios.post('http://localhost:3000/auth/register', {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        verify_password: form.confirmPassword,
+        cellphone_number: form.phone,
+        role: form.role.toUpperCase(),
+      });
 
       setLoading(false);
-
-      if (form.role === 'organizer') {
-        alert(
-          'Your organizer account request has been submitted for approval. You will be notified once approved.'
-        );
-      } else {
-        alert('Registered successfully! Please login.');
-      }
-
-      navigate('/login');
+      setSuccess('Registered successfully! Redirecting to login...');
+      
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
     } catch (err) {
-      setLoading(false);
-      setError('Registration failed. Please try again.');
+  setLoading(false);
+  console.error('Registration error:', err);
+
+  let msg = 'Registration failed';
+
+  if (err.response?.data?.error) {
+    const errorData = err.response.data.error;
+
+    // Prefer detailed message if available
+    if (errorData.details && errorData.details.length > 0) {
+      msg = errorData.details[0].message;
+    } else if (errorData.message) {
+      msg = errorData.message;
     }
+  } else if (err.response?.data?.message) {
+    msg = err.response.data.message;
+  }
+
+  setError(msg);
+}
+
   };
 
   return (
     <div className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
         <h1>Create Account</h1>
+        <p>Fill in your details to register</p>
 
         {error && <p className="error">{error}</p>}
+        {success && <p className="success">{success}</p>}
 
         <label htmlFor="name">Full Name</label>
         <input
@@ -86,7 +111,6 @@ export default function Register() {
           type="tel"
           value={form.phone}
           onChange={handleChange}
-          required
           placeholder="Enter your phone number"
         />
 
@@ -129,20 +153,4 @@ export default function Register() {
       </form>
     </div>
   );
-}
-
-// 👉 Placeholder for API call (replace with real one)
-async function fakeRegisterAPI(formData) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // You would send the `formData` to your backend here
-      console.log('Registering user:', formData);
-
-      // Simulate success
-      resolve({ status: 'ok' });
-
-      // If simulating an error:
-      // reject(new Error('Registration error'));
-    }, 1000);
-  });
 }
