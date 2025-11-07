@@ -115,3 +115,27 @@
     }
   }
 }
+.password-wrapper {
+  position: relative;
+
+  input {
+    width: 100%;
+    padding-right: 35px;
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+  }
+}
+/* Remove native eye icons in password fields */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear,
+input[type="password"]::-webkit-password-toggle {
+  display: none;
+}
+

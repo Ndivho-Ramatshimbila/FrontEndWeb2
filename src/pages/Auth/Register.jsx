@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/abstracts-auth/Login.scss'; // keep your existing styles
+import { Eye, EyeOff } from 'lucide-react'; // 👁 single, clean import
+import '../../styles/abstracts-auth/Login.scss';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -18,9 +19,30 @@ export default function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [passwordHint, setPasswordHint] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const validatePassword = (password) => {
+    const minLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+
+    if (!minLength || !hasUpper || !hasLower || !hasNumber) {
+      setPasswordHint(
+        'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.'
+      );
+    } else {
+      setPasswordHint('');
+    }
+  };
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+
+    if (name === 'password') validatePassword(value);
   };
 
   const handleSubmit = async (e) => {
@@ -29,7 +51,13 @@ export default function Register() {
     setSuccess('');
     setLoading(true);
 
-    // ✅ Check password match first
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordRegex.test(form.password)) {
+      setLoading(false);
+      setError('Password does not meet requirements.');
+      return;
+    }
+
     if (form.password !== form.confirmPassword) {
       setLoading(false);
       setError('Passwords do not match.');
@@ -37,7 +65,7 @@ export default function Register() {
     }
 
     try {
-      const res = await axios.post('http://localhost:3000/auth/register', {
+      await axios.post('http://localhost:3000/auth/register', {
         name: form.name,
         email: form.email,
         password: form.password,
@@ -48,32 +76,20 @@ export default function Register() {
 
       setLoading(false);
       setSuccess('Registered successfully! Redirecting to login...');
-      
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
+      setTimeout(() => navigate('/login'), 1000);
     } catch (err) {
-  setLoading(false);
-  console.error('Registration error:', err);
+      setLoading(false);
+      console.error('Registration error:', err);
 
-  let msg = 'Registration failed';
+      let msg = 'Registration failed';
+      const errorData = err.response?.data?.error || err.response?.data;
 
-  if (err.response?.data?.error) {
-    const errorData = err.response.data.error;
+      if (errorData?.details?.length > 0) msg = errorData.details[0].message;
+      else if (errorData?.message) msg = errorData.message;
+      else if (typeof errorData === 'string') msg = errorData;
 
-    // Prefer detailed message if available
-    if (errorData.details && errorData.details.length > 0) {
-      msg = errorData.details[0].message;
-    } else if (errorData.message) {
-      msg = errorData.message;
+      setError(msg);
     }
-  } else if (err.response?.data?.message) {
-    msg = err.response.data.message;
-  }
-
-  setError(msg);
-}
-
   };
 
   return (
@@ -115,24 +131,41 @@ export default function Register() {
         />
 
         <label htmlFor="password">Password</label>
-        <input
-          name="password"
-          type="password"
-          value={form.password}
-          onChange={handleChange}
-          required
-          placeholder="Enter your password"
-        />
+        <div className="password-wrapper">
+          <input
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            value={form.password}
+            onChange={handleChange}
+            required
+            placeholder="Enter your password"
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </span>
+        </div>
+        {passwordHint && <small className="password-hint">{passwordHint}</small>}
 
         <label htmlFor="confirmPassword">Confirm Password</label>
-        <input
-          name="confirmPassword"
-          type="password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          required
-          placeholder="Confirm your password"
-        />
+        <div className="password-wrapper">
+          <input
+            name="confirmPassword"
+            type={showConfirm ? 'text' : 'password'}
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+            placeholder="Confirm your password"
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowConfirm(!showConfirm)}
+          >
+            {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+          </span>
+        </div>
 
         <label htmlFor="role">I want to register as:</label>
         <select name="role" value={form.role} onChange={handleChange}>
