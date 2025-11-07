@@ -1,4 +1,2 @@
-# TODO: Fix Event Card Click to Show Full Details
-
-- [x] Update EventDetails.jsx to fetch full event data from localStorage or mock data based on event ID
-- [x] Test navigation from MyEvents to EventDetails to verify full details are displayed
+- [ ] Update AdminCalendar.jsx logic to show red dot for approved events and blue dot for availability slots independently
+- [ ] Test the calendar display to ensure both dots appear on dates with both approved events and availability slots

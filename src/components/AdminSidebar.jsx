@@ -73,8 +73,13 @@ const AdminSidebar = () => {
         </NavLink>
 
         <NavLink to="/admin/user-management" className="sidebar-item">
-          <i className="fas fa-comments"></i>
+          <i className="fas fa-users"></i>
           <span>User Management</span>
+        </NavLink>
+
+        <NavLink to="/admin/event-management" className="sidebar-item">
+          <i className="fas fa-calendar-alt"></i>
+          <span>Event Management</span>
         </NavLink>
 
         {/* 🔔 Admin Notifications */}

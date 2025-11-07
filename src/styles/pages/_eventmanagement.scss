@@ -1,5 +1,4 @@
-// src/styles/pages/_usermanagement.scss
-.user-management-page {
+.event-management-page {
   padding: 2rem;
 
   h1 {
@@ -21,34 +20,39 @@
       font-size: 1rem;
     }
 
-    .add-user-btn {
-      background-color: #0077B6;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 0.6rem 1.2rem;
-      cursor: pointer;
+    .actions {
+      display: flex;
+      gap: 0.5rem;
 
-      &:hover {
-        background-color: darken(#0077B6, 10%);
+      .add-event-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
+        cursor: pointer;
+
+        &:hover {
+          background-color: darken(#28a745, 10%);
+        }
       }
-    }
 
-    .bulk-delete-btn {
-      background-color: #e74c3c;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 0.6rem 1.2rem;
-      cursor: pointer;
+      .bulk-delete-btn {
+        background-color: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
+        cursor: pointer;
 
-      &:hover {
-        background-color: darken(#e74c3c, 10%);
+        &:hover {
+          background-color: darken(#e74c3c, 10%);
+        }
       }
     }
   }
 
-  table {
+  .events-table {
     width: 100%;
     border-collapse: collapse;
 
@@ -121,6 +125,11 @@
       &:hover {
         opacity: 0.9;
       }
+
+      &:disabled {
+        background: #ccc;
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -139,7 +148,9 @@
       background: #fff;
       border-radius: 10px;
       padding: 1.5rem;
-      width: 400px;
+      width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
 
       h2 {
         color: #0077B6;
@@ -156,11 +167,28 @@
         }
 
         input,
-        select {
+        select,
+        textarea {
           width: 100%;
           padding: 0.5rem;
           border: 1px solid #ccc;
           border-radius: 6px;
+        }
+
+        textarea {
+          resize: vertical;
+          min-height: 60px;
+        }
+
+        label:has(input[type="checkbox"]) {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-weight: normal;
+
+          input {
+            width: auto;
+          }
         }
       }
 
@@ -178,18 +206,14 @@
 
           &:first-child {
             background: #0077B6;
-
-            &:hover {
-              background-color: darken(#0077B6, 10%);
-            }
           }
 
           &:last-child {
-            background: #e74c3c;
+            background: gray;
+          }
 
-            &:hover {
-              background-color: darken(#e74c3c, 10%);
-            }
+          &:hover {
+            opacity: 0.9;
           }
         }
       }

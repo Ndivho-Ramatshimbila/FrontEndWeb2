@@ -6,6 +6,8 @@ import VenueCardGallery from '../../components/VenueCardGallery';
 import TermsCheckbox from '../../components/TermsCheckbox';
 import "../../styles/pages/_createevent.scss";
 import { useNavigate } from 'react-router-dom';
+import { useOrganizerCalendar } from '../../hooks/useOrganizerCalendar';
+
 
 export default function CreateEvent() {
   const navigate = useNavigate();
@@ -52,6 +54,9 @@ export default function CreateEvent() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const toastTimerRef = React.useRef(null);
+
+
+  const { availableDates, isDateFullyBooked, isDateAvailable } = useOrganizerCalendar();
 
   // ✅ Load admin-created venues from localStorage
   useEffect(() => {
@@ -464,65 +469,101 @@ if (!allAVAnswered) {
               </section>
 
               {/* PROGRAM SCHEDULE */}
-              <section className="form-section">
-                <h2 className="section-title">Program Schedule</h2>
-                <div className="form-grid grid-3">
-                  <div className="form-group">
-                    <label className="form-label">Date of Commencement *</label>
-                    <DatePicker
-                      selected={formData.dateOfCommencement}
-                      onChange={(date) => handleDateChange('dateOfCommencement', date)}
-                      dateFormat="yyyy-MM-dd"
-                      className={`form-input ${errors.dateOfCommencement ? 'error' : ''}`}
-                      filterDate={isDateDisabled}
-                      placeholderText="Select commencement date"
-                      showMonthDropdown
-                      showYearDropdown
-                      dropdownMode="select"
-                    />
-                    {errors.dateOfCommencement && <p className="error-message">{errors.dateOfCommencement}</p>}
-                  </div>
+        <section className="form-section">
+  <h2 className="section-title">Program Schedule</h2>
+  <div className="form-grid grid-3">
+    {/* Date of Commencement */}
+    <div className="form-group">
+      <label className="form-label">Date of Commencement *</label>
+      <DatePicker
+        selected={formData.dateOfCommencement}
+        onChange={(date) => handleDateChange('dateOfCommencement', date)}
+        dateFormat="yyyy-MM-dd"
+        className={`form-input ${errors.dateOfCommencement ? 'error' : ''}`}
+        filterDate={(date) => {
+          const currentYear = new Date().getFullYear();
+          const disabledDates = [
+            new Date(currentYear, 0, 1),
+            new Date(currentYear, 3, 27),
+            new Date(currentYear, 11, 25),
+          ];
+          return !isDateFullyBooked(date) && !disabledDates.some(d => d.toDateString() === date.toDateString());
+        }}
+        placeholderText="Select commencement date"
+        showMonthDropdown
+        showYearDropdown
+        dropdownMode="select"
+        dayClassName={(date) => {
+          if (isDateFullyBooked(date)) return "day-fully-booked"; // red dot
+          if (isDateAvailable(date)) return "day-available";       // blue dot
+          return "";
+        }}
+      />
+      {errors.dateOfCommencement && <p className="error-message">{errors.dateOfCommencement}</p>}
+    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Ending Date *</label>
-                    <DatePicker
-                      selected={formData.endingDate}
-                      onChange={(date) => handleDateChange('endingDate', date)}
-                      dateFormat="yyyy-MM-dd"
-                      className={`form-input ${errors.endingDate ? 'error' : ''}`}
-                      filterDate={isDateDisabled}
-                      placeholderText="Select ending date"
-                      showMonthDropdown
-                      showYearDropdown
-                      dropdownMode="select"
-                      minDate={formData.dateOfCommencement || new Date()}
-                    />
-                    {errors.endingDate && <p className="error-message">{errors.endingDate}</p>}
-                  </div>
+    {/* Ending Date */}
+    <div className="form-group">
+      <label className="form-label">Ending Date *</label>
+      <DatePicker
+        selected={formData.endingDate}
+        onChange={(date) => handleDateChange('endingDate', date)}
+        dateFormat="yyyy-MM-dd"
+        className={`form-input ${errors.endingDate ? 'error' : ''}`}
+        filterDate={(date) => {
+          const currentYear = new Date().getFullYear();
+          const disabledDates = [
+            new Date(currentYear, 0, 1),
+            new Date(currentYear, 3, 27),
+            new Date(currentYear, 11, 25),
+          ];
+          // Cannot select fully booked and cannot select before commencement date
+          return !isDateFullyBooked(date) &&
+                 !disabledDates.some(d => d.toDateString() === date.toDateString()) &&
+                 (!formData.dateOfCommencement || date >= formData.dateOfCommencement);
+        }}
+        placeholderText="Select ending date"
+        showMonthDropdown
+        showYearDropdown
+        dropdownMode="select"
+        dayClassName={(date) => {
+          if (isDateFullyBooked(date)) return "day-fully-booked"; // red dot
+          if (isDateAvailable(date)) return "day-available";       // blue dot
+          return "";
+        }}
+        minDate={formData.dateOfCommencement || new Date()}
+      />
+      {errors.endingDate && <p className="error-message">{errors.endingDate}</p>}
+    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Time of Commencement</label>
-                    <input
-                      type="time"
-                      name="timeOfCommencement"
-                      value={formData.timeOfCommencement}
-                      onChange={handleInputChange}
-                      className="form-input"
-                    />
-                  </div>
+      {/* Time of Commencement */}
+    <div className="form-group">
+      <label className="form-label">Start Time *</label>
+      <input
+        type="time"
+        name="timeOfCommencement"
+        value={formData.timeOfCommencement}
+        onChange={handleInputChange}
+        className={`form-input ${errors.timeOfCommencement ? 'error' : ''}`}
+      />
+      {errors.timeOfCommencement && <p className="error-message">{errors.timeOfCommencement}</p>}
+    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Time to Lockup</label>
-                    <input
-                      type="time"
-                      name="timeToLockup"
-                      value={formData.timeToLockup}
-                      onChange={handleInputChange}
-                      className="form-input"
-                    />
-                  </div>
-                </div>
-              </section>
+    {/* Time to Lockup */}
+    <div className="form-group">
+      <label className="form-label">End Time *</label>
+      <input
+        type="time"
+        name="timeToLockup"
+        value={formData.timeToLockup}
+        onChange={handleInputChange}
+        className={`form-input ${errors.timeToLockup ? 'error' : ''}`}
+      />
+      {errors.timeToLockup && <p className="error-message">{errors.timeToLockup}</p>}
+    </div>
+  </div>
+</section>
+
 
               {/* SERVICES REQUIRED */}
               <section className="form-section">

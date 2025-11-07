@@ -154,7 +154,7 @@ const UserManagement = () => {
         <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}>
           <option value="all">All Roles</option>
           <option value="attendee">Attendees</option>
-          <option value="admin">Admins</option>
+          <option value="organizer">Organizers</option>
         </select>
 
         <div className="actions">
@@ -278,7 +278,7 @@ const UserManagement = () => {
               <label>Role</label>
               <select name="role" value={formData.role} onChange={handleInputChange}>
                 <option value="attendee">Attendee</option>
-                <option value="admin">Admin</option>
+                <option value="organizer">Organizer</option>
               </select>
             </div>
             <div className="modal-actions">
@@ -325,7 +325,7 @@ const UserManagement = () => {
               <label>Role</label>
               <select name="role" value={formData.role} onChange={handleInputChange}>
                 <option value="attendee">Attendee</option>
-                <option value="admin">Admin</option>
+                <option value="organizer">Organizer</option>
               </select>
             </div>
             <div className="modal-actions">

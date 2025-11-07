@@ -493,3 +493,37 @@
     }
   }
 }
+/* Red dot for fully booked */
+.react-datepicker__day.day-fully-booked {
+  position: relative;
+}
+
+.react-datepicker__day.day-fully-booked::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: red;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Blue dot for available date */
+.react-datepicker__day.day-available {
+  position: relative;
+}
+
+.react-datepicker__day.day-available::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: blue;
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
