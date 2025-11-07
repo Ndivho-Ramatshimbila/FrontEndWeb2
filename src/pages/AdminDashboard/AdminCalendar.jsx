@@ -1,116 +1,90 @@
 import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import "../../styles/pages/AdminCalendar.scss";
+import "../../styles/pages/_admincalendar.scss";
+import { useAdminCalendar } from "../../hooks/useCalendar";
 
 export default function AdminCalendar() {
-  const [events, setEvents] = useState({});
+  const { availableDates, approvedEvents, addDates, deleteDate } = useAdminCalendar();
   const [selectedDate, setSelectedDate] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [eventTitle, setEventTitle] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [newSlot, setNewSlot] = useState({ startTime: "09:00", endTime: "17:00" });
 
-  const handleDayClick = (date) => {
-    const isoDate = date.toISOString().split("T")[0];
-    setSelectedDate(isoDate);
-    setEventTitle("");
-    setStartTime("");
-    setEndTime("");
-    setModalVisible(true);
+  const dateStr = selectedDate ? selectedDate.toISOString().split("T")[0] : null;
+
+  const hasApprovedEvents = (date) => {
+    const key = date.toISOString().split("T")[0];
+    const dayEvents = approvedEvents.filter(e => e.date === key);
+    return dayEvents.length > 0;
   };
 
-  const checkConflict = (date, newStart, newEnd) => {
-    const dayEvents = events[date] || [];
-    for (let e of dayEvents) {
-      if (
-        (newStart >= e.startTime && newStart < e.endTime) ||
-        (newEnd > e.startTime && newEnd <= e.endTime) ||
-        (newStart <= e.startTime && newEnd >= e.endTime)
-      ) {
-        return true;
-      }
-    }
-    return false;
+  const isAvailable = (date) => {
+    const key = date.toISOString().split("T")[0];
+    return availableDates.some(d => d.date === key);
   };
 
-  const handleSaveEvent = () => {
-    if (!eventTitle || !startTime || !endTime) {
-      alert("Please enter title, start time, and end time.");
-      return;
-    }
-
-    if (startTime >= endTime) {
-      alert("Start time must be before end time.");
-      return;
-    }
-
-    if (checkConflict(selectedDate, startTime, endTime)) {
-      alert("This event overlaps with another event.");
-      return;
-    }
-
-    const dayEvents = events[selectedDate] || [];
-    const updatedDayEvents = [...dayEvents, { title: eventTitle, startTime, endTime }];
-    setEvents({ ...events, [selectedDate]: updatedDayEvents });
-
-    setModalVisible(false);
-    setEventTitle("");
-    setStartTime("");
-    setEndTime("");
-    setSelectedDate("");
+  const getTileContent = ({ date }) => {
+    return (
+      <div className="dot-container">
+        {hasApprovedEvents(date) && <span className="dot red-dot" />}
+        {isAvailable(date) && <span className="dot blue-dot" />}
+      </div>
+    );
   };
 
-  const tileContent = ({ date }) => {
-    const isoDate = date.toISOString().split("T")[0];
-    return events[isoDate] ? <div className="dot"></div> : null;
+  const handleAddSlot = () => {
+    if (!dateStr) return;
+    addDates([{ date: dateStr, ...newSlot, venueIds: [1] }]);
+  };
+
+  const handleDeleteSlot = (slot) => {
+    deleteDate(slot.date, slot.startTime, slot.endTime);
   };
 
   return (
     <div className="admin-calendar-container">
-      <h2 className="header">Admin Event Calendar</h2>
-
+      <h2>Admin Calendar</h2>
       <Calendar
-        onClickDay={handleDayClick}
-        tileContent={tileContent}
-        className="calendar"
+        onClickDay={setSelectedDate}
+        tileContent={getTileContent}
       />
 
-      {modalVisible && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3 className="modal-header">Add Event - {selectedDate}</h3>
+      {selectedDate && (
+        <div className="calendar-details">
+          <p><strong>Selected Date:</strong> {selectedDate.toDateString()}</p>
 
-            <input
-              type="text"
-              placeholder="Event Title"
-              value={eventTitle}
-              onChange={(e) => setEventTitle(e.target.value)}
-              className="input"
-            />
-            <input
-              type="time"
-              placeholder="Start Time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="input"
-            />
-            <input
-              type="time"
-              placeholder="End Time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="input"
-            />
+          <h4>Approved Events:</h4>
+          <ul>
+            {approvedEvents.filter(e => e.date === dateStr).length === 0 && <li>No approved events</li>}
+            {approvedEvents.filter(e => e.date === dateStr).map(e => (
+              <li key={e.id}>
+                {e.title} ({e.startTime} - {e.endTime})
+              </li>
+            ))}
+          </ul>
 
-            <div className="modal-buttons">
-              <button className="btn save" onClick={handleSaveEvent}>
-                Save
-              </button>
-              <button className="btn cancel" onClick={() => setModalVisible(false)}>
-                Cancel
-              </button>
-            </div>
+          <h4>Available Slots:</h4>
+          <ul>
+            {availableDates.filter(d => d.date === dateStr).length === 0 && <li>No available slots</li>}
+            {availableDates.filter(d => d.date === dateStr).map((d, idx) => (
+              <li key={idx}>
+                {d.startTime} - {d.endTime}, Venues: {d.venueIds.join(", ")}
+                <button onClick={() => handleDeleteSlot(d)}>Remove</button>
+              </li>
+            ))}
+          </ul>
+
+          <div className="calendar-actions">
+            <input 
+              type="time" 
+              value={newSlot.startTime} 
+              onChange={e => setNewSlot({ ...newSlot, startTime: e.target.value })}
+            />
+            <input 
+              type="time" 
+              value={newSlot.endTime} 
+              onChange={e => setNewSlot({ ...newSlot, endTime: e.target.value })}
+            />
+            <button onClick={handleAddSlot}>Add Availability Slot</button>
           </div>
         </div>
       )}
