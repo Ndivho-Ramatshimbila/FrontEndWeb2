@@ -5,6 +5,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 
+import ProtectedRoute from './pages/Auth/ProtectedRoute';
+import Unauthorized from './pages/Auth/Unauthorized';
+
 // Lazy load Organizer Layouts/Pages
 const Dashboard = lazy(() => import('./pages/OrganizerDashboard/Dashboard'));
 const MyEvents = lazy(() => import('./pages/OrganizerDashboard/MyEvents'));
@@ -30,7 +33,7 @@ const AdminEventDetails = lazy(() => import('./pages/AdminDashboard/AdminEventDe
 const AdminChat = lazy(() => import('./pages/AdminDashboard/AdminChat'));
 const AvailableVenues = lazy(() => import('./pages/AdminDashboard/AvailableVenues'));
 const AdminCalendar = lazy(() => import('./pages/AdminDashboard/AdminCalendar'));
-const UserManagement = lazy(() => import('./pages/AdminDashboard/UserManagement')); // ✅ fixed import path
+const UserManagement = lazy(() => import('./pages/AdminDashboard/UserManagement'));
 const EventManagement = lazy(() => import('./pages/AdminDashboard/EventManagement'));
 
 // Lazy load Attendee Pages
@@ -80,8 +83,6 @@ function NotFound() {
   return <h2 className="text-center mt-5">404 - Page Not Found</h2>;
 }
 
-/* ---------------- MAIN APP ROUTER ---------------- */
-
 function LoadingFallback() {
   return (
     <div className="loading-container">
@@ -90,6 +91,8 @@ function LoadingFallback() {
     </div>
   );
 }
+
+/* ---------------- MAIN APP ROUTER ---------------- */
 
 function App() {
   return (
@@ -102,24 +105,123 @@ function App() {
           <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
           <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
           <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
 
           {/* ---------- ORGANIZER DASHBOARD ROUTES ---------- */}
-          <Route path="/dashboard" element={<DashboardLayout><Dashboard /></DashboardLayout>} />
-          <Route path="/discover" element={<DashboardLayout><Discover /></DashboardLayout>} />
-          <Route path="/my-events" element={<DashboardLayout><MyEvents /></DashboardLayout>} />
-          <Route path="/profile" element={<DashboardLayout><ProfilePage /></DashboardLayout>} />
-          <Route path="/create-event" element={<DashboardLayout><CreateEvent /></DashboardLayout>} />
-          <Route path="/confirm-event" element={<DashboardLayout><ConfirmEventDetails /></DashboardLayout>} />
-          <Route path="/inbox" element={<DashboardLayout><Inbox /></DashboardLayout>} />
-          <Route path="/rate-your-event" element={<DashboardLayout><OrganizerEventRating /></DashboardLayout>} />
-          <Route path="/organizer-view-event/:id" element={<DashboardLayout><RegisterForEvent /></DashboardLayout>} />
-          <Route path="/event/:id" element={<DashboardLayout><EventDetails /></DashboardLayout>} />
-          <Route path="/event-details-modify/:id" element={<DashboardLayout><EventDetailsModify /></DashboardLayout>} />
-          <Route path="/confirm-modified-details" element={<DashboardLayout><ConfirmModifiedDetails /></DashboardLayout>} />
-          <Route path="/modify-event" element={<DashboardLayout><ModifyForm /></DashboardLayout>} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><Dashboard /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/discover"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><Discover /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-events"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><MyEvents /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><ProfilePage /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-event"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><CreateEvent /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/confirm-event"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><ConfirmEventDetails /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inbox"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><Inbox /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rate-your-event"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><OrganizerEventRating /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/organizer-view-event/:id"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><RegisterForEvent /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/event/:id"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><EventDetails /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/event-details-modify/:id"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><EventDetailsModify /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/confirm-modified-details"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><ConfirmModifiedDetails /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/modify-event"
+            element={
+              <ProtectedRoute allowedRoles={['ORGANIZER']}>
+                <DashboardLayout><ModifyForm /></DashboardLayout>
+              </ProtectedRoute>
+            }
+          />
 
           {/* ---------- ADMIN ROUTES ---------- */}
-          <Route path="/admin" element={<AdminLayout />}>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['ADMIN']}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<AnalyticsDashboard />} />
             <Route path="export" element={<AnalyticsExportScreen />} />
             <Route path="profile" element={<AdminProfilePage />} />
@@ -128,12 +230,19 @@ function App() {
             <Route path="chat" element={<AdminChat />} />
             <Route path="add-venue" element={<AvailableVenues />} />
             <Route path="calendar" element={<AdminCalendar />} />
-            <Route path="user-management" element={<UserManagement />} /> {/* ✅ Fixed Route */}
+            <Route path="user-management" element={<UserManagement />} />
             <Route path="event-management" element={<EventManagement />} />
           </Route>
 
           {/* ---------- ATTENDEE ROUTES ---------- */}
-          <Route path="/attendee" element={<AttendeeLayout />}>
+          <Route
+            path="/attendee"
+            element={
+              <ProtectedRoute allowedRoles={['ATTENDEE']}>
+                <AttendeeLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<AttendeeDiscover />} />
             <Route path="events-profile" element={<AttendeeProfilePage />} />
             <Route path="rate-events" element={<AttendeeEventRating />} />

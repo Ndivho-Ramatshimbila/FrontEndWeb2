@@ -1,30 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import "./_attendee-discover.scss";
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-// ✅ Local fallback data
-const eventsData = {
-  events: [
-    {
-      id: 1,
-      title: "Annual Tech Summit",
-      date: "Saturday, 19 October at 09:00 AM",
-      location: "Innovation Hub, Building 4",
-      image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
-      tags: ["Leadership", "Networking", "Enterprise"],
-      category: "Academic"
-    },
-    {
-      id: 2,
-      title: "Spring Arts Festival",
-      date: "Sunday, 27 October at 14:00 PM",
-      location: "Central Park Amphitheater",
-      image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&q=80",
-      tags: ["Music", "Art", "Culture"],
-      category: "Arts & Culture"
-    },
-  ]
-};
 
 // ✅ Function to get only approved events from localStorage
 const getApprovedEvents = () => {
@@ -42,6 +20,9 @@ const getApprovedEvents = () => {
     }));
 };
 
+// ✅ Backend API URL
+const API_BASE_URL = "http://localhost:3000"; // Adjust to match backend port
+
 const AttendeeDiscover = () => {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
@@ -51,37 +32,29 @@ const AttendeeDiscover = () => {
   const [showSharePopup, setShowSharePopup] = useState(null);
   const navigate = useNavigate();
 
-  // ✅ Helper function to check if an event is past
   const isPastEvent = (eventDate) => {
     const now = new Date();
     const eventDateObj = new Date(eventDate);
     return eventDateObj < now;
   };
 
-  // ✅ Load events immediately from fallback + approved events
+  // ✅ Load events
   useEffect(() => {
     const approvedEvents = getApprovedEvents();
     const initialEvents = [...eventsData.events, ...approvedEvents];
     setEvents(initialEvents);
     setFilteredEvents(initialEvents);
-    setLoading(false); // UI loads immediately
+    setLoading(false);
 
-    // Try fetching API but don't block UI
+    // Fetch backend events asynchronously
     const fetchEvents = async () => {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 1000); // 1s timeout
       try {
-        const response = await fetch("https://your-api-url.com/events", { signal: controller.signal });
-        if (response.ok) {
-          const data = await response.json();
-          const apiEvents = data.events || [];
-          setEvents(prev => [...apiEvents, ...prev]); // Merge API events on top
-          setFilteredEvents(prev => [...apiEvents, ...prev]);
-        }
+        const response = await axios.get(`${API_BASE_URL}/events/public`);
+        const apiEvents = response.data.events || [];
+        setEvents(prev => [...apiEvents, ...prev]);
+        setFilteredEvents(prev => [...apiEvents, ...prev]);
       } catch (err) {
-        console.warn("API fetch failed or timed out, using fallback:", err.message);
-      } finally {
-        clearTimeout(timeout);
+        console.warn("API fetch failed, using fallback data:", err.message);
       }
     };
 
@@ -92,20 +65,18 @@ const AttendeeDiscover = () => {
   useEffect(() => {
     let filtered = [...events];
 
-    // Filter out registered events
     const registeredEvents = JSON.parse(localStorage.getItem('registeredEvents')) || [];
     filtered = filtered.filter(event => !registeredEvents.some(reg => reg.id === event.id));
 
-    // Filter out attended events
     const attendedEvents = JSON.parse(localStorage.getItem('attendedEvents')) || [];
     filtered = filtered.filter(event => !attendedEvents.some(att => att.id === event.id));
 
-    // Filter out past events
     filtered = filtered.filter(event => !isPastEvent(event.date));
 
     if (selectedCategory !== 'All Events') {
       filtered = filtered.filter(event => event.category === selectedCategory);
     }
+
     if (search.trim()) {
       filtered = filtered.filter(event =>
         event.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -113,10 +84,10 @@ const AttendeeDiscover = () => {
         event.tags.some(tag => tag.toLowerCase().includes(search.toLowerCase()))
       );
     }
+
     setFilteredEvents(filtered);
   }, [search, selectedCategory, events]);
 
-  // ✅ Handlers
   const handleCardClick = (event) => navigate(`/attendee/register/${event.id}`, { state: { eventData: event } });
   const handleShareClick = (e, eventId) => {
     e.stopPropagation();

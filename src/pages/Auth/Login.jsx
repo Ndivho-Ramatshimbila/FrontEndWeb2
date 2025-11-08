@@ -17,7 +17,6 @@ export default function Login() {
     setLoading(true);
 
     try {
-      // Replace this URL with your backend login endpoint
       const res = await axios.post('http://localhost:3000/auth/login', {
         email,
         password,
@@ -25,29 +24,45 @@ export default function Login() {
 
       setLoading(false);
 
-      // Assuming your backend returns user info including role
-      const user = res.data.user; // adjust according to your backend response
-      const token = res.data.token; // optional: store JWT in localStorage/sessionStorage
+      // Check if backend returned the expected user and token
+      const user = res.data.user;
+      const token = res.data.accessToken;
+
+      if (!user || !user.role) throw new Error('User role missing');
+      if (!token) throw new Error('Token missing from login response');
+
       console.log('Logged in user:', user);
       console.log('Token:', token);
-      if (token) localStorage.setItem('token', token);
+
+      // Save token and role in localStorage
+      localStorage.setItem('token', token);
+      const role = user.role.toUpperCase();
+      localStorage.setItem('role', role);
 
       // Redirect based on role
-      if (user.role === 'ADMIN') {
-        navigate('/admin');
-      } else if (user.role === 'ORGANIZER') {
-        navigate('/dashboard');
-      } else if (user.role === 'ATTENDEE') {
-        navigate('/attendee');
-      } else {
-        navigate('/'); // fallback
+      switch (role) {
+        case 'ADMIN':
+          navigate('/admin');
+          break;
+        case 'ORGANIZER':
+          navigate('/dashboard');
+          break;
+        case 'ATTENDEE':
+          navigate('/attendee');
+          break;
+        default:
+          navigate('/');
       }
     } catch (err) {
       setLoading(false);
-      // Show backend error message if available
-      setError(
-        err.response?.data?.message || 'Login failed. Please check your credentials.'
-      );
+
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        'Login failed. Please check your credentials.';
+
+      setError(msg);
+      console.error('Login error:', msg);
     }
   };
 
