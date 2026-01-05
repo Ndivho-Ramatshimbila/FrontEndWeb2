@@ -34,4 +34,6 @@ The system enables seamless **event creation**, **approval workflows**, **attend
    ```bash
    git clone https://github.com/your-username/FrontEndWeb2.git
    cd FrontEndWeb2
+   to run use npm run dev
+
 
