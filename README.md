@@ -1,39 +1,59 @@
-# 🎯 FrontEndWeb2 - Smart Event System
+# FrontEndWeb2 – Smart Event System
 
-A comprehensive **React-based event management platform** built with **Vite**, featuring **role-based dashboards** for administrators, organizers, and attendees.  
-The system enables seamless **event creation**, **approval workflows**, **attendee registration**, and **real-time notifications** — providing a smooth digital event management experience across campuses.
+A comprehensive **React-based event management platform** built with **Vite**, featuring **role-based dashboards** for administrators, organizers, and attendees.
+
+The system enables seamless **event creation**, **approval workflows**, **attendee registration**, and **real-time notifications**, providing a smooth digital event management experience across campuses.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Features
+
+- **Role-Based Dashboards**  
+  Separate views for Admins, Organizers, and Attendees
+
+- **Event Creation & Approval**  
+  Organizers create and submit events for admin approval
+
+- **Attendee Management**  
+  Register and track attendees efficiently
+
+- **Real-Time Notifications**  
+  Instant alerts for approvals, registrations, and updates
+
+- **Analytics Dashboard**  
+  Interactive data visualizations powered by D3.js
+
+- **PDF Reporting**  
+  Export event statistics and summaries in PDF format
+
+- **Responsive Design**  
+  Optimized for desktop, tablet, and mobile devices
+
+---
+
+## 🛠 Tech Stack
 
 - **Frontend**: React 19.1.1 with Vite  
-- **Styling**: SCSS with responsive design  
-- **Icons**: Lucide React, FontAwesome  
-- **Charts**: D3.js for data visualization  
-- **PDF Generation**: pdf-lib for reports  
+- **Styling**: SCSS (Responsive Design)  
 - **Routing**: React Router DOM v7  
+- **Icons**: Lucide React, FontAwesome  
+- **Charts**: D3.js  
+- **PDF Generation**: pdf-lib  
 
 ---
 
-## 🚀 Key Features
+## ⚙️ Installation & Running the Project
 
-- 🔐 **Role-Based Dashboards** – Separate views for Admins, Organizers, and Attendees  
-- 🗓️ **Event Creation & Approval** – Organizers create and submit events for admin approval  
-- 👥 **Attendee Management** – Register and track attendees effortlessly  
-- 🔔 **Real-Time Notifications** – Instant alerts for approvals, registrations, and updates  
-- 📊 **Analytics Dashboard** – Interactive charts powered by D3.js  
-- 📄 **PDF Reporting** – Export event statistics and summaries in PDF format  
-- 🌐 **Responsive Design** – Fully optimized for desktop, tablet, and mobile devices  
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/kgomotso01/Ndivho-Ramatshimbila/FrontEndWeb2.git
+cd FrontEndWeb2
 
----
+install dependencies
+npm install
 
-## 📦 Installation
+to run application
+npm run dev 
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/FrontEndWeb2.git
-   cd FrontEndWeb2
-   to run use npm run dev
 
 
